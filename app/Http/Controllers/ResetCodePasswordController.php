@@ -58,12 +58,12 @@ class ResetCodePasswordController extends BaseController
     public function userResetPassword(Request $request) : JsonResponse
     {
         $input = $request->validate([
-            'code' => 'required|string|exists:reset_code_passwords,code',
-            'password' => ['required', 'confirmed'],
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required',
         ]);
 
-        // find the code
-        $passwordReset = ResetCodePassword::query()->firstWhere('code', $request['code']);
+        // find the email
+        $passwordReset = ResetCodePassword::query()->firstWhere('email', $request['email']);
 
         // check if it is not expired : the time is one hour
         if ($passwordReset['created_at'] > now()->addHour()) {
@@ -92,6 +92,10 @@ class ResetCodePasswordController extends BaseController
 
     public function userResendCode(Request $request) : JsonResponse
     {
+        $data = $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
         // Delete all old code that user send before
         ResetCodePassword::query()->where('email', $request['email'])->delete();
 
