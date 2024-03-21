@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\{
+    Auth\LoginController,
+    Auth\LogoutController,
+    Auth\RegisterController,
+    ResetCodePasswordController,
+    GoogleLoginController,
+};
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +22,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::get('contests', function ($id) {
+    return view('welcome');
 });
+
+// for reset password
+Route::post('user/password/email', [ResetCodePasswordController::class, 'userForgotPassword']);
+Route::post('user/password/email/resend', [ResetCodePasswordController::class, 'userResendCode']);
+Route::post('user/password/code/check', [ResetCodePasswordController::class, 'userCheckCode']);
+Route::post('user/password/reset', [ResetCodePasswordController::class, 'userResetPassword']);
+
+// for google login
+Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+
+// for Authentication
+Route::post('register' , RegisterController::class);
+Route::post('login', [LoginController::class , 'login']);
+
+Route::middleware(['auth:api']) ->group(function(){
+    Route::post('logout', LogoutController::class);
+});
+
