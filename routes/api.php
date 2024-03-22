@@ -4,8 +4,11 @@ use App\Http\Controllers\{
     Auth\LoginController,
     Auth\LogoutController,
     Auth\RegisterController,
+    CompanyController,
+    FreelancerController,
     ResetCodePasswordController,
     GoogleLoginController,
+    UserController,
 };
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -42,6 +45,14 @@ Route::post('register' , RegisterController::class);
 Route::post('login', [LoginController::class , 'login']);
 
 Route::middleware(['auth:api']) ->group(function(){
-    Route::post('logout', LogoutController::class);
-});
+    Route::post('logout', LogoutController::class)->name('logout');
+    Route::get('profile/{id}', [UserController::class, 'show'])->name('profile');
 
+    Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
+
+    });
+
+    Route::middleware(['auth:api', 'can:isFreelancer']) ->group(function(){
+
+    });
+});

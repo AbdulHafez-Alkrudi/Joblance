@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('study_case');
             $table->boolean('open_to_work');
             $table->string('location');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
