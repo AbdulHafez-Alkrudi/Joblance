@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('major');
             $table->string('num_of_employees');
             $table->longText('description');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
