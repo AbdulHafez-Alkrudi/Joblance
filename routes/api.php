@@ -4,11 +4,11 @@ use App\Http\Controllers\{
     Auth\LoginController,
     Auth\LogoutController,
     Auth\RegisterController,
+    Auth\GoogleLoginController,
     CompanyController,
     EmailVerificationController,
     FreelancerController,
     ResetCodePasswordController,
-    GoogleLoginController,
     UserController,
 };
 use App\Models\Role;
