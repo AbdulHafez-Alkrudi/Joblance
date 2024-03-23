@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\EmailVerification;
 use App\Mail\SendCodeEmailVerification;
 use App\Models\EmailVerification as ModelsEmailVerification;
+use Egulias\EmailValidator\Validation\EmailValidation;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
@@ -24,6 +25,9 @@ class SendEmailVerification
      */
     public function handle(EmailVerification $event): void
     {
+        // Delete all old code that user send before
+        ModelsEmailVerification::query()->where('email', $event->user->email)->delete();
+
         $data['email'] = $event->user->email;
 
         // Generate random code

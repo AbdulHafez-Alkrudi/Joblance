@@ -39,6 +39,7 @@ Route::post('user/password/reset', [ResetCodePasswordController::class, 'userRes
 
 // for email verification
 Route::post('user/email/code/check', [EmailVerificationController::class, 'userCheckCode']);
+Route::post('user/email/code/resend', [EmailVerificationController::class, 'userResendCode']);
 
 // for google login
 Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
