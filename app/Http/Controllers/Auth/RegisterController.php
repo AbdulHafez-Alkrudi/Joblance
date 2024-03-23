@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Models\Company;
 use App\Models\Freelancer;
@@ -60,19 +61,11 @@ class RegisterController extends BaseController
 
             $input['image'] = $company_image;
 
-            $company = Company::create($input);
-            $company['phone_number'] = $user['phone_number'];
-            $company['email'] = $user['email'];
-            $company['role'] = $user->role;
+            Company::create($input);
 
-            // just to send it to the API
-            $token = $user->createToken('Personal Access Token')->accessToken;
+            EmailVerification::dispatch($user);
 
-            $data = [];
-            $data['user'] = $company;
-            $data['accessToken'] = $token;
-
-            return $this->sendResponse($data);
+            return $this->sendResponse([]);
         }
         else
         {
@@ -117,21 +110,11 @@ class RegisterController extends BaseController
 
             $input['image'] = $freelancer_image;
 
-            $freelancer = Freelancer::create($input);
-            $freelancer['phone_number'] = $user['phone_number'];
-            $freelancer['email'] = $user['email'];
-            $freelancer['role'] = $user->role;
+            Freelancer::create($input);
 
-            // just to send it to the API
-            $token =  $user->createToken('Personal Access Token')->accessToken;
+            EmailVerification::dispatch($user);
 
-            $data = [];
-            $data['user'] = $freelancer;
-            $data['accessToken'] = $token;
-
-            
-
-            return $this->sendResponse($data);
+            return $this->sendResponse([]);
         }
     }
 }
