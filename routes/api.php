@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     Auth\RegisterController,
     Auth\GoogleLoginController,
     CompanyController,
+    EmailVerificationController,
     FreelancerController,
     ResetCodePasswordController,
     UserController,
@@ -35,6 +36,10 @@ Route::post('user/password/email', [ResetCodePasswordController::class, 'userFor
 Route::post('user/password/email/resend', [ResetCodePasswordController::class, 'userResendCode']);
 Route::post('user/password/code/check', [ResetCodePasswordController::class, 'userCheckCode']);
 Route::post('user/password/reset', [ResetCodePasswordController::class, 'userResetPassword']);
+
+// for email verification
+Route::post('user/email/code/check', [EmailVerificationController::class, 'userCheckCode']);
+Route::post('user/email/code/resend', [EmailVerificationController::class, 'userResendCode']);
 
 // for google login
 Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
