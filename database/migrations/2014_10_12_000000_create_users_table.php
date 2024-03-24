@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('phone_number')->unique();
+            $table->string('phone_number')->unique()->nullable();
             $table->string('email')->unique();
             $table->boolean('email_verified')->default(0);
             $table->string('password');

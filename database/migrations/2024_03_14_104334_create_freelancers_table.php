@@ -15,12 +15,12 @@ return new class extends Migration
         Schema::create('freelancers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('major');
-            $table->string('study_case');
-            $table->boolean('open_to_work');
-            $table->string('location');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('major')->nullable();
+            $table->string('study_case')->nullable();
+            $table->boolean('open_to_work')->nullable();
+            $table->string('location')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

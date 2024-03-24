@@ -82,10 +82,10 @@ class RegisterController extends BaseController
                 'open_to_work' => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
-                    'phone_number.unique' => 'Phone is not unique',
-                    'email.unique'        => 'Email is not unique',
-                    'email.ends_with'     => 'Email must be ends with @gmail.com',
-                    'password.min'        => 'Password must be at least 8 characters'
+                'phone_number.unique' => 'Phone is not unique',
+                'email.unique'        => 'Email is not unique',
+                'email.ends_with'     => 'Email must be ends with @gmail.com',
+                'password.min'        => 'Password must be at least 8 characters'
             ]);
 
             if($validator->fails())
