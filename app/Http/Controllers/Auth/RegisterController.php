@@ -6,6 +6,7 @@ use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Models\Company;
 use App\Models\Freelancer;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -44,7 +45,7 @@ class RegisterController extends BaseController
             }
 
             $input['password'] = Hash::make($input['password']);
-            $input['role'] = 'company';
+            $input['role_id'] = Role::ROLE_COMPANY;
 
             $user = User::create($input);
             $input['user_id'] = $user->id;
@@ -93,7 +94,7 @@ class RegisterController extends BaseController
             }
 
             $input['password'] = Hash::make($input['password']);
-            $input['role'] = 'freelancer';
+            $input['role_id'] = Role::ROLE_FREELANCER;
 
             $user = User::create($input);
             $input['user_id'] = $user->id;

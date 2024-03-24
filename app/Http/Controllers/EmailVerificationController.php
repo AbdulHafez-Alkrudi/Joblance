@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\SendCodeEmailVerification;
 use App\Models\EmailVerification;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,6 +41,17 @@ class EmailVerificationController extends Controller
             $emailverification->delete();
             return response()->json(['status' => 'failure', 'message' => trans('email.code_is_expire')], 422);
         }
+
+        // find user's email
+        $user = User::query()->where('email', $emailverification['email']);
+
+        // update user email_verified
+        $user->update([
+            'email_verified' => 1,
+        ]);
+
+        // delete current code
+        $emailverification->delete();
 
         return response()->json([
             'status' => 'success',

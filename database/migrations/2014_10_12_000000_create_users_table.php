@@ -16,10 +16,13 @@ return new class extends Migration
             $table->id();
             $table->string('phone_number')->unique();
             $table->string('email')->unique();
+            $table->boolean('email_verified')->default(0);
             $table->string('password');
-            $table->enum('role', ['admin', 'company', 'freelancer']);
+            $table->unsignedBigInteger('role_id');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
     }
