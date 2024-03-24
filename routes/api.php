@@ -42,8 +42,9 @@ Route::post('user/email/code/check', [EmailVerificationController::class, 'userC
 Route::post('user/email/code/resend', [EmailVerificationController::class, 'userResendCode']);
 
 // for google login
-Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
-Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('auth/google', [GoogleLoginController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [GoogleLoginController::class, 'handleGoogleCallback']);
+Route::post('auth/google/login', [GoogleLoginController::class, 'googleLogin']);
 
 // for Authentication
 Route::post('register' , RegisterController::class);
