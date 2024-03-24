@@ -20,12 +20,6 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call(RoleSeeder::class);
-
-        User::create([
-            'phone_number' => '9999999999',
-            'email' => 'aaaaa55@gmail.com',
-            'password' => 'wwwwwwww',
-            'role' => 'company'
-        ]);
+        $this->call(AdminUserSeeder::class);
     }
 }

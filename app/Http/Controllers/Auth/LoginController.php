@@ -25,12 +25,17 @@ class LoginController extends BaseController
             $token = $request->user()->createToken('Personal Access Token')->accessToken;
             $user = Auth::user();
 
+            if (!$user['email_verified'])
+            {
+                return $this->sendError(['error' => 'email is not verified']);
+            }
+
             if (Gate::allows('isCompany', $user))
             {
                 $company = $user->company;
                 $company['phone_number'] = $user->phone_number;
                 $company['email'] = $user->email;
-                $company['role'] = $user->role;
+                $company['role_id'] = $user->role_id;
                 $user = $company;
             }
             else if (Gate::allows('isFreelancer', $user))
@@ -38,7 +43,7 @@ class LoginController extends BaseController
                 $freelancer = $user->freelancer;
                 $freelancer['phone_number'] = $user->phone_number;
                 $freelancer['email'] = $user->email;
-                $freelancer['role'] = $user->role;
+                $freelancer['role_id'] = $user->role_id;
 
                 $user = $freelancer;
             }
@@ -50,7 +55,7 @@ class LoginController extends BaseController
             return $this->sendResponse($data);
         }
 
-        return $this->sendError( ['error' => 'Unauthorised']);
+        return $this->sendError(['error' => 'Unauthorised']);
     }
 
 }
