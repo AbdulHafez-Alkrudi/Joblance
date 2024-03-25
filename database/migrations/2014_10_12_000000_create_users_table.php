@@ -18,7 +18,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->boolean('email_verified')->default(0);
             $table->string('password');
-            $table->unsignedBigInteger('role_id');
+            $table->enum('role', ['admin', 'company', 'freelancer']);
+
+            $table->string('userable_id')->nullable();
+            $table->string('userable_type')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,6 +19,7 @@ class RegisterController extends BaseController
 {
     public function __invoke(Request $request): JsonResponse
     {
+        DB::beginTransaction();
         $input = $request->all();
 
         // make validation for user and company
@@ -41,32 +43,41 @@ class RegisterController extends BaseController
 
             if($validator->fails())
             {
+                DB::rollBack();
                 return $this->sendError($validator->errors());
             }
 
             $input['password'] = Hash::make($input['password']);
             $input['role_id'] = Role::ROLE_COMPANY;
 
-            $user = User::create($input);
-            $input['user_id'] = $user->id;
+            /*
+             * Here we have two types of data:
+             * The user data
+             * the company data
+             *
+            */
 
-            $company_image = null;
+            $user_data = [
+                'phone_number' => $input['phone_number'],
+                'email'        => $input['email'],
+                'password'     => $input['password'],
+                'role'         => $input['role'],
+            ];
+            $user = User::create($user_data);
+            $input['image'] = $this->get_image($request , $input);
 
-            if($request->hasFile('image'))
-            {
-                $image= $request->file('image');
-                $company_image = time().'.'.$image->getClientOriginalExtension();
-                $image->move(public_path('image'),$company_image);
-                $company_image = 'image/'.$company_image ;
-            }
+            $company_data = [
+                'name'              => $input['name'],
+                'location'          => $input['location'],
+                'major'             => $input['major'],
+                'num_of_employees'  => $input['num_of_employees'],
+                'description'       => $input['description'],
+                'image'             => $input['image']
+            ];
+            DB::commit();
 
-            $input['image'] = $company_image;
+            return $this->extracted_data($user , Company::create($company_data));
 
-            Company::create($input);
-
-            EmailVerification::dispatch($user);
-
-            return $this->sendResponse([]);
         }
         else
         {
@@ -80,6 +91,7 @@ class RegisterController extends BaseController
                 'location'     => 'required',
                 'study_case'   => 'required',
                 'open_to_work' => 'required',
+                'birth_date'   => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone is not unique',
@@ -87,35 +99,85 @@ class RegisterController extends BaseController
                 'email.ends_with'     => 'Email must be ends with @gmail.com',
                 'password.min'        => 'Password must be at least 8 characters'
             ]);
-
             if($validator->fails())
             {
                 return $this->sendError($validator->errors());
             }
-
             $input['password'] = Hash::make($input['password']);
             $input['role_id'] = Role::ROLE_FREELANCER;
 
-            $user = User::create($input);
-            $input['user_id'] = $user->id;
+            $user_data = [
+                'phone_number' => $input['phone_number'],
+                'email'        => $input['email'],
+                'password'     => $input['password'],
+                'role'         => $input['role'],
+            ];
 
-            $freelancer_image = null;
+            $user = User::create($user_data);
+            $input['image'] = $this->get_image($request, $input);
 
-            if($request->hasFile('image'))
-            {
-                $image= $request->file('image');
-                $freelancer_image = time().'.'.$image->getClientOriginalExtension();
-                $image->move(public_path('image'),$freelancer_image);
-                $freelancer_image = 'image/'.$freelancer_image ;
-            }
-
-            $input['image'] = $freelancer_image;
-
-            Freelancer::create($input);
-
-            EmailVerification::dispatch($user);
-
-            return $this->sendResponse([]);
+            $freelancer_data = [
+                'study_case_id'  => $input['study_case'],
+                'first_name'     => $input['first_name'],
+                'last_name'      => $input['last_name'],
+                'birth_date '    => $input['birth_date'],
+                'location'       => $input['location'],
+                'major'          => $input['major'],
+                'open_to_work'   => $input['open_to_work'],
+                'image'          => $input['image'],
+                'birth_date'     => $input['birth_date']
+            ];
+            DB::commit();
+            return $this->extracted_data($user , Freelancer::create($freelancer_data));
         }
     }
+
+    /**
+     * @param Request $request
+     * @param array $input
+     * @return string
+     */
+    private function get_image(Request $request, array $input): string
+    {
+        $user_image_name = "";
+
+        if($request->hasFile('image'))
+        {
+            $image = $request->file('image');
+            $user_image_name = time().'.'.$image->getClientOriginalExtension();
+
+            $path = 'images/' . $input['role'].'/' ;
+
+            $image->move($path,$user_image_name);
+            $user_image_name = $path.$user_image_name ;
+        }
+
+        return $user_image_name ;
+    }
+
+    /**
+     * @param $user
+     * @param $company
+     * @return JsonResponse
+     */
+    protected function extracted_data($user , $specified_user_data): JsonResponse
+    {
+        // $the second parameter can be company or freelancer:
+        $specified_user_data['phone_number'] = $user['phone_number'];
+        $specified_user_data['email'] = $user['email'];
+        $specified_user_data['role'] = $user->role;
+
+        $user->userable()->associate($specified_user_data);
+        $user->save();
+        // just to send it to the API
+        EmailVerification::dispatch($user);
+        $token = $user->createToken('Personal Access Token')->accessToken;
+
+        $specified_user_data['accessToken'] = $token;
+
+
+        return $this->sendResponse($specified_user_data);
+    }
+
+
 }
