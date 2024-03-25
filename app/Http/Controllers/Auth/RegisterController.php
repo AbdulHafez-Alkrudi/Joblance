@@ -48,7 +48,6 @@ class RegisterController extends BaseController
             }
 
             $input['password'] = Hash::make($input['password']);
-            $input['role_id'] = Role::ROLE_COMPANY;
 
             /*
              * Here we have two types of data:
@@ -61,7 +60,6 @@ class RegisterController extends BaseController
                 'phone_number' => $input['phone_number'],
                 'email'        => $input['email'],
                 'password'     => $input['password'],
-                'role'         => $input['role'],
             ];
             $user = User::create($user_data);
             $input['image'] = $this->get_image($request , $input);
@@ -104,13 +102,11 @@ class RegisterController extends BaseController
                 return $this->sendError($validator->errors());
             }
             $input['password'] = Hash::make($input['password']);
-            $input['role_id'] = Role::ROLE_FREELANCER;
 
             $user_data = [
                 'phone_number' => $input['phone_number'],
                 'email'        => $input['email'],
                 'password'     => $input['password'],
-                'role'         => $input['role'],
             ];
 
             $user = User::create($user_data);
@@ -165,7 +161,6 @@ class RegisterController extends BaseController
         // $the second parameter can be company or freelancer:
         $specified_user_data['phone_number'] = $user['phone_number'];
         $specified_user_data['email'] = $user['email'];
-        $specified_user_data['role'] = $user->role;
 
         $user->userable()->associate($specified_user_data);
         $user->save();
