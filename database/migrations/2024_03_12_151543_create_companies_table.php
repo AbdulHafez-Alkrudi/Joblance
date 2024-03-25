@@ -15,11 +15,11 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('name');
-            $table->string('location');
-            $table->string('major');
-            $table->string('num_of_employees');
-            $table->longText('description');
+            $table->string('name')->nullable();
+            $table->string('location')->nullable();
+            $table->string('major')->nullable();
+            $table->string('num_of_employees')->nullable();
+            $table->longText('description')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

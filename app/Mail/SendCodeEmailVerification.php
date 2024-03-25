@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendCodeVerification extends Mailable implements ShouldQueue
+class SendCodeEmailVerification extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -28,7 +28,7 @@ class SendCodeVerification extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Code Verification',
+            subject: 'Send Code Email Verification',
         );
     }
 
@@ -38,7 +38,7 @@ class SendCodeVerification extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.send-code-verification',
+            markdown: 'emails.send-code-email-verification',
         );
     }
 
