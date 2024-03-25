@@ -38,24 +38,6 @@ class UserController extends BaseController
     public function show(string $id)
     {
         $user = User::query()->where('id', $id)->first();
-        if ($user->role == 'company')
-        {
-            $company = $user->company;
-            $company['phone_number'] = $user->phone_number;
-            $company['email'] = $user->email;
-            $company['role'] = $user->role;
-
-            return $this->sendResponse($company);
-        }
-        else
-        {
-            $freelancer = $user->freelancer;
-            $freelancer['phone_number'] = $user->phone_number;
-            $freelancer['email'] = $user->email;
-            $freelancer['role'] = $user->role;
-
-            return $this->sendResponse($freelancer);
-        }
     }
 
     /**
