@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends BaseController
 {
@@ -62,5 +63,20 @@ class UserController extends BaseController
     public function destroy(string $id)
     {
         //
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = User::query()->where('id', $request['id'])->first();
+        if ($user['password'] != $request['old_password'])
+        {
+            return $this->sendError(['error' => 'password does not match']);
+        }
+
+        $user->update([
+            'password' => Hash::make($request['new_password']),
+        ]);
+
+        return $this->sendResponse([]);
     }
 }
