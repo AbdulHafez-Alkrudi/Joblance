@@ -14,15 +14,14 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('location');
             $table->string('major');
-            $table->string('num_of_employees');
-            $table->longText('description');
+            $table->integer('num_of_employees');
+            $table->longText('description') -> nullable();
             $table->string('image')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
         Schema::enableForeignKeyConstraints();
     }

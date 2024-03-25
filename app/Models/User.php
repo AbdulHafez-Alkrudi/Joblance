@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -23,7 +24,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'email',
         'password',
-        'role'
+        'role',
+        'userable_type',
+        'userable_id'
     ];
 
     /**
@@ -48,14 +51,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'updated_at' => 'datetime:Y-m-d'
     ];
 
-    public function company(): HasOne
+    public function userable(): MorphTo
     {
-        return $this->hasOne(Company::class);
-    }
-
-    public function freelancer(): HasOne
-    {
-        return $this->hasOne(Freelancer::class);
+        return $this->morphTo();
     }
 
     public function role(): BelongsTo

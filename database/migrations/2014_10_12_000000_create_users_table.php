@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'company', 'freelancer']);
+
+            $table->string('userable_id')->nullable();
+            $table->string('userable_type')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
