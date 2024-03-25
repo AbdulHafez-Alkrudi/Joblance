@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Models\Company;
 use App\Models\Freelancer;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -46,7 +48,7 @@ class RegisterController extends BaseController
             }
 
             $input['password'] = Hash::make($input['password']);
-            $input['role'] = 'company';
+            $input['role_id'] = Role::ROLE_COMPANY;
 
             /*
              * Here we have two types of data:
@@ -73,6 +75,7 @@ class RegisterController extends BaseController
                 'image'             => $input['image']
             ];
             DB::commit();
+
             return $this->extracted_data($user , Company::create($company_data));
 
         }
@@ -91,17 +94,17 @@ class RegisterController extends BaseController
                 'birth_date'   => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
-                    'phone_number.unique' => 'Phone is not unique',
-                    'email.unique'        => 'Email is not unique',
-                    'email.ends_with'     => 'Email must be ends with @gmail.com',
-                    'password.min'        => 'Password must be at least 8 characters'
+                'phone_number.unique' => 'Phone is not unique',
+                'email.unique'        => 'Email is not unique',
+                'email.ends_with'     => 'Email must be ends with @gmail.com',
+                'password.min'        => 'Password must be at least 8 characters'
             ]);
             if($validator->fails())
             {
                 return $this->sendError($validator->errors());
             }
             $input['password'] = Hash::make($input['password']);
-            $input['role'] = 'freelancer';
+            $input['role_id'] = Role::ROLE_FREELANCER;
 
             $user_data = [
                 'phone_number' => $input['phone_number'],
@@ -167,7 +170,7 @@ class RegisterController extends BaseController
         $user->userable()->associate($specified_user_data);
         $user->save();
         // just to send it to the API
-
+        EmailVerification::dispatch($user);
         $token = $user->createToken('Personal Access Token')->accessToken;
 
         $specified_user_data['accessToken'] = $token;

@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('phone_number')->unique();
+            $table->string('phone_number')->unique()->nullable();
             $table->string('email')->unique();
+            $table->boolean('email_verified')->default(0);
             $table->string('password');
             $table->enum('role', ['admin', 'company', 'freelancer']);
 
@@ -23,6 +24,8 @@ return new class extends Migration
             $table->string('userable_type')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
     }

@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('freelancers', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('study_case_id')->constrained();
             $table->string('first_name');
             $table->string('last_name');
@@ -21,7 +23,7 @@ return new class extends Migration
 
             $table->string('location');
             $table->string('major');
-            $table->boolean('open_to_work') -> default(false);
+            $table->boolean('open_to_work')->default(false);
             $table->string('image')->nullable();
             $table->text('bio')->nullable();
             $table->timestamps();
