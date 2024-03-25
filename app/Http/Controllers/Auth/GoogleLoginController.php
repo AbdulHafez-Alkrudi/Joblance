@@ -52,15 +52,11 @@ class GoogleLoginController extends BaseController
 
             if (is_null($existingUser))
             {
-                $newUser = new User();
-                $newUser->email = $email;
-                $newUser->phone_number = $body->phone;
-                $newUser->password = bcrypt(Str::random(13));
-                $newUser->role_id     = $request['is_company'] ? Role::ROLE_COMPANY : Role::ROLE_FREELANCER;
-                $newUser->email_verified = 1;
-                $newUser->save();
-
-                $existingUser = User::find($newUser->user_id);
+                $existingUser = User::query()->create([
+                    'email'    => $email,
+                    'password' => bcrypt(Str::random(13)),
+                    'email_verified' => 1,
+                ]);
             }
             $existingUser->email_verified = 1;
             $existingUser->save();
