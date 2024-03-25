@@ -6,11 +6,13 @@
 /storage/*.key
 /vendor
 .env
+
 *.docx
 *.jpg
 *.jpeg
 *.png
 *.gif
+*.mwb
 
 .env.backup
 .env.production
