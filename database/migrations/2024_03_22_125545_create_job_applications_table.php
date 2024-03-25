@@ -12,22 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('freelancers', function (Blueprint $table) {
-            $table->id();
 
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('study_case_id')->constrained();
+        Schema::create('job_applications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('job_detail_id')->constrained();
+            $table->foreignId('freelancer_id')->constrained();
             $table->string('first_name');
             $table->string('last_name');
-            $table->date('birth_date');
-
-            $table->string('location');
-            $table->string('major');
-            $table->boolean('open_to_work')->default(false);
-            $table->string('image')->nullable();
-            $table->text('bio')->nullable();
+            $table->string('email');
+            $table->string('phone_number');
+            $table->text('cover_letter')->nullable();
+            $table->string('CV');
             $table->timestamps();
         });
+
         Schema::enableForeignKeyConstraints();
     }
 
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('freelancers');
+        Schema::dropIfExists('job_applications');
     }
 };

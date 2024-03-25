@@ -12,17 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('companies', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('name')->nullable();
-            $table->string('location')->nullable();
-            $table->string('major')->nullable();
-            $table->string('num_of_employees')->nullable();
-            $table->longText('description')->nullable();
-            $table->string('image')->nullable();
-            $table->timestamps();
 
+        Schema::create('followers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id') -> constrained() ->onDelete('cascade');
+            $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
     }
@@ -32,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('followers');
     }
 };
