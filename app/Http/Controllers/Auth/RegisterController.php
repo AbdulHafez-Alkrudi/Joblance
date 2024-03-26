@@ -50,6 +50,7 @@ class RegisterController extends BaseController
             $input['password'] = Hash::make($input['password']);
             $input['role_id']  = Role::ROLE_USER;
 
+
             /*
              * Here we have two types of data:
              * The user data
@@ -62,6 +63,7 @@ class RegisterController extends BaseController
                 'email'        => $input['email'],
                 'password'     => $input['password'],
                 'role_id'      => $input['role_id'],
+
             ];
             $user = User::create($user_data);
             $input['image'] = $this->get_image($request , $input , "company");
@@ -105,11 +107,13 @@ class RegisterController extends BaseController
             $input['password'] = Hash::make($input['password']);
             $input['role_id'] = Role::ROLE_USER;
 
+
             $user_data = [
                 'phone_number' => $input['phone_number'],
                 'email'        => $input['email'],
                 'password'     => $input['password'],
                 'role_id'      => $input['role_id'],
+
             ];
 
             $user = User::create($user_data);
@@ -163,6 +167,9 @@ class RegisterController extends BaseController
     protected function extracted_data($user , $specified_user_data): JsonResponse
     {
         // $the second parameter can be company or freelancer:
+
+        $specified_user_data['phone_number'] = $user['phone_number'];
+        $specified_user_data['email'] = $user['email'];
 
         $user->userable()->associate($specified_user_data);
         $user->save();
