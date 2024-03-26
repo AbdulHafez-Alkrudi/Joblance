@@ -48,6 +48,8 @@ class RegisterController extends BaseController
             }
 
             $input['password'] = Hash::make($input['password']);
+            $input['role_id']  = Role::ROLE_USER;
+
 
             /*
              * Here we have two types of data:
@@ -60,9 +62,11 @@ class RegisterController extends BaseController
                 'phone_number' => $input['phone_number'],
                 'email'        => $input['email'],
                 'password'     => $input['password'],
+                'role_id'      => $input['role_id'],
+
             ];
             $user = User::create($user_data);
-            $input['image'] = $this->get_image($request , $input);
+            $input['image'] = $this->get_image($request , $input , "company");
 
             $company_data = [
                 'name'              => $input['name'],
@@ -72,10 +76,9 @@ class RegisterController extends BaseController
                 'description'       => $input['description'],
                 'image'             => $input['image']
             ];
+            $response = $this->extracted_data($user , Company::create($company_data));
             DB::commit();
-
-            return $this->extracted_data($user , Company::create($company_data));
-
+            return $response ;
         }
         else
         {
@@ -102,15 +105,19 @@ class RegisterController extends BaseController
                 return $this->sendError($validator->errors());
             }
             $input['password'] = Hash::make($input['password']);
+            $input['role_id'] = Role::ROLE_USER;
+
 
             $user_data = [
                 'phone_number' => $input['phone_number'],
                 'email'        => $input['email'],
                 'password'     => $input['password'],
+                'role_id'      => $input['role_id'],
+
             ];
 
             $user = User::create($user_data);
-            $input['image'] = $this->get_image($request, $input);
+            $input['image'] = $this->get_image($request, $input , "freelancer");
 
             $freelancer_data = [
                 'study_case_id'  => $input['study_case'],
@@ -123,8 +130,9 @@ class RegisterController extends BaseController
                 'image'          => $input['image'],
                 'birth_date'     => $input['birth_date']
             ];
+            $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
             DB::commit();
-            return $this->extracted_data($user , Freelancer::create($freelancer_data));
+            return $response ;
         }
     }
 
@@ -133,7 +141,7 @@ class RegisterController extends BaseController
      * @param array $input
      * @return string
      */
-    private function get_image(Request $request, array $input): string
+    private function get_image(Request $request, array $input , string $type): string
     {
         $user_image_name = "";
 
@@ -142,7 +150,7 @@ class RegisterController extends BaseController
             $image = $request->file('image');
             $user_image_name = time().'.'.$image->getClientOriginalExtension();
 
-            $path = 'images/' . $input['role'].'/' ;
+            $path = 'images/' . $type.'/' ;
 
             $image->move($path,$user_image_name);
             $user_image_name = $path.$user_image_name ;
@@ -159,6 +167,7 @@ class RegisterController extends BaseController
     protected function extracted_data($user , $specified_user_data): JsonResponse
     {
         // $the second parameter can be company or freelancer:
+
         $specified_user_data['phone_number'] = $user['phone_number'];
         $specified_user_data['email'] = $user['email'];
 
@@ -171,8 +180,6 @@ class RegisterController extends BaseController
         $specified_user_data['accessToken'] = $token;
 
 
-        return $this->sendResponse($specified_user_data);
+        return $this->sendResponse($user);
     }
-
-
 }

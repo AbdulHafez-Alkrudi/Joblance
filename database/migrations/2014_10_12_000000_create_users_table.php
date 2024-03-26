@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->boolean('email_verified')->default(0);
             $table->string('password');
+            $table->foreignId('role_id');
 
             $table->string('userable_id')->nullable();
             $table->string('userable_type')->nullable();
