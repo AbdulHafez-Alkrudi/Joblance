@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('name')->nullable();
             $table->string('location')->nullable();
             $table->string('major')->nullable();

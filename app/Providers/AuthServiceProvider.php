@@ -4,6 +4,8 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
+use App\Models\Company;
+use App\Models\Freelancer;
 use App\Models\Role;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -32,11 +34,11 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('isCompany', function($user){
-            return $user->role_id == Role::ROLE_COMPANY;
+            return $user->role_id == Role::ROLE_USER &&  ($user->userable_type == Company::class);
         });
 
         Gate::define('isFreelancer', function($user){
-            return $user->role_id == Role::ROLE_FREELANCER;
+            return $user->role_id == Role::ROLE_USER &&  ($user->userable_type == Freelancer::class);
         });
     }
 }

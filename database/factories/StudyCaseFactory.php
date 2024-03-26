@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\StudyCase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory
  */
-class ExperienceLevelFactory extends Factory
+class StudyCaseFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +18,7 @@ class ExperienceLevelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'=> $this->faker->name
+            'name' => $this->faker->name
         ];
     }
 }
