@@ -42,8 +42,6 @@ Route::post('user/email/code/check', [EmailVerificationController::class, 'userC
 Route::post('user/email/code/resend', [EmailVerificationController::class, 'userResendCode']);
 
 // for google login
-Route::get('auth/google', [GoogleLoginController::class, 'redirectToGoogle']);
-Route::get('auth/google/callback', [GoogleLoginController::class, 'handleGoogleCallback']);
 Route::post('auth/google/login', [GoogleLoginController::class, 'googleLogin']);
 
 // for Authentication
@@ -53,6 +51,7 @@ Route::post('login', [LoginController::class , 'login']);
 Route::middleware(['auth:api']) ->group(function(){
     Route::post('logout', LogoutController::class)->name('logout');
     Route::get('profile/{id}', [UserController::class, 'show'])->name('profile');
+    Route::post('changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 

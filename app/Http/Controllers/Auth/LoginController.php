@@ -35,7 +35,6 @@ class LoginController extends BaseController
                 $company = $user->company;
                 $company['phone_number'] = $user->phone_number;
                 $company['email'] = $user->email;
-                $company['role_id'] = $user->role_id;
                 $user = $company;
             }
             else if (Gate::allows('isFreelancer', $user))
@@ -43,7 +42,6 @@ class LoginController extends BaseController
                 $freelancer = $user->freelancer;
                 $freelancer['phone_number'] = $user->phone_number;
                 $freelancer['email'] = $user->email;
-                $freelancer['role_id'] = $user->role_id;
 
                 $user = $freelancer;
             }
