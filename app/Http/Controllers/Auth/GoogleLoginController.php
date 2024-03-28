@@ -52,27 +52,19 @@ class GoogleLoginController extends BaseController
 
             if (is_null($existingUser))
             {
-                $newUser = new User();
-                $newUser->email = $email;
-                $newUser->phone_number = $body->phone;
-                $newUser->password = bcrypt(Str::random(13));
-                $newUser->role_id     = $request['is_company'] ? Role::ROLE_COMPANY : Role::ROLE_FREELANCER;
-                $newUser->email_verified = 1;
-                $newUser->save();
-
-                $existingUser = User::find($newUser->user_id);
+                $existingUser = User::query()->create([
+                    'email'    => $email,
+                    'password' => bcrypt(Str::random(13)),
+                    'email_verified' => 1,
+                ]);
             }
             $existingUser->email_verified = 1;
             $existingUser->save();
 
             $user = $existingUser;
-            $token = $user->createToken('Personal Access Token')->accessToken;
+            $user['accessToken'] = $user->createToken('Personal Access Token')->accessToken;
 
-            $data = [];
-            $data['user'] = $user;
-            $data['accessToken'] = $token;
-
-            return $this->sendResponse($data);
+            return $this->sendResponse($user);
         }
         catch (RequestException $e) {
             return $this->sendError(['error' => 'token is wrong']);

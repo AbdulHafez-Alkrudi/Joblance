@@ -39,6 +39,13 @@ class UserController extends BaseController
     public function show(string $id)
     {
         $user = User::query()->where('id', $id)->first();
+
+        $userable = $user->userable;
+        $userable['email'] = $user['email'];
+        $userable['phone_number'] = $user['phone_number'];
+        $userable['role_id'] = $user['role_id'];
+
+        return $this->sendResponse($userable);
     }
 
     /**
@@ -68,15 +75,16 @@ class UserController extends BaseController
     public function changePassword(Request $request)
     {
         $user = User::query()->where('id', $request['id'])->first();
-        if ($user['password'] != $request['old_password'])
+
+        if (Hash::check($request['old_password'], $user['password']))
         {
-            return $this->sendError(['error' => 'password does not match']);
+            $user->update([
+                'password' => Hash::make($request['new_password']),
+            ]);
+
+            return $this->sendResponse([]);
         }
-
-        $user->update([
-            'password' => Hash::make($request['new_password']),
-        ]);
-
-        return $this->sendResponse([]);
+        
+        return $this->sendError(['error' => 'password does not match']);
     }
 }

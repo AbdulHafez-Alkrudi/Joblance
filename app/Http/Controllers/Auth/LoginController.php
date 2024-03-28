@@ -3,23 +3,26 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 class LoginController extends BaseController
 {
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|ends_with:@gmail.com',
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|ends_with:@gmail.com|exists:users,email',
             'password' => 'required'
         ],[
-
-            'email.ends_with' => 'Email must be ends with @gmail.com'
+            'email.ends_with' => 'Email must be ends with @gmail.com',
+            'email.exists'    => 'Email is invalid'
         ]);
+
+        if($validator->fails())
+        {
+            return $this->sendError($validator->errors());
+        }
 
         if (Auth::attempt($request->only(['email', 'password']))) {
             $token = $request->user()->createToken('Personal Access Token')->accessToken;
@@ -30,27 +33,14 @@ class LoginController extends BaseController
                 return $this->sendError(['error' => 'email is not verified']);
             }
 
-            if (Gate::allows('isCompany', $user))
-            {
-                $company = $user->company;
-                $company['phone_number'] = $user->phone_number;
-                $company['email'] = $user->email;
-                $user = $company;
-            }
-            else if (Gate::allows('isFreelancer', $user))
-            {
-                $freelancer = $user->freelancer;
-                $freelancer['phone_number'] = $user->phone_number;
-                $freelancer['email'] = $user->email;
+            $userable = $user->userable;
+            $userable['email'] = $user['email'];
+            $userable['phone_number'] = $user['phone_number'];
+            $userable['role_id'] = $user['role_id'];
+            $userable['accesstoken'] = $token;
+            $userable['id'] = $user['id'];
 
-                $user = $freelancer;
-            }
-
-            $data = [];
-            $data['user'] = $user;
-            $data['accessToken'] = $token;
-
-            return $this->sendResponse($data);
+            return $this->sendResponse($userable);
         }
 
         return $this->sendError(['error' => 'Unauthorised']);

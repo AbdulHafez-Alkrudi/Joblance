@@ -49,9 +49,9 @@ Route::post('register' , RegisterController::class);
 Route::post('login', [LoginController::class , 'login']);
 
 Route::middleware(['auth:api']) ->group(function(){
-    Route::post('logout', LogoutController::class)->name('logout');
-    Route::get('profile/{id}', [UserController::class, 'show'])->name('profile');
-    Route::post('changepassword', [UserController::class, 'changePassword'])->name('changePassword');
+    Route::post('user/logout', LogoutController::class)->name('logout');
+    Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
+    Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 
