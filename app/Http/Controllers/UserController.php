@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -84,7 +85,14 @@ class UserController extends BaseController
 
             return $this->sendResponse([]);
         }
-        
+
         return $this->sendError(['error' => 'password does not match']);
+    }
+
+    public function get_type(User $user): string
+    {
+        if($user->userable_type == Company::class)
+            return User::COMPANY;
+        return USER::FREELANCER;
     }
 }

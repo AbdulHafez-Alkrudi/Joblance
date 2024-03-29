@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\UserController;
 use Google_Client;
 use Google_Service_Oauth2;
 use League\OAuth2\Client\Provider\Google;
@@ -63,7 +64,7 @@ class GoogleLoginController extends BaseController
 
             $user = $existingUser;
             $user['accessToken'] = $user->createToken('Personal Access Token')->accessToken;
-
+            $user['type'] = (new UserController())->get_type($user);
             return $this->sendResponse($user);
         }
         catch (RequestException $e) {

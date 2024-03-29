@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\UserController;
 use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
@@ -34,8 +35,8 @@ class RegisterController extends BaseController
                 'num_of_employees' => 'required',
                 'image'            => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
-                'phone_number.unique' => 'Phone Nmuber is not unique',
-                'phone_number.digits' => 'Phone Number must contain numbers only',
+                'phone_number.unique' => 'Phone Number is not unique',
+                'phone_number.digits' => 'Phone Number must contain 10 numbers',
                 'email.unique'        => 'Email is not unique',
                 'email.ends_with'     => 'Email must be ends with @gmail.com',
                 'password.min'        => 'Password must be at least 8 characters'
@@ -76,11 +77,7 @@ class RegisterController extends BaseController
                 'description'       => $input['description'],
                 'image'             => $input['image']
             ];
-
             $response = $this->extracted_data($user , Company::create($company_data));
-            DB::commit();
-
-            return $response ;
         }
         else
         {
@@ -135,10 +132,9 @@ class RegisterController extends BaseController
             ];
 
             $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
-            DB::commit();
-
-            return $response ;
         }
+        DB::commit();
+        return $response ;
     }
 
     /**
@@ -176,18 +172,19 @@ class RegisterController extends BaseController
         $user->userable()->associate($specified_user_data);
         $user->save();
 
-        // just to send email verification
-        EmailVerification::dispatch($user);
+        // just to send email verification EmailVerification::dispatch($user);
+
 
         // just to send it to the API
+        EmailVerification::dispatch($user);
         $token = $user->createToken('Personal Access Token')->accessToken;
 
         $specified_user_data['phone_number'] = $user['phone_number'];
         $specified_user_data['email'] = $user['email'];
         $specified_user_data['role_id'] = $user['role_id'];
+        $specified_user_data['user_id'] = $user['id'];
+        $specified_user_data['type'] = (new UserController)->get_type($user) ;
         $specified_user_data['accessToken'] = $token;
-        $specified_user_data['id'] = $user['id'];
-
         return $this->sendResponse($specified_user_data);
     }
 }

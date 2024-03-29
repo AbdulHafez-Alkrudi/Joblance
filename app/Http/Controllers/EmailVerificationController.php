@@ -33,21 +33,21 @@ class EmailVerificationController extends BaseController
         }
 
         // find the code
-        $emailverification = EmailVerification::query()->firstWhere('email', $request['email']);
+        $email_verification = EmailVerification::query()->firstWhere('email', $request['email']);
 
-        if ($request['code'] != $emailverification['code'])
+        if ($request['code'] != $email_verification['code'])
         {
             return $this->sendError(['error' => trans('Code is not valid')]);
         }
 
         // check if it is not expired : the time is one hour
-        if ($emailverification['created_at'] > now()->addHour()) {
-            $emailverification->delete();
+        if ($email_verification['created_at'] > now()->addHour()) {
+            $email_verification->delete();
             return $this->sendError(['error' => trans('password.code_is_expire')]);
         }
 
         // find user's email
-        $user = User::query()->where('email', $emailverification['email']);
+        $user = User::query()->where('email', $email_verification['email']);
 
         // update user email_verified
         $user->update([
@@ -55,11 +55,11 @@ class EmailVerificationController extends BaseController
         ]);
 
         // delete current code
-        $emailverification->delete();
+        $email_verification->delete();
 
         return response()->json([
             'status' => 'success',
-            'code' => $emailverification['code'],
+            'code' => $email_verification['code'],
             'message' => trans('email.code_is_valid'),
         ], 200);
     }

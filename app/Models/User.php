@@ -15,6 +15,10 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+
+    const COMPANY    = 1 ;
+    const FREELANCER = 2 ;
+
     /**
      * The attributes that are mass assignable.
      *
