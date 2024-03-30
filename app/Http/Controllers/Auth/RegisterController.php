@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\UserController;
 use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +27,7 @@ class RegisterController extends BaseController
         {
             $validator = Validator::make($input, [
                 'name'             => 'required',
-                'phone_number'     => 'required|unique:users,phone_number',
+                'phone_number'     => 'required|digits:10|unique:users,phone_number',
                 'email'            => 'required|ends_with:@gmail.com|unique:users,email',
                 'password'         => 'required|min:8',
                 'major'            => 'required',
@@ -35,7 +35,8 @@ class RegisterController extends BaseController
                 'num_of_employees' => 'required',
                 'image'            => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
-                'phone_number.unique' => 'Phone is not unique',
+                'phone_number.unique' => 'Phone Number is not unique',
+                'phone_number.digits' => 'Phone Number must contain 10 numbers',
                 'email.unique'        => 'Email is not unique',
                 'email.ends_with'     => 'Email must be ends with @gmail.com',
                 'password.min'        => 'Password must be at least 8 characters'
@@ -63,6 +64,7 @@ class RegisterController extends BaseController
                 'password'     => $input['password'],
                 'role_id'      => $input['role_id'],
             ];
+
             $user = User::create($user_data);
             $input['image'] = $this->get_image($request , $input , "company");
 
@@ -75,15 +77,13 @@ class RegisterController extends BaseController
                 'image'             => $input['image']
             ];
             $response = $this->extracted_data($user , Company::create($company_data));
-            DB::commit();
-            return $response ;
         }
         else
         {
             $validator = Validator::make($input, [
                 'first_name'   => 'required',
                 'last_name'    => 'required',
-                'phone_number' => 'required|unique:users,phone_number',
+                'phone_number' => 'required|digits:10|unique:users,phone_number',
                 'email'        => 'required|ends_with:@gmail.com|unique:users,email',
                 'password'     => 'required|min:8',
                 'major'        => 'required',
@@ -94,14 +94,17 @@ class RegisterController extends BaseController
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone is not unique',
+                'phone_number.digits' => 'Phone Number must contain numbers only',
                 'email.unique'        => 'Email is not unique',
                 'email.ends_with'     => 'Email must be ends with @gmail.com',
                 'password.min'        => 'Password must be at least 8 characters'
             ]);
+
             if($validator->fails())
             {
                 return $this->sendError($validator->errors());
             }
+
             $input['password'] = Hash::make($input['password']);
             $input['role_id'] = Role::ROLE_USER;
 
@@ -124,12 +127,12 @@ class RegisterController extends BaseController
                 'major'          => $input['major'],
                 'open_to_work'   => $input['open_to_work'],
                 'image'          => $input['image'],
-                'birth_date'     => $input['birth_date']
             ];
+
             $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
-            DB::commit();
-            return $response ;
         }
+        DB::commit();
+        return $response ;
     }
 
     /**
@@ -166,13 +169,20 @@ class RegisterController extends BaseController
 
         $user->userable()->associate($specified_user_data);
         $user->save();
+
+        // just to send email verification EmailVerification::dispatch($user);
+        if (!$user['email_verified'])
+            EmailVerification::dispatch($user);
+
         // just to send it to the API
-        EmailVerification::dispatch($user);
         $token = $user->createToken('Personal Access Token')->accessToken;
 
+        $specified_user_data['phone_number'] = $user['phone_number'];
+        $specified_user_data['email'] = $user['email'];
+        $specified_user_data['role_id'] = $user['role_id'];
+        $specified_user_data['id'] = $user['id'];
+        $specified_user_data['type'] = (new UserController)->get_type($user) ;
         $specified_user_data['accessToken'] = $token;
-
-
-        return $this->sendResponse($user);
+        return $this->sendResponse($specified_user_data);
     }
 }
