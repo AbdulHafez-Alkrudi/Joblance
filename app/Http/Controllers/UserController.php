@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends BaseController
@@ -39,7 +40,11 @@ class UserController extends BaseController
      */
     public function show(string $id)
     {
-        $user = User::query()->where('id', $id)->first();
+        $user = User::query()->find($id);
+        if (!$user)
+        {
+            return $this->sendError(['error' => 'id is invalid']);
+        }
 
         $userable = $user->userable;
         $userable['email'] = $user['email'];
@@ -75,7 +80,8 @@ class UserController extends BaseController
 
     public function changePassword(Request $request)
     {
-        $user = User::query()->where('id', $request['id'])->first();
+        $user = Auth::user();
+        $user = User::query()->find($user['id']);
 
         if (Hash::check($request['old_password'], $user['password']))
         {

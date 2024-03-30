@@ -43,6 +43,7 @@ Route::post('user/email/code/resend', [EmailVerificationController::class, 'user
 
 // for google login
 Route::post('auth/google/login', [GoogleLoginController::class, 'googleLogin']);
+Route::post('auth/google/userinfo', [GoogleLoginController::class, 'getUserINfo']);
 
 // for Authentication
 Route::post('register' , RegisterController::class);

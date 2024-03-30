@@ -40,7 +40,7 @@ class LoginController extends BaseController
             $userable['role_id'] = $user['role_id'];
             $userable['id'] = $user['id'];
             $userable['type'] = (new UserController())->get_type($user);
-            $userable['accesstoken'] = $token;
+            $userable['accessToken'] = $token;
 
 
 

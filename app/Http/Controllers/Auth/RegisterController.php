@@ -173,16 +173,16 @@ class RegisterController extends BaseController
         $user->save();
 
         // just to send email verification EmailVerification::dispatch($user);
-
+        if (!$user['email_verified'])
+            EmailVerification::dispatch($user);
 
         // just to send it to the API
-        EmailVerification::dispatch($user);
         $token = $user->createToken('Personal Access Token')->accessToken;
 
         $specified_user_data['phone_number'] = $user['phone_number'];
         $specified_user_data['email'] = $user['email'];
         $specified_user_data['role_id'] = $user['role_id'];
-        $specified_user_data['user_id'] = $user['id'];
+        $specified_user_data['id'] = $user['id'];
         $specified_user_data['type'] = (new UserController)->get_type($user) ;
         $specified_user_data['accessToken'] = $token;
         return $this->sendResponse($specified_user_data);
