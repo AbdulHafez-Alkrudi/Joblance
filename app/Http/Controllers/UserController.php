@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends BaseController
@@ -38,7 +40,18 @@ class UserController extends BaseController
      */
     public function show(string $id)
     {
-        $user = User::query()->where('id', $id)->first();
+        $user = User::query()->find($id);
+        if (!$user)
+        {
+            return $this->sendError(['error' => 'id is invalid']);
+        }
+
+        $userable = $user->userable;
+        $userable['email'] = $user['email'];
+        $userable['phone_number'] = $user['phone_number'];
+        $userable['role_id'] = $user['role_id'];
+
+        return $this->sendResponse($userable);
     }
 
     /**
@@ -67,16 +80,25 @@ class UserController extends BaseController
 
     public function changePassword(Request $request)
     {
-        $user = User::query()->where('id', $request['id'])->first();
-        if ($user['password'] != $request['old_password'])
+        $user = Auth::user();
+        $user = User::query()->find($user['id']);
+
+        if (Hash::check($request['old_password'], $user['password']))
         {
-            return $this->sendError(['error' => 'password does not match']);
+            $user->update([
+                'password' => Hash::make($request['new_password']),
+            ]);
+
+            return $this->sendResponse([]);
         }
 
-        $user->update([
-            'password' => Hash::make($request['new_password']),
-        ]);
+        return $this->sendError(['error' => 'password does not match']);
+    }
 
-        return $this->sendResponse([]);
+    public function get_type(User $user): string
+    {
+        if($user->userable_type == Company::class)
+            return User::COMPANY;
+        return USER::FREELANCER;
     }
 }

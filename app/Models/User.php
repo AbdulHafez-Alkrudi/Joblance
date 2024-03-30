@@ -15,6 +15,10 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+
+    const COMPANY    = 1 ;
+    const FREELANCER = 2 ;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -23,8 +27,11 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'phone_number',
         'email',
+        'email_verified',
         'password',
         'role_id',
+        'userable_id',
+        'userable_type',
     ];
 
     /**

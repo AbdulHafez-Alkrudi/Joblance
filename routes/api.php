@@ -43,15 +43,16 @@ Route::post('user/email/code/resend', [EmailVerificationController::class, 'user
 
 // for google login
 Route::post('auth/google/login', [GoogleLoginController::class, 'googleLogin']);
+Route::post('auth/google/userinfo', [GoogleLoginController::class, 'getUserINfo']);
 
 // for Authentication
 Route::post('register' , RegisterController::class);
 Route::post('login', [LoginController::class , 'login']);
 
 Route::middleware(['auth:api']) ->group(function(){
-    Route::post('logout', LogoutController::class)->name('logout');
-    Route::get('profile/{id}', [UserController::class, 'show'])->name('profile');
-    Route::post('changepassword', [UserController::class, 'changePassword'])->name('changePassword');
+    Route::post('user/logout', LogoutController::class)->name('logout');
+    Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
+    Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 

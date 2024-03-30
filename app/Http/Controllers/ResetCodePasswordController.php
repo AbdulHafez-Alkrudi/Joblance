@@ -25,7 +25,7 @@ class ResetCodePasswordController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $user = User::query()->where('email', $data['email']);
+        $user = User::query()->where('email', $data['email'])->first();
         if (!$user['email_verified'])
         {
             return $this->sendError(['error' => 'email is not verified']);
@@ -49,7 +49,11 @@ class ResetCodePasswordController extends BaseController
     public function userCheckCode(Request $request) : JsonResponse
     {
         $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:reset_code_passwords,email',
             'code' => 'required|string|exists:reset_code_passwords,code',
+        ],[
+            'email.exists' => 'Email is not valid',
+            'code.exists' => 'Code is not valid',
         ]);
 
         if($validator->fails())
@@ -77,8 +81,10 @@ class ResetCodePasswordController extends BaseController
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email|exists:reset_code_passwords,email',
             'password' => 'required',
+        ],[
+            'email' => 'email is not valid'
         ]);
 
         if($validator->fails())
@@ -116,9 +122,15 @@ class ResetCodePasswordController extends BaseController
 
     public function userResendCode(Request $request) : JsonResponse
     {
-        $data = $request->validate([
+        $data = $request->all();
+        $validator = Validator::make($data, [
             'email' => 'required|email|exists:users,email',
         ]);
+
+        if($validator->fails())
+        {
+            return $this->sendError($validator->errors());
+        }
 
         // Delete all old code that user send before
         ResetCodePassword::query()->where('email', $request['email'])->delete();
