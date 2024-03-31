@@ -51,7 +51,6 @@ class RegisterController extends BaseController
             $input['password'] = Hash::make($input['password']);
             $input['role_id']  = Role::ROLE_USER;
 
-
             /*
              * Here we have two types of data:
              * The user data
@@ -114,7 +113,6 @@ class RegisterController extends BaseController
                 'email'        => $input['email'],
                 'password'     => $input['password'],
                 'role_id'      => $input['role_id'],
-
             ];
 
             $user = User::create($user_data);
