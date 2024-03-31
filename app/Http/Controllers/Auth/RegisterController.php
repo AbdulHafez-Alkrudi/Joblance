@@ -124,10 +124,11 @@ class RegisterController extends BaseController
                 'study_case_id'  => $input['study_case'],
                 'first_name'     => $input['first_name'],
                 'last_name'      => $input['last_name'],
-                'birth_date '    => $input['birth_date'],
+                'birth_date'     => $input['birth_date'],
                 'location'       => $input['location'],
                 'major'          => $input['major'],
                 'open_to_work'   => $input['open_to_work'],
+                'bio'            => $input['bio'],
                 'image'          => $input['image'],
             ];
 
@@ -165,7 +166,7 @@ class RegisterController extends BaseController
      * @param $company
      * @return JsonResponse
      */
-    protected function extracted_data($user , $specified_user_data): JsonResponse
+    public function extracted_data($user , $specified_user_data): JsonResponse
     {
         // $the second parameter can be company or freelancer:
 

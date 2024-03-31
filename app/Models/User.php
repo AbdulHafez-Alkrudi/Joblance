@@ -32,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'role_id',
         'userable_id',
         'userable_type',
+        'fcm_token',
     ];
 
     /**
