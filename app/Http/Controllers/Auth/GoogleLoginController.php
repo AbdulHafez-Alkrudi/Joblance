@@ -61,11 +61,14 @@ class GoogleLoginController extends BaseController
                 ]);
             }
 
-            $user = $existingUser;
+            $user = User::query()->where('email', $email)->first();
             $user['accessToken'] = $user->createToken('Personal Access Token')->accessToken;
             $user['authorized']  = $user['email_verified'];
             $user['image']       = $body->picture;
             $user['name']        = $body->name;
+            $user['given_name']  = $body->given_name;
+            $user['family_name'] = $body->family_name;
+
             $user['type']        = (new UserController())->get_type($user);
             return $this->sendResponse($user);
         }
@@ -86,7 +89,6 @@ class GoogleLoginController extends BaseController
                 'major'            => 'required',
                 'location'         => 'required',
                 'num_of_employees' => 'required',
-                'description'      => 'required',
                 'image'            => 'required',
             ],[
                 'phone_number.unique' => 'Phone Nmuber is not unique',
@@ -121,7 +123,8 @@ class GoogleLoginController extends BaseController
         else
         {
             $validator = Validator::make($input, [
-                'name'         => 'required',
+                'first_name'         => 'required',
+                'last_name'          => 'required',
                 'phone_number' => 'required|digits:10|unique:users,phone_number',
                 'email'        => 'required|ends_with:@gmail.com|exists:users,email',
                 'major'        => 'required',
@@ -129,7 +132,6 @@ class GoogleLoginController extends BaseController
                 'study_case'   => 'required',
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
-                'bio'          => 'required',
                 'image'        => 'required',
             ],[
                 'phone_number.unique' => 'Phone is not unique',
@@ -153,7 +155,8 @@ class GoogleLoginController extends BaseController
             $freelancer_data = [
                 'study_case_id'  => $input['study_case'],
                 'first_name'     => $input['name'],
-                'birth_date '    => $input['birth_date'],
+                'last_name'      => $input['last_name'],
+                'birth_date'     => $input['birth_date'],
                 'location'       => $input['location'],
                 'major'          => $input['major'],
                 'open_to_work'   => $input['open_to_work'],
