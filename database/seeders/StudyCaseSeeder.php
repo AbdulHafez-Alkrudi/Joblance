@@ -13,6 +13,27 @@ class StudyCaseSeeder extends Seeder
      */
     public function run(): void
     {
-        StudyCase::create(['name' => 'phd']);
+
+        StudyCase::create([
+            'name_EN' => 'High school',
+            'name_AR' => 'ثانوية'
+        ]);
+        StudyCase::create([
+            'name_EN' => 'Under graduated',
+            'name_AR' => 'طالب جامعي'
+        ]);
+        StudyCase::create([
+            'name_EN' => 'Graduated',
+            'name_AR' => 'خريج جامعي'
+        ]);
+        StudyCase::create([
+            'name_EN' => 'Master',
+            'name_AR' => 'ماجستير'
+        ]);
+        StudyCase::create([
+            'name_EN' => 'PHD',
+            'name_AR' => 'دكنوراه'
+        ]);
+
     }
 }

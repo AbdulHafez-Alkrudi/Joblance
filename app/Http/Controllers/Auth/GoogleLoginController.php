@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\UserController;
 use Google_Client;
 use Google_Service_Oauth2;
 use League\OAuth2\Client\Provider\Google;
@@ -68,6 +69,7 @@ class GoogleLoginController extends BaseController
             $user['given_name']  = $body->given_name;
             $user['family_name'] = $body->family_name;
 
+            $user['type']        = (new UserController())->get_type($user);
             return $this->sendResponse($user);
         }
         catch (RequestException $e) {
