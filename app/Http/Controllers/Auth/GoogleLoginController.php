@@ -158,7 +158,6 @@ class GoogleLoginController extends BaseController
                 'location'       => $input['location'],
                 'major'          => $input['major'],
                 'open_to_work'   => $input['open_to_work'],
-                'bio'            => $input['bio'],
                 'image'          => $input['image'],
             ];
 
