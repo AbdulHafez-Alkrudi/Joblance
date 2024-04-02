@@ -14,14 +14,13 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('freelancers', function (Blueprint $table) {
             $table->id();
-
+            $table->foreignId('major_id')->constrained();
             $table->foreignId('study_case_id')->constrained()->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->date('birth_date')->nullable();
 
             $table->string('location')->nullable();
-            $table->string('major')->nullable();
             $table->boolean('open_to_work')->default(false);
             $table->string('image')->nullable();
             $table->text('bio')->nullable();
