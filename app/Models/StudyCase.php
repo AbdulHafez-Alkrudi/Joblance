@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudyCase extends Model
 {
@@ -12,4 +13,9 @@ class StudyCase extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function freelancers() : HasMany
+    {
+        return $this->hasMany(Freelancer::class);
+    }
 }
