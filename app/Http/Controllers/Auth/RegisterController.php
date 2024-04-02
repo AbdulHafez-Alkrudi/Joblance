@@ -30,7 +30,7 @@ class RegisterController extends BaseController
                 'phone_number'     => 'required|digits:10|unique:users,phone_number',
                 'email'            => 'required|ends_with:@gmail.com|unique:users,email',
                 'password'         => 'required|min:8',
-                'major'            => 'required',
+                'major_id'            => 'required',
                 'location'         => 'required',
                 'num_of_employees' => 'required',
                 'image'            => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
@@ -71,7 +71,7 @@ class RegisterController extends BaseController
             $company_data = [
                 'name'              => $input['name'],
                 'location'          => $input['location'],
-                'major'             => $input['major'],
+                'major_id'             => $input['major_id'],
                 'num_of_employees'  => $input['num_of_employees'],
                 'description'       => $input['description'],
                 'image'             => $input['image']
@@ -86,9 +86,9 @@ class RegisterController extends BaseController
                 'phone_number' => 'required|digits:10|unique:users,phone_number',
                 'email'        => 'required|ends_with:@gmail.com|unique:users,email',
                 'password'     => 'required|min:8',
-                'major'        => 'required',
+                'major_id'        => 'required',
                 'location'     => 'required',
-                'study_case'   => 'required',
+                'study_case_id'   => 'required',
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
@@ -124,7 +124,7 @@ class RegisterController extends BaseController
                 'last_name'      => $input['last_name'],
                 'birth_date '    => $input['birth_date'],
                 'location'       => $input['location'],
-                'major'          => $input['major'],
+                'major_id'          => $input['major_id'],
                 'open_to_work'   => $input['open_to_work'],
                 'image'          => $input['image'],
             ];
