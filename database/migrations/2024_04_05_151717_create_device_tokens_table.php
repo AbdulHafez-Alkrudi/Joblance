@@ -12,17 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('device_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('phone_number')->unique()->nullable();
-            $table->string('email')->unique();
-            $table->boolean('email_verified')->default(false);
-            $table->string('password');
-            $table->foreignId('role_id')->nullable();
-
-            $table->string('userable_id')->nullable();
-            $table->string('userable_type')->nullable();
-            $table->rememberToken();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('token');
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
@@ -33,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('device_tokens');
     }
 };

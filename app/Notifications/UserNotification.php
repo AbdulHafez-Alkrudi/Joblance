@@ -46,6 +46,29 @@ class UserNotification extends Notification implements ShouldBroadcast
                     ->line('Thank you for using our application!');
     }
 
+    public function toFcm($notifiable)
+    {
+        return (new FcmMessage(notification: new FcmNotification(
+            title: $this->message,
+        )))
+        ->custom([
+            'android' => [
+                'notification' => [
+                    'color' => '#0A0A0A',
+                ],
+                'fcm_options' => [
+                    'analytics_label' => 'joblance',
+                ],
+            ],
+            'apns' => [
+                'fcm_options' => [
+                    'analytics_label' => 'joblance',
+                ],
+            ],
+        ]);
+    }
+
+
     /**
      * Get the array representation of the notification.
      *
