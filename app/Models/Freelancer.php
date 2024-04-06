@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -58,5 +59,14 @@ class Freelancer extends Authenticatable
    public function user(): MorphOne
    {
        return $this->MorphOne(User::class , 'userable');
+   }
+
+   public function study_case(): BelongsTo
+   {
+       return $this->belongsTo(StudyCase::class);
+   }
+   public function job_applications(): HasMany
+   {
+       return $this->hasMany(JobApplication::class);
    }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -55,5 +56,13 @@ class Company extends Authenticatable
     public function user(): MorphOne
     {
         return $this->morphOne(User::class , 'userable');
+    }
+    public function job_details(): HasMany
+    {
+        return $this->hasMany(JobDetail::class) ;
+    }
+    public function major(): BelongsTo
+    {
+        return $this->belongsTo(Major::class);
     }
 }
