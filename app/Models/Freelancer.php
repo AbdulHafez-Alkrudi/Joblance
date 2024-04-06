@@ -23,7 +23,7 @@ class Freelancer extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
-        'major',
+        'major_id',
         'location',
         'study_case',
         'open_to_work',

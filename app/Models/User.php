@@ -71,6 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function followers(): HasMany
     {
         return $this->hasMany(Follower::class);
+    }
 
     public function deviceToken() : HasMany
     {

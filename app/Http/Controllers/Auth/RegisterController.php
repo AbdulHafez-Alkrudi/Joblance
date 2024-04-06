@@ -119,7 +119,7 @@ class RegisterController extends BaseController
             $input['image'] = $this->get_image($request, $input , "freelancer");
 
             $freelancer_data = [
-                'study_case_id'  => $input['study_case'],
+                'study_case_id'  => $input['study_case_id'],
                 'first_name'     => $input['first_name'],
                 'last_name'      => $input['last_name'],
                 'birth_date'     => $input['birth_date'],
