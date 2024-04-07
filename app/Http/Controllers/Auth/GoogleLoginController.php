@@ -129,7 +129,7 @@ class GoogleLoginController extends BaseController
                 'email'        => 'required|ends_with:@gmail.com|exists:users,email',
                 'major_id'        => 'required',
                 'location'     => 'required',
-                'study_case'   => 'required',
+                'study_case_id'   => 'required',
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
                 'image'        => 'required',
@@ -153,7 +153,7 @@ class GoogleLoginController extends BaseController
             ]);
 
             $freelancer_data = [
-                'study_case_id'  => $input['study_case'],
+                'study_case_id'  => $input['study_case_id'],
                 'first_name'     => $input['name'],
                 'last_name'      => $input['last_name'],
                 'birth_date'     => $input['birth_date'],
