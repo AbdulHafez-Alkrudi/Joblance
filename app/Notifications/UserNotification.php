@@ -15,13 +15,14 @@ class UserNotification extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
-    public $message;
+    public $title, $body;
     /**
      * Create a new notification instance.
      */
-    public function __construct($message)
+    public function __construct($title, $body)
     {
-        $this->message = $message;
+        $this->title = $title;
+        $this->body  = $body;
     }
 
 
@@ -32,7 +33,7 @@ class UserNotification extends Notification implements ShouldBroadcast
      */
     public function via(object $notifiable): array
     {
-        return [FcmChannel::class];
+        return [FcmChannel::class, 'database'];
     }
 
     /**
@@ -49,7 +50,8 @@ class UserNotification extends Notification implements ShouldBroadcast
     public function toFcm($notifiable)
     {
         return (new FcmMessage(notification: new FcmNotification(
-            title: $this->message,
+            title: $this->title,
+            body : $this->body,
         )))
         ->custom([
             'android' => [
@@ -77,7 +79,8 @@ class UserNotification extends Notification implements ShouldBroadcast
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'title' => $this->title,
+            'body'  => $this->body,
         ];
     }
 }

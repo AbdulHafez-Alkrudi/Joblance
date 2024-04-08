@@ -52,7 +52,7 @@ class LoginController extends BaseController
             $userable['type'] = (new UserController())->get_type($user);
             $userable['accessToken'] = $token;
 
-            $request->user()->notify(new UserNotification('Welcome To Our App!'));
+            $request->user()->notify(new UserNotification('Login', 'Welcome To Our App!'));
 
             return $this->sendResponse($userable);
         }

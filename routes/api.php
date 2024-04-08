@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     CompanyController,
     EmailVerificationController,
     FreelancerController,
+    NotificationController,
     ResetCodePasswordController,
     UserController,
 };
@@ -53,6 +54,8 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::post('user/logout', LogoutController::class)->name('logout');
     Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
+    Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
+    Route::post('user/newnotifications', [NotificationController::class, 'newNotifications'])->name('newNotifications');
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 

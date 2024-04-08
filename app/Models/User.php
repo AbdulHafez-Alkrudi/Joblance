@@ -54,7 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'date',
         'password' => 'hashed',
         'created_at' => 'datetime:Y-m-d',
-        'updated_at' => 'datetime:Y-m-d'
+        'updated_at' => 'datetime:Y-m-d',
     ];
 
     public function userable(): MorphTo
@@ -81,6 +81,5 @@ class User extends Authenticatable implements MustVerifyEmail
     public function routeNotificationForFcm($notification = null)
     {
         return $this->deviceToken()->pluck('token')->toArray();
-
     }
 }
