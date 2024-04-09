@@ -18,7 +18,8 @@ class StudyCaseFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name
+            'name_AR' => $this->faker->name,
+            'name_EN' => $this->faker->name
         ];
     }
 }
