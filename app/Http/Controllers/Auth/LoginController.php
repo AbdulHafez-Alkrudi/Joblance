@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\UserController;
+use App\Models\DeviceToken;
+use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +16,8 @@ class LoginController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|ends_with:@gmail.com|exists:users,email',
-            'password' => 'required'
+            'password' => 'required',
+            'device_token' => 'required|string',
         ],[
             'email.ends_with' => 'Email must be ends with @gmail.com',
             'email.exists'    => 'Email is invalid'
@@ -34,6 +37,13 @@ class LoginController extends BaseController
                 return $this->sendError(['error' => 'email is not verified']);
             }
 
+            if (!DeviceToken::where('user_id', $user->id)->where('token', $request->device_token)->exists()) {
+                DeviceToken::create([
+                    'user_id' => $user->id,
+                    'token'   => $request->device_token,
+                ]);
+            }
+
             $userable = $user->userable;
             $userable['email'] = $user['email'];
             $userable['phone_number'] = $user['phone_number'];
@@ -42,7 +52,7 @@ class LoginController extends BaseController
             $userable['type'] = (new UserController())->get_type($user);
             $userable['accessToken'] = $token;
 
-
+            $request->user()->notify(new UserNotification('Welcome To Our App!'));
 
             return $this->sendResponse($userable);
         }

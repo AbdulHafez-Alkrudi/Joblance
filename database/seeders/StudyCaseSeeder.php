@@ -13,6 +13,7 @@ class StudyCaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         StudyCase::create([
             'name_EN' => 'High school',
             'name_AR' => 'ثانوية'

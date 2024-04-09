@@ -67,8 +67,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class);
     }
 
+
     public function followers(): HasMany
     {
         return $this->hasMany(Follower::class);
+
+    public function deviceToken() : HasMany
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
+
+    public function routeNotificationForFcm($notification = null)
+    {
+        return $this->deviceToken()->pluck('token')->toArray();
+
     }
 }

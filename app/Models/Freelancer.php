@@ -30,7 +30,8 @@ class Freelancer extends Authenticatable
         'user_id',
         'image',
         'study_case_id',
-        'birth_date'
+        'birth_date',
+        'bio',
     ];
 
     /**
