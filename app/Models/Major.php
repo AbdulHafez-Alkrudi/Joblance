@@ -10,8 +10,10 @@ class Major extends Model
 {
     use HasFactory;
     protected $fillable = ['name_EN' , 'name_AR'] ;
+
     public function companies(): HasMany
     {
         return $this->hasMany(Company::class);
     }
+
 }

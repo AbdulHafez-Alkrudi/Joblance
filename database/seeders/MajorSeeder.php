@@ -14,24 +14,26 @@ class MajorSeeder extends Seeder
     public function run(): void
     {
         Major::create([
-           'name_EN' => 'Engineering',
-           'name_AR' => 'هندسة'
+
+            'name_EN' => 'engineering',
+            'name_AR' => 'هندسة'
         ]);
         Major::create([
-            'name_EN' => 'Technology',
-            'name_AR' => 'تكنولجيا'
-        ]);
-        Major::create([
-            'name_EN' => 'Designing',
-            'name_AR' => 'تصميم'
-        ]);
-        Major::create([
-            'name_EN' => 'Medical',
+            'name_EN' => 'medical',
             'name_AR' => 'طبي'
         ]);
         Major::create([
+            'name_EN' => 'Technology',
+            'name_AR' => 'تقني'
+        ]);
+        Major::create([
+           'name_EN' => 'Designing',
+           'name_AR' => 'تصميم'
+        ]);
+        Major::create([
             'name_EN' => 'Customer services',
-            'name_AR' => 'خدمة عملاء'
+            'name_AR' => 'خدمة العملاء'
+
         ]);
     }
 }

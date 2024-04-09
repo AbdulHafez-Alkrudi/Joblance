@@ -119,10 +119,10 @@ class RegisterController extends BaseController
             $input['image'] = $this->get_image($request, $input , "freelancer");
 
             $freelancer_data = [
-                'study_case_id'  => $input['study_case'],
+                'study_case_id'  => $input['study_case_id'],
                 'first_name'     => $input['first_name'],
                 'last_name'      => $input['last_name'],
-                'birth_date '    => $input['birth_date'],
+                'birth_date'     => $input['birth_date'],
                 'location'       => $input['location'],
                 'major_id'          => $input['major_id'],
                 'open_to_work'   => $input['open_to_work'],
@@ -163,7 +163,7 @@ class RegisterController extends BaseController
      * @param $company
      * @return JsonResponse
      */
-    protected function extracted_data($user , $specified_user_data): JsonResponse
+    public function extracted_data($user , $specified_user_data): JsonResponse
     {
         // $the second parameter can be company or freelancer:
 

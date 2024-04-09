@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -53,7 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'date',
         'password' => 'hashed',
         'created_at' => 'datetime:Y-m-d',
-        'updated_at' => 'datetime:Y-m-d'
+        'updated_at' => 'datetime:Y-m-d',
     ];
 
     public function userable(): MorphTo
@@ -64,5 +65,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+
+    public function followers(): HasMany
+    {
+        return $this->hasMany(Follower::class);
+    }
+
+    public function deviceToken() : HasMany
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
+
+    public function routeNotificationForFcm($notification = null)
+    {
+        return $this->deviceToken()->pluck('token')->toArray();
     }
 }

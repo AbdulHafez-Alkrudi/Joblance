@@ -6,10 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Follower extends Model
+class DeviceToken extends Model
 {
     use HasFactory;
-    public function user(): BelongsTo
+
+    protected $fillable = [
+        'user_id',
+        'token',
+    ];
+
+    public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
     }
