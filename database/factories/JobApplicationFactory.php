@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\StudyCase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\JobApplication>
  */
-class StudyCaseFactory extends Factory
+class JobApplicationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,8 +17,7 @@ class StudyCaseFactory extends Factory
     public function definition(): array
     {
         return [
-            'name_EN' => $this->faker->name ,
-            'name_AR' => $this->faker->name
+            //
         ];
     }
 }
