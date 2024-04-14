@@ -6,14 +6,14 @@ use App\Http\Controllers\{
     Auth\RegisterController,
     Auth\GoogleLoginController,
     CompanyController,
+    ConversationController,
     EmailVerificationController,
     FreelancerController,
+    MessageController,
     NotificationController,
     ResetCodePasswordController,
     UserController,
 };
-use App\Models\Role;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,8 +54,23 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::post('user/logout', LogoutController::class)->name('logout');
     Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
+
+    // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
     Route::post('user/newnotifications', [NotificationController::class, 'newNotifications'])->name('newNotifications');
+
+    // for Conversations
+    Route::get('conversations', [ConversationController::class, 'index']);
+    Route::get('conversations/{id}', [ConversationController::class, 'show']);
+    Route::post('conversations/addparticipant', [ConversationController::class, 'addParticipant']);
+    Route::delete('conversations/removeparticipant', [ConversationController::class, 'removeParticipant']);
+    Route::put('conversations/{id}/read', [ConversationController::class, 'markAsRead']);
+    Route::delete('conversations/delete/{id}', [ConversationController::class, 'destroy']);
+
+    // for Messages
+    Route::get('conversations/{id}/messages', [MessageController::class, 'getMessages']);
+    Route::post('message/send', [MessageController::class, 'sendMessage']);
+    Route::delete('message/{id}/delete', [MessageController::class, 'deleteMessage']);
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 
