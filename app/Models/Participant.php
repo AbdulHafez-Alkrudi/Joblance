@@ -10,6 +10,8 @@ class Participant extends Pivot
 {
     use HasFactory;
 
+    protected $table = 'participants';
+
     public $timestamps = false;
 
     protected $casts = [

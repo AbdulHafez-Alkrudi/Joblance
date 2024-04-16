@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Conversation;
+use App\Models\Participant;
 use App\Models\Recipient;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -103,10 +104,8 @@ class ConversationController extends BaseController
 
     public function destroy($id)
     {
-        Recipient::where('user_id', '=', Auth::id())
-            ->whereRaw('message_id IN (
-                SELECT id FROM messages WHERE conversation_id = ?
-            )', [$id])
+        Participant::where('user_id', '=', Auth::id())
+            ->where('conversation_id', '=', $id)
             ->delete();
 
         return $this->sendResponse([]);
