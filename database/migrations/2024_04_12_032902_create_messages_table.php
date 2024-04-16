@@ -22,7 +22,7 @@ return new class extends Migration
                 ->constrained('users')
                 ->nullOnDelete();
             $table->text('body');
-            $table->enum('type', ['text', 'attachment'])
+            $table->enum('type', ['text', 'image', 'file'])
                 ->default('text');
             $table->timestamps();
             $table->softDeletes();

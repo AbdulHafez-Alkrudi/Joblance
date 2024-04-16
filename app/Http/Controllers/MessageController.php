@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BaseController;
 use App\Models\Conversation;
 use App\Models\Recipient;
@@ -66,7 +68,26 @@ class MessageController extends BaseController
                 'int',
                 'exists:users,id',
             ],
-            'message' => ['required'],
+            'text' => [
+                Rule::requiredIf(function() use ($request) {
+                    return !$request->hasFile('image') && !$request->hasFile('file');
+                }),
+                'string'
+            ],
+            'image' => [
+                Rule::requiredIf(function() use ($request) {
+                    return !$request->post('text') && !$request->hasFile('file');
+                }),
+                'image',
+                'mimes:jpeg,png,bmp,jpg,gif,svg'
+            ],
+            'file' => [
+                Rule::requiredIf(function() use ($request) {
+                    return !$request->hasFile('image') && !$request->post('text');
+                }),
+                'file',
+                'mimes:pdf,doc,txt'
+            ]
         ]);
 
         if ($validator->fails())
@@ -108,8 +129,22 @@ class MessageController extends BaseController
                 }
             }
 
-            $type = 'text';
-            $message = $request->post('message');
+            if ($request->hasFile('file'))
+            {
+                $type = 'file';
+                $message = $this->get_file($request, "message");
+            }
+            else if ($request->hasFile('image'))
+            {
+                $type = 'image';
+                $message = (new RegisterController)->get_image($request, "message");
+            }
+            else
+            {
+                $type = 'text';
+                $message = $request->post('text');
+            }
+
             $message = $conversation->messages()->create([
                 'user_id' => $user->id,
                 'type' => $type,
@@ -128,6 +163,10 @@ class MessageController extends BaseController
             ]);
 
             DB::commit();
+
+            $message->load('user');
+
+            broadcast(new MessageSent($message));
 
         } catch (Throwable $e) {
             DB::rollBack();
@@ -213,9 +252,23 @@ class MessageController extends BaseController
             'type'            => $message->type,
             'body'            => $message->body,
             'user_id'         => $message->user_id,
+            'conversation_id' => $message->conversation_id,
             'date'            => $message->created_at->format('Y-m-d H:i:s'),
         ];
 
         return $this->sendResponse($message_data);
+    }
+
+    public function get_file($request, $type)
+    {
+        $file = $request->file('file');
+        $file_name = time().'.'.$file->getClientOriginalExtension();
+
+        $path = 'files/' . $type.'/' ;
+
+        $file->move($path, $file_name);
+        $file_name = $path.$file_name ;
+
+        return $file_name ;
     }
 }
