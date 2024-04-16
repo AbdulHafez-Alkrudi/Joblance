@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -18,7 +19,7 @@ class MessageSent implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct($message)
+    public function __construct(Message $message)
     {
         $this->message = $message;
     }
@@ -30,8 +31,12 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
+        $other_user = $this->message->conversation->participants()
+                ->where('user_id', '<>', $this->message->user_id)
+                ->first();
+
         return [
-            new PrivateChannel('messenger'),
+            new PresenceChannel('Messenger.', $other_user->id),
         ];
     }
 }

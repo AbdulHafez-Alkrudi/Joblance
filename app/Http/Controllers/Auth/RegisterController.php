@@ -26,14 +26,14 @@ class RegisterController extends BaseController
         if ($input['is_company'])
         {
             $validator = Validator::make($input, [
-                'name'             => 'required',
-                'phone_number'     => 'required|digits:10|unique:users,phone_number',
-                'email'            => 'required|ends_with:@gmail.com|unique:users,email',
-                'password'         => 'required|min:8',
+                'name'                => 'required',
+                'phone_number'        => 'required|digits:10|unique:users,phone_number',
+                'email'               => 'required|ends_with:@gmail.com|unique:users,email',
+                'password'            => 'required|min:8',
                 'major_id'            => 'required',
-                'location'         => 'required',
-                'num_of_employees' => 'required',
-                'image'            => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
+                'location'            => 'required',
+                'num_of_employees'    => 'required',
+                'image'               => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone Number is not unique',
                 'phone_number.digits' => 'Phone Number must contain 10 numbers',
@@ -66,16 +66,17 @@ class RegisterController extends BaseController
             ];
 
             $user = User::create($user_data);
-            $input['image'] = $this->get_image($request , $input , "company");
+            $input['image'] = $this->get_image($request, "company");
 
             $company_data = [
                 'name'              => $input['name'],
                 'location'          => $input['location'],
-                'major_id'             => $input['major_id'],
+                'major_id'          => $input['major_id'],
                 'num_of_employees'  => $input['num_of_employees'],
                 'description'       => $input['description'],
                 'image'             => $input['image']
             ];
+
             $response = $this->extracted_data($user , Company::create($company_data));
         }
         else
@@ -86,9 +87,9 @@ class RegisterController extends BaseController
                 'phone_number' => 'required|digits:10|unique:users,phone_number',
                 'email'        => 'required|ends_with:@gmail.com|unique:users,email',
                 'password'     => 'required|min:8',
-                'major_id'        => 'required',
+                'major_id'     => 'required',
                 'location'     => 'required',
-                'study_case_id'   => 'required',
+                'study_case_id'=> 'required',
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
@@ -102,11 +103,12 @@ class RegisterController extends BaseController
 
             if($validator->fails())
             {
+                DB::rollBack();
                 return $this->sendError($validator->errors());
             }
 
             $input['password'] = Hash::make($input['password']);
-            $input['role_id'] = Role::ROLE_USER;
+            $input['role_id']  = Role::ROLE_USER;
 
             $user_data = [
                 'phone_number' => $input['phone_number'],
@@ -116,7 +118,7 @@ class RegisterController extends BaseController
             ];
 
             $user = User::create($user_data);
-            $input['image'] = $this->get_image($request, $input , "freelancer");
+            $input['image'] = $this->get_image($request, "freelancer");
 
             $freelancer_data = [
                 'study_case_id'  => $input['study_case_id'],
@@ -124,13 +126,14 @@ class RegisterController extends BaseController
                 'last_name'      => $input['last_name'],
                 'birth_date'     => $input['birth_date'],
                 'location'       => $input['location'],
-                'major_id'          => $input['major_id'],
+                'major_id'       => $input['major_id'],
                 'open_to_work'   => $input['open_to_work'],
                 'image'          => $input['image'],
             ];
 
             $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
         }
+
         DB::commit();
         return $response ;
     }
@@ -140,7 +143,7 @@ class RegisterController extends BaseController
      * @param array $input
      * @return string
      */
-    private function get_image(Request $request, array $input , string $type): string
+    public function get_image(Request $request, string $type): string
     {
         $user_image_name = "";
 

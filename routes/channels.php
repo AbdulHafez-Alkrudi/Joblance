@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Broadcast;
 //     return (int) $user->id === (int) $id;
 // });
 
-// Broadcast::channel('messenger', function ($user) {
-//     return !is_null($user);
-// });
+Broadcast::channel('Messenger.{id}', function($user, $id) {
+    if ($user->id == $id) {
+        return $user;
+    }
+});
