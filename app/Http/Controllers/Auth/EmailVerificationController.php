@@ -1,19 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Mail\SendCodeEmailVerification;
 use App\Models\EmailVerification;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use LDAP\Result;
 use Illuminate\Support\Facades\Validator;
-
-use function PHPUnit\Framework\isNull;
 
 class EmailVerificationController extends BaseController
 {

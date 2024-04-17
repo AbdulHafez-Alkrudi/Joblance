@@ -1,19 +1,15 @@
 <?php
 
-use App\Http\Controllers\{
+use App\Http\Controllers\{Auth\EmailVerificationController,
+    Auth\GoogleLoginController,
     Auth\LoginController,
     Auth\LogoutController,
     Auth\RegisterController,
-    Auth\GoogleLoginController,
-    CompanyController,
-    ConversationController,
-    EmailVerificationController,
-    FreelancerController,
-    MessageController,
-    NotificationController,
-    ResetCodePasswordController,
-    UserController,
-};
+    Auth\ResetCodePasswordController,
+    Chat\ConversationController,
+    Chat\MessageController,
+    Notification\NotificationController,
+    Users\UserController,};
 use Illuminate\Support\Facades\Route;
 
 /*

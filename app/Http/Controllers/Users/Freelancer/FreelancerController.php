@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users\Freelancer;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use App\Models\Freelancer;
+use Illuminate\Http\Request;
 
 class FreelancerController extends BaseController
 {

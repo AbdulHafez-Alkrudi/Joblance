@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Chat;
 
 use App\Events\MessageSent;
 use App\Http\Controllers\Auth\RegisterController;
@@ -11,9 +11,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Throwable;
-use Illuminate\Support\Facades\Validator;
 
 class MessageController extends BaseController
 {

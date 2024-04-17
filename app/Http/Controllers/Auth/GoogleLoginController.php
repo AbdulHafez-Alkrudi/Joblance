@@ -3,26 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\UserController;
-use Google_Client;
-use Google_Service_Oauth2;
-use League\OAuth2\Client\Provider\Google;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Users\UserController;
 use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Validator;
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use League\OAuth2\Client\Provider\Google;
 
 class GoogleLoginController extends BaseController
 {

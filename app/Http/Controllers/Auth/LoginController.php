@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Users\UserController;
 use App\Models\DeviceToken;
-use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -52,7 +51,7 @@ class LoginController extends BaseController
             $userable['type'] = (new UserController())->get_type($user);
             $userable['accessToken'] = $token;
 
-            $request->user()->notify(new UserNotification('Login', 'Welcome To Our App!'));
+            //$request->user()->notify(new UserNotification('Login', 'Welcome To Our App!'));
 
             return $this->sendResponse($userable);
         }

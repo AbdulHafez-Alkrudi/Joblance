@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Http\Controllers\ExperienceLevelController;
 use App\Models\ExperienceLevel;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ExperienceLevelSeeder extends Seeder

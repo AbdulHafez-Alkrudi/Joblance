@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Users\UserController;
 use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
