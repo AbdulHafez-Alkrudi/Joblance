@@ -9,6 +9,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     Notification\NotificationController,
+    Payment\PayPalController,
     Users\UserController,};
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +68,11 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::get('conversations/{id}/messages', [MessageController::class, 'getMessages']);
     Route::post('message/send', [MessageController::class, 'sendMessage']);
     Route::delete('message/{id}/delete', [MessageController::class, 'deleteMessage']);
+
+    // for PayPal
+    Route::post('paypal', [PayPalController::class, 'paypal'])->name('paypal');
+    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
+    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 
