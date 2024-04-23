@@ -115,10 +115,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
         if ($participant->role_id == User::COMPANY)
             $participant_data['name'] = $participant->userable->name;
-        else {
-            $participant_data['first_name'] = $participant->userable->first_name;
-            $participant_data['last_name']  = $participant->userable->last_name;
-        }
+        else
+            $participant_data['name'] = $participant->userable->first_name.' '.$participant->userable->last_name;
 
         return $participant_data;
     }
