@@ -24,6 +24,12 @@ class MessageSent implements ShouldBroadcast
         $this->message = $message;
     }
 
+    public function broadcastWith() {
+        return [
+            'message' => $this->message
+        ];
+    }
+
     /**
      * Get the channels the event should broadcast on.
      *
@@ -36,7 +42,7 @@ class MessageSent implements ShouldBroadcast
                 ->first();
 
         return [
-            new PresenceChannel('Messenger.', $other_user->id),
+            new PrivateChannel('Messenger.'.$other_user->id),
         ];
     }
 }
