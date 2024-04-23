@@ -251,7 +251,7 @@ class MessageController extends BaseController
             'id'              => $message->id,
             'type'            => $message->type,
             'body'            => $message->body,
-            'user_id'         => $message->user_id,
+            'user_id'         => is_null($message->user_id) ? 0 : $message->user_id,
             'conversation_id' => $message->conversation_id,
             'date'            => $message->created_at->format('Y-m-d H:i:s'),
         ];
