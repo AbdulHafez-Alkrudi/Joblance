@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Users\UserController;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -113,7 +114,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'role'  => $participant->pivot->role,
         ];
 
-        if ($participant->role_id == User::COMPANY)
+        if ($participant->userable_type == Company::class)
             $participant_data['name'] = $participant->userable->name;
         else
             $participant_data['name'] = $participant->userable->first_name.' '.$participant->userable->last_name;
