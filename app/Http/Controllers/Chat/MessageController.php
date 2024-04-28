@@ -259,17 +259,17 @@ class MessageController extends BaseController
 
         if ($message['type'] == 'file')
         {
-            $fileObject = public_path($message['body']);
             // Check if the file exists
-            if (file_exists($fileObject)) {
+            if (file_exists($message['body'])) {
                 // Get the base name (file name without extension)
-                $baseName = pathinfo($fileObject, PATHINFO_BASENAME);
+                $baseName = pathinfo($message['body'], PATHINFO_BASENAME);
 
                 // Assuming you want to remove the time prefix (if any)
                 $fileName = preg_replace('/^\d+\./', '', $baseName);
             } else {
                 $fileName = 'no file!';
             }
+
             $message_data['file_name'] = $fileName;
         }
 
