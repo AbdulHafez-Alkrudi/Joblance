@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
+use App\Jobs\DeleteAccount;
 use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
@@ -173,10 +174,6 @@ class RegisterController extends BaseController
         $user->userable()->associate($specified_user_data);
         $user->save();
 
-        // just to send email verification EmailVerification::dispatch($user);
-        if (!$user['email_verified'])
-            EmailVerification::dispatch($user);
-
         // just to send it to the API
         $token = $user->createToken('Personal Access Token')->accessToken;
 
@@ -186,6 +183,14 @@ class RegisterController extends BaseController
         $specified_user_data['id'] = $user['id'];
         $specified_user_data['type'] = (new UserController)->get_type($user) ;
         $specified_user_data['accessToken'] = $token;
+
+        // just to send email verification EmailVerification::dispatch($user);
+        if (!$user['email_verified'])
+        {
+            EmailVerification::dispatch($user);
+         //   DeleteAccount::dispatch($user)->delay(120);
+        }
+
         return $this->sendResponse($specified_user_data);
     }
 }

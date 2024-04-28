@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Throwable;
@@ -256,13 +257,29 @@ class MessageController extends BaseController
             'date'            => $message->created_at->format('Y-m-d H:i:s'),
         ];
 
+        if ($message['type'] == 'file')
+        {
+            // Check if the file exists
+            if (file_exists($message['body'])) {
+                // Get the base name (file name without extension)
+                $baseName = pathinfo($message['body'], PATHINFO_BASENAME);
+
+                // Assuming you want to remove the time prefix (if any)
+                $fileName = preg_replace('/^\d+\./', '', $baseName);
+            } else {
+                $fileName = 'no file!';
+            }
+
+            $message_data['file_name'] = $fileName;
+        }
+
         return $this->sendResponse($message_data);
     }
 
     public function get_file($request, $type)
     {
         $file = $request->file('file');
-        $file_name = time().'.'.$file->getClientOriginalExtension();
+        $file_name = time().'.'.$file->getClientOriginalName();
 
         $path = 'files/' . $type.'/' ;
 
