@@ -4,13 +4,20 @@ namespace App\Http\Controllers\Users\Freelancer;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Freelancer;
+use App\Models\Major;
 use Illuminate\Http\Request;
 
 class FreelancerController extends BaseController
 {
-    public function index()
+    public function index(string $lang)
     {
+        $freelancers = Freelancer::all();
+        foreach ($freelancers as $key => $freelancer)
+        {
+            $freelancers[$key] = $this->show($freelancer, $lang);
+        }
 
+        return $this->sendResponse($freelancers);
     }
     /**
      * Show the form for creating a new resource.
@@ -31,9 +38,21 @@ class FreelancerController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(Freelancer $freelancer)
+    public function show(Freelancer $freelancer, string $lang)
     {
+        $major = Major::query()->find($freelancer->major_id);
 
+        $freelancer_data = [
+            'id' => $freelancer->id,
+            'name' => $freelancer->first_name .' '. $freelancer->last_name,
+            'image' => $freelancer->image,
+            'bio'   => is_null($freelancer->bio) ? "" : $freelancer->bio,
+            'major' => $lang == "EN" ? $major->name_EN : $major->name_AR,
+            'location' =>$freelancer->location,
+            'open_to_work' => $freelancer->open_to_work,
+        ];
+
+        return $freelancer_data;
     }
 
     /**

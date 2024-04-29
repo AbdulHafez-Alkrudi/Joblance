@@ -182,7 +182,7 @@ class MessageController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'ids'    => ['required', 'array', 'exists:messages,id'],
-            'target' => ['required', 'string'],
+            'target' => ['required', 'string', 'in:me,everyone'],
         ]);
 
         if ($validator->fails())
