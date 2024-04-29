@@ -152,7 +152,7 @@ class ConversationController extends BaseController
         if (is_null($conversation->participants->first()))
             $conversation_data['participant'] = __('User');
         else
-            $conversation_data['participant'] = $conversation->participants[0]->show($conversation->participants[0]);
+            $conversation_data['participant'] = $conversation->participants[0]->showParticipant($conversation->participants[0]);
 
         return $this->sendResponse($conversation_data);
     }
