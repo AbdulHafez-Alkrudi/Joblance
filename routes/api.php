@@ -11,6 +11,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Notification\NotificationController,
     Payment\PayPalController,
     Users\UserController,};
+use App\Http\Controllers\Users\Freelancer\FreelancerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,6 +52,7 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::post('user/logout', LogoutController::class)->name('logout');
     Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
+    Route::get('freelancers/{lang}', [FreelancerController::class, 'index']);
 
     // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');

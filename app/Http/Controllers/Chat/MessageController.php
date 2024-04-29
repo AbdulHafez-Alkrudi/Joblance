@@ -178,10 +178,11 @@ class MessageController extends BaseController
         return $this->show($message);
     }
 
-    public function deleteMessage(Request $request, $id)
+    public function deleteMessage(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'target' => ['required', 'string'],
+            'ids'    => ['required', 'array', 'exists:messages,id'],
+            'target' => ['required', 'string', 'in:me,everyone'],
         ]);
 
         if ($validator->fails())
@@ -194,25 +195,28 @@ class MessageController extends BaseController
          */
         $user = Auth::user();
 
-        $user->sentMessages()
+        foreach ($request->ids as $id)
+        {
+            $user->sentMessages()
             ->where('id', '=', $id)
             ->update([
                 'deleted_at' => Carbon::now(),
             ]);
 
-        if ($request->target == 'me')
-        {
-            Recipient::where([
-                'user_id' => $user->id,
-                'message_id' => $id,
-            ])->delete();
+            if ($request->target == 'me')
+            {
+                Recipient::where([
+                    'user_id' => $user->id,
+                    'message_id' => $id,
+                ])->delete();
 
-        }
-        else
-        {
-            Recipient::where([
-                'message_id' => $id,
-            ])->delete();
+            }
+            else
+            {
+                Recipient::where([
+                    'message_id' => $id,
+                ])->delete();
+            }
         }
 
         return $this->sendResponse([]);
