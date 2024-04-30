@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->date('birth_date')->nullable();
+            $table->enum('gender', ['male', 'female']);
 
             $table->string('location')->nullable();
             $table->boolean('open_to_work')->default(false);

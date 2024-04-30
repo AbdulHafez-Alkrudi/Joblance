@@ -34,6 +34,7 @@ class RegisterController extends BaseController
                 'major_id'            => 'required',
                 'location'            => 'required',
                 'num_of_employees'    => 'required',
+                'description'         => 'required',
                 'image'               => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone Number is not unique',
@@ -94,6 +95,7 @@ class RegisterController extends BaseController
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
                 'bio'          => 'required',
+                'gender'       => ['required', 'string', 'in:male,female'],
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone is not unique',
@@ -132,6 +134,7 @@ class RegisterController extends BaseController
                 'open_to_work'   => $input['open_to_work'],
                 'image'          => $input['image'],
                 'bio'            => $input['bio'],
+                'gender'         => $input['gender'],
             ];
 
             $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
