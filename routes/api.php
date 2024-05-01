@@ -13,6 +13,8 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Users\UserController,};
 use App\Http\Controllers\Users\Freelancer\FreelancerController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Broadcast::routes(['middlewere'=>['auth:api']]);
 
 
 Route::get('contests', function ($id) {

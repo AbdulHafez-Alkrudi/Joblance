@@ -47,7 +47,7 @@ class FreelancerController extends BaseController
             'name' => $freelancer->first_name .' '. $freelancer->last_name,
             'image' => $freelancer->image,
             'bio'   => is_null($freelancer->bio) ? "" : $freelancer->bio,
-            'major' => $lang == "EN" ? $major->name_EN : $major->name_AR,
+            'major' => $lang == "en" ? $major->name_EN : $major->name_AR,
             'location' =>$freelancer->location,
             'open_to_work' => $freelancer->open_to_work,
         ];
