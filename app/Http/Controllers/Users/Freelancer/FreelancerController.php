@@ -4,28 +4,15 @@ namespace App\Http\Controllers\Users\Freelancer;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Freelancer;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class FreelancerController extends BaseController
 {
     public function index()
     {
-
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $freelancers = Freelancer::all();
+        return $this->sendResponse($freelancers);
     }
 
     /**
@@ -33,30 +20,32 @@ class FreelancerController extends BaseController
      */
     public function show(Freelancer $freelancer)
     {
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Freelancer $freelancer)
-    {
-        //
+        return $this->sendResponse($freelancer);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Freelancer $freelancer)
+    public function update(Request $request, $freelancer)
     {
-        //
+        // the user may change something like the phone number which is not in the freelancer table, so I must retrieve
+        // the user information from the User table that represents that freelancer
+
+        if(array_key_exists('phone_number', $request->toArray()))
+            User::where('userable_id' , $freelancer)->
+                  where('userable_type' , Freelancer::class)->
+                  update(['phone_number' => $request->phone_number]);
+
+        $freelancer = Freelancer::find($freelancer)->update($request->except('phone_number'));
+        return $this->sendResponse($freelancer);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Freelancer $freelancer)
+    public function destroy($freelancer)
     {
-        //
+        Freelancer::destroy($freelancer);
+        return $this->sendResponse(true);
     }
 }

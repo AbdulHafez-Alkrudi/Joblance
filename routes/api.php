@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Freelancer;
 use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\GoogleLoginController,
     Auth\LoginController,
@@ -9,7 +10,8 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     Notification\NotificationController,
-    Users\UserController,};
+    Users\Freelancer\FreelancerController,
+    Users\UserController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,7 +50,7 @@ Route::post('login', [LoginController::class , 'login']);
 
 Route::middleware(['auth:api']) ->group(function(){
     Route::post('user/logout', LogoutController::class)->name('logout');
-    Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
+    Route::resource('user', UserController::class);
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
     // for Notifications
@@ -73,6 +75,6 @@ Route::middleware(['auth:api']) ->group(function(){
     });
 
     Route::middleware(['auth:api', 'can:isFreelancer']) ->group(function(){
-
+            Route::resource('freelancer' , FreelancerController::class);
     });
 });
