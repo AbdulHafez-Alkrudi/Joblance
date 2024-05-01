@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Freelancer;
 use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\GoogleLoginController,
     Auth\LoginController,
@@ -9,9 +10,11 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     Notification\NotificationController,
-    Payment\PayPalController,
-    Users\UserController,};
-use App\Http\Controllers\Users\Freelancer\FreelancerController;
+    Users\Freelancer\FreelancerController,
+    Users\MajorController,
+    Users\UserController,
+    Payment\PayPalController};
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -52,10 +55,11 @@ Route::post('register' , RegisterController::class);
 Route::post('login', [LoginController::class , 'login']);
 
 Route::middleware(['auth:api']) ->group(function(){
-    Route::post('user/logout', LogoutController::class)->name('logout');
-    Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
+    Route::post('user/logout' , LogoutController::class)->name('logout');
+    Route::resource('user'  , UserController::class);
+    Route::resource('major' , MajorController::class);
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
-    Route::get('freelancers/{lang}', [FreelancerController::class, 'index']);
+
 
     // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
@@ -84,6 +88,6 @@ Route::middleware(['auth:api']) ->group(function(){
     });
 
     Route::middleware(['auth:api', 'can:isFreelancer']) ->group(function(){
-
+            Route::resource('freelancer' , FreelancerController::class);
     });
 });

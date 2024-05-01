@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Users\Company;
+namespace App\Http\Controllers\Users\Freelancer;
 
 use App\Http\Controllers\Controller;
 

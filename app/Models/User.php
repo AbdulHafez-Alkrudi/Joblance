@@ -21,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
     const COMPANY    = 1 ;
     const FREELANCER = 2 ;
 
+
     /**
      * The attributes that are mass assignable.
      *

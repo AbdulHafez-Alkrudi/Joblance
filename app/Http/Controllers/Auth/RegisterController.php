@@ -93,6 +93,7 @@ class RegisterController extends BaseController
                 'study_case_id'=> 'required',
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
+                'bio'          => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone is not unique',
@@ -130,6 +131,7 @@ class RegisterController extends BaseController
                 'major_id'       => $input['major_id'],
                 'open_to_work'   => $input['open_to_work'],
                 'image'          => $input['image'],
+                'bio'            => $input['bio'],
             ];
 
             $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
