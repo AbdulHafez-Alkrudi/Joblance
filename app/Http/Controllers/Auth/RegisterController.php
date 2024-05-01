@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
+use App\Jobs\DeleteAccount;
 use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
@@ -92,6 +93,7 @@ class RegisterController extends BaseController
                 'study_case_id'=> 'required',
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
+                'bio'          => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone is not unique',
@@ -129,6 +131,7 @@ class RegisterController extends BaseController
                 'major_id'       => $input['major_id'],
                 'open_to_work'   => $input['open_to_work'],
                 'image'          => $input['image'],
+                'bio'            => $input['bio'],
             ];
 
             $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
@@ -173,10 +176,6 @@ class RegisterController extends BaseController
         $user->userable()->associate($specified_user_data);
         $user->save();
 
-        // just to send email verification EmailVerification::dispatch($user);
-        if (!$user['email_verified'])
-            EmailVerification::dispatch($user);
-
         // just to send it to the API
         $token = $user->createToken('Personal Access Token')->accessToken;
 
@@ -186,6 +185,14 @@ class RegisterController extends BaseController
         $specified_user_data['id'] = $user['id'];
         $specified_user_data['type'] = (new UserController)->get_type($user) ;
         $specified_user_data['accessToken'] = $token;
+
+        // just to send email verification EmailVerification::dispatch($user);
+        if (!$user['email_verified'])
+        {
+            EmailVerification::dispatch($user);
+         //   DeleteAccount::dispatch($user)->delay(120);
+        }
+
         return $this->sendResponse($specified_user_data);
     }
 }

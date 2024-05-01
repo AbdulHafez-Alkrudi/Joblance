@@ -11,7 +11,10 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\MessageController,
     Notification\NotificationController,
     Users\Freelancer\FreelancerController,
-    Users\UserController};
+    Users\UserController,
+    Payment\PayPalController
+    };
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +55,7 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::post('user/logout', LogoutController::class)->name('logout');
     Route::resource('user', UserController::class);
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
+    Route::get('freelancers/{lang}', [FreelancerController::class, 'index']);
 
     // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
@@ -69,6 +73,11 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::get('conversations/{id}/messages', [MessageController::class, 'getMessages']);
     Route::post('message/send', [MessageController::class, 'sendMessage']);
     Route::delete('message/{id}/delete', [MessageController::class, 'deleteMessage']);
+
+    // for PayPal
+    Route::post('paypal', [PayPalController::class, 'paypal'])->name('paypal');
+    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
+    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 

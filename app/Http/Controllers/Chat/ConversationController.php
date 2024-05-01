@@ -147,8 +147,12 @@ class ConversationController extends BaseController
             'new_messages' => $conversation->new_messages,
             'date' => $conversation->created_at->format('Y-m-d H:i:s'),
             'last_message' => (new MessageController)->show($conversation->lastMessage)->getData()->data,
-            'participant' => $conversation->participants[0]->show($conversation->participants[0]),
         ];
+
+        if (is_null($conversation->participants->first()))
+            $conversation_data['participant'] = __('User');
+        else
+            $conversation_data['participant'] = $conversation->participants[0]->showParticipant($conversation->participants[0]);
 
         return $this->sendResponse($conversation_data);
     }

@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Throwable;
@@ -177,10 +178,11 @@ class MessageController extends BaseController
         return $this->show($message);
     }
 
-    public function deleteMessage(Request $request, $id)
+    public function deleteMessage(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'target' => ['required', 'string'],
+            'ids'    => ['required', 'array', 'exists:messages,id'],
+            'target' => ['required', 'string', 'in:me,everyone'],
         ]);
 
         if ($validator->fails())
@@ -193,25 +195,28 @@ class MessageController extends BaseController
          */
         $user = Auth::user();
 
-        $user->sentMessages()
+        foreach ($request->ids as $id)
+        {
+            $user->sentMessages()
             ->where('id', '=', $id)
             ->update([
                 'deleted_at' => Carbon::now(),
             ]);
 
-        if ($request->target == 'me')
-        {
-            Recipient::where([
-                'user_id' => $user->id,
-                'message_id' => $id,
-            ])->delete();
+            if ($request->target == 'me')
+            {
+                Recipient::where([
+                    'user_id' => $user->id,
+                    'message_id' => $id,
+                ])->delete();
 
-        }
-        else
-        {
-            Recipient::where([
-                'message_id' => $id,
-            ])->delete();
+            }
+            else
+            {
+                Recipient::where([
+                    'message_id' => $id,
+                ])->delete();
+            }
         }
 
         return $this->sendResponse([]);
@@ -251,10 +256,26 @@ class MessageController extends BaseController
             'id'              => $message->id,
             'type'            => $message->type,
             'body'            => $message->body,
-            'user_id'         => $message->user_id,
+            'user_id'         => is_null($message->user_id) ? 0 : $message->user_id,
             'conversation_id' => $message->conversation_id,
             'date'            => $message->created_at->format('Y-m-d H:i:s'),
         ];
+
+        if ($message['type'] == 'file')
+        {
+            // Check if the file exists
+            if (file_exists($message['body'])) {
+                // Get the base name (file name without extension)
+                $baseName = pathinfo($message['body'], PATHINFO_BASENAME);
+
+                // Assuming you want to remove the time prefix (if any)
+                $fileName = preg_replace('/^\d+\./', '', $baseName);
+            } else {
+                $fileName = 'no file!';
+            }
+
+            $message_data['file_name'] = $fileName;
+        }
 
         return $this->sendResponse($message_data);
     }
@@ -262,7 +283,7 @@ class MessageController extends BaseController
     public function get_file($request, $type)
     {
         $file = $request->file('file');
-        $file_name = time().'.'.$file->getClientOriginalExtension();
+        $file_name = time().'.'.$file->getClientOriginalName();
 
         $path = 'files/' . $type.'/' ;
 

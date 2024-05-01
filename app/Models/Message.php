@@ -9,9 +9,6 @@ class Message extends Model
 {
     use HasFactory;
 
-    const TEXT       = 1;
-    const ATTACHMENT = 2;
-
     protected $fillable = [
         'conversation_id', 'user_id', 'body', 'type',
     ];
