@@ -17,7 +17,7 @@ class Major extends Model
         return $this->hasMany(Company::class);
     }
     public function get_major($id , string $lang , bool $to_array){
-        $major = Major::query()->when($lang == 'EN' ,
+        $major = Major::query()->when($lang == 'en' ,
             function($query) use($id){
                 return $query->select('id' , 'name_EN as name')->where('id' , $id)->first();
             }
@@ -32,7 +32,7 @@ class Major extends Model
 
     public function get_all_majors(string $lang): Collection|array
     {
-        return Major::query()->when($lang == 'EN' ,
+        return Major::query()->when($lang == 'en' ,
             function($query){
                 return $query->select('id','name_EN as name');
             },
