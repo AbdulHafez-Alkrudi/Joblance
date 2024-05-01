@@ -57,6 +57,8 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::resource('major' , MajorController::class);
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
+    Route::resource('freelancer' , FreelancerController::class);
+
 
     // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
@@ -85,6 +87,5 @@ Route::middleware(['auth:api']) ->group(function(){
     });
 
     Route::middleware(['auth:api', 'can:isFreelancer']) ->group(function(){
-            Route::resource('freelancer' , FreelancerController::class);
     });
 });
