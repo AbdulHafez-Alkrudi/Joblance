@@ -34,6 +34,7 @@ class Freelancer extends Authenticatable
         'study_case_id',
         'birth_date',
         'bio',
+        'gender',
     ];
 
     /**

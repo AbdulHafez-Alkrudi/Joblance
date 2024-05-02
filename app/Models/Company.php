@@ -28,7 +28,8 @@ class Company extends Authenticatable
         'num_of_employees',
         'user_id',
         'description',
-        'image'
+        'image',
+        'gender',
     ];
 
     /**
