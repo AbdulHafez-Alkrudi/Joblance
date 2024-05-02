@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\BaseController;
+use App\Mail\SendCodeEmailVerification;
 use App\Models\Company;
+use App\Models\EmailVerification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends BaseController
 {

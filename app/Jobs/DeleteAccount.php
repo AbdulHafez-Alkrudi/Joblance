@@ -27,7 +27,6 @@ class DeleteAccount implements ShouldQueue
      */
     public function handle(): void
     {
-        dd($this->user);
         $user = User::query()->find($this->user->id);
 
         if (!$user['email_verified'])
