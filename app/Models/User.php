@@ -23,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
     const COMPANY    = 1 ;
     const FREELANCER = 2 ;
 
+
     /**
      * The attributes that are mass assignable.
      *
@@ -69,6 +70,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class);
     }
 
+    public function budget()
+    {
+        return $this->hasOne(Budget::class);
+    }
 
     public function followers(): HasMany
     {
@@ -112,7 +117,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ]);
     }
 
-    public function show($participant)
+    public function showParticipant($participant)
     {
         $participant_data = [
             'id'    => $participant->id,

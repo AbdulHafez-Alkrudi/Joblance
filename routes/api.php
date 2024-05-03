@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Freelancer;
 use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\GoogleLoginController,
     Auth\LoginController,
@@ -9,9 +10,19 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     Notification\NotificationController,
+
     Report\ReportController,
     Users\UserController,};
+
+    Users\Freelancer\FreelancerController,
+    Users\MajorController,
+    Users\UserController,
+    Payment\PayPalController};
+
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +34,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Broadcast::routes(['middlewere'=>['auth:api']]);
 
 
 Route::get('contests', function ($id) {
@@ -48,9 +60,13 @@ Route::post('register' , RegisterController::class);
 Route::post('login', [LoginController::class , 'login']);
 
 Route::middleware(['auth:api']) ->group(function(){
-    Route::post('user/logout', LogoutController::class)->name('logout');
-    Route::get('user/profile/{id}', [UserController::class, 'show'])->name('profile');
+    Route::post('user/logout' , LogoutController::class)->name('logout');
+    Route::resource('user'  , UserController::class);
+    Route::resource('major' , MajorController::class);
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
+
+    Route::resource('freelancer' , FreelancerController::class);
+
 
     // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
@@ -74,11 +90,16 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::get('newReports', [ReportController::class, 'newReports']);
     Route::post('report/send', [ReportController::class, 'store']);
 
+    // for PayPal
+    Route::post('paypal', [PayPalController::class, 'paypal'])->name('paypal');
+    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
+    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+
+
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 
     });
 
     Route::middleware(['auth:api', 'can:isFreelancer']) ->group(function(){
-
     });
 });

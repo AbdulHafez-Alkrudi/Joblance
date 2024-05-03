@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Passport\HasApiTokens;
 
 class Freelancer extends Authenticatable
@@ -57,7 +59,9 @@ class Freelancer extends Authenticatable
         'updated_at' => 'datetime:Y-m-d'
     ];
 
-   public function user(): MorphOne
+
+
+    public function user(): MorphOne
    {
        return $this->MorphOne(User::class , 'userable');
    }
@@ -70,4 +74,29 @@ class Freelancer extends Authenticatable
    {
        return $this->hasMany(JobApplication::class);
    }
+   // This method returns the freelancer information according to requested language
+    public function get_freelancer_info(Freelancer $freelancer , string $lang): array
+    {
+        return [
+            'id'           => $freelancer->id,
+            'name'         => $freelancer->first_name .' '. $freelancer->last_name,
+            'image'        => $freelancer->image,
+            'bio'          => is_null($freelancer->bio) ? "" : $freelancer->bio,
+            'major'        => (new Major)->get_major($freelancer->major_id , $lang , false),
+            'location'     => $freelancer->location,
+            'open_to_work' => $freelancer->open_to_work,
+        ];
+    }
+
+
+    public function get_all_freelancers(string $lang): Collection
+    {
+        $freelancers = $this->all();
+        foreach($freelancers as $key => $freelancer){
+            $freelancers[$key] = $this->get_freelancer_info($freelancer , $lang);
+        }
+        return $freelancers;
+
+
+    }
 }
