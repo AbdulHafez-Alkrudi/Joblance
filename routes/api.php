@@ -14,11 +14,6 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Report\ReportController,
     Users\UserController,};
 
-    Users\Freelancer\FreelancerController,
-    Users\MajorController,
-    Users\UserController,
-    Payment\PayPalController};
-
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
