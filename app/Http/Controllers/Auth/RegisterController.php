@@ -193,7 +193,7 @@ class RegisterController extends BaseController
         if (!$user['email_verified'])
         {
             EmailVerification::dispatch($user);
-         //   DeleteAccount::dispatch($user)->delay(120);
+            DeleteAccount::dispatch($user)->delay(86400);
         }
 
         return $this->sendResponse($specified_user_data);

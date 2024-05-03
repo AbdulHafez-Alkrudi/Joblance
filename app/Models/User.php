@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\Users\UserController;
+use App\Mail\SendCodeEmailVerification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -53,7 +55,6 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'date',
         'password' => 'hashed',
         'created_at' => 'datetime:Y-m-d',
         'updated_at' => 'datetime:Y-m-d',
@@ -87,6 +88,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function routeNotificationForFcm($notification = null)
     {
         return $this->deviceToken()->pluck('token')->toArray();
+    }
+
+    public function reports() :HasMany
+    {
+        return $this->hasMany(Report::class);
     }
 
     public function conversations()
@@ -125,5 +131,22 @@ class User extends Authenticatable implements MustVerifyEmail
             $participant_data['name'] = $participant->userable->first_name.' '.$participant->userable->last_name;
 
         return $participant_data;
+    }
+
+    public function sendCode($email)
+    {
+        // Delete all old code that user send before
+        EmailVerification::query()->where('email', $email)->delete();
+
+        $data['email'] = $email;
+
+        // Generate random code
+        $data['code'] = mt_rand(100000, 999999);
+
+        // Create a new code
+        $codeData = EmailVerification::query()->create($data);
+
+        // Send email to user
+        Mail::to($email)->send(new SendCodeEmailVerification($codeData['code']));
     }
 }

@@ -25,18 +25,6 @@ class SendEmailVerification
      */
     public function handle(EmailVerification $event): void
     {
-        // Delete all old code that user send before
-        ModelsEmailVerification::query()->where('email', $event->user->email)->delete();
-
-        $data['email'] = $event->user->email;
-
-        // Generate random code
-        $data['code'] = mt_rand(100000, 999999);
-
-        // Create a new code
-        $codeData = ModelsEmailVerification::query()->create($data);
-
-        // Send email to user
-        Mail::to($event->user->email)->send(new SendCodeEmailVerification($codeData['code']));
+        $event->user->sendCode($event->user->email);
     }
 }
