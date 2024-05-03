@@ -9,6 +9,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     Notification\NotificationController,
+    Report\ReportController,
     Users\UserController,};
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +68,11 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::get('conversations/{id}/messages', [MessageController::class, 'getMessages']);
     Route::post('message/send', [MessageController::class, 'sendMessage']);
     Route::delete('message/{id}/delete', [MessageController::class, 'deleteMessage']);
+
+    // for Report
+    Route::get('reports', [ReportController::class, 'index']);
+    Route::get('newReports', [ReportController::class, 'newReports']);
+    Route::post('report/send', [ReportController::class, 'store']);
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 

@@ -85,6 +85,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->deviceToken()->pluck('token')->toArray();
     }
 
+    public function reports() :HasMany
+    {
+        return $this->hasMany(Report::class);
+    }
+
     public function conversations()
     {
         return $this->belongsToMany(Conversation::class, 'participants')
