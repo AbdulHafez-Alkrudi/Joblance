@@ -84,6 +84,7 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::get('reports', [ReportController::class, 'index']);
     Route::get('newReports', [ReportController::class, 'newReports']);
     Route::post('report/send', [ReportController::class, 'store']);
+    Route::post('report/reply', [ReportController::class, 'reply']);
 
     // for PayPal
     Route::post('paypal', [PayPalController::class, 'paypal'])->name('paypal');
