@@ -17,6 +17,9 @@ class Freelancer extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    const MALE   = 1 ;
+    const FEMALE = 2 ;
+
     /**
      * The attributes that are mass assignable.
      *

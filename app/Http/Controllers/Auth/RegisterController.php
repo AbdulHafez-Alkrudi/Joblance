@@ -95,7 +95,7 @@ class RegisterController extends BaseController
                 'open_to_work' => 'required',
                 'birth_date'   => 'required',
                 'bio'          => 'required',
-                'gender'       => ['required', 'string', 'in:male,female'],
+                'gender'       => 'required',
                 'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
             ],[
                 'phone_number.unique' => 'Phone is not unique',

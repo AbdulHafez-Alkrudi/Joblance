@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\EmailVerification as EventsEmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Mail\SendCodeEmailVerification;
 use App\Models\EmailVerification;
@@ -62,8 +63,7 @@ class EmailVerificationController extends BaseController
 
     public function userResendCode(Request $request) : JsonResponse
     {
-        $data = $request->all();
-        $validator = Validator::make($data, [
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
         ]);
 
@@ -72,20 +72,9 @@ class EmailVerificationController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        // Delete all old code that user send before
-        EmailVerification::query()->where('email', $request['email'])->delete();
+        $user = User::query()->where('email', $request->email);
+        $user->sendCode($request->email);
 
-        // Generate random code
-        $data['code'] = mt_rand(100000, 999999);
-
-        $data['email'] = $request['email'];
-
-        // Create a new code
-        $codeData = EmailVerification::query()->create($data);
-
-        // Send email to user
-        Mail::to($request['email'])->send(new SendCodeEmailVerification($codeData['code']));
-
-        return response()->json(['status' => 'success', 'message' => trans('code.resent')], 200);
+        return $this->sendResponse([]);
     }
 }
