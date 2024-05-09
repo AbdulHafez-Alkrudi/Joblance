@@ -10,9 +10,14 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     Notification\NotificationController,
-
+    Payment\PayPalController,
     Report\ReportController,
-    Users\UserController,};
+    Users\Freelancer\Freelancer_project\UserProjectController,
+    Users\Freelancer\Freelancer_project\UserSkillsController,
+    Users\Freelancer\FreelancerController,
+    Users\Freelancer\SkillController,
+    Users\MajorController,
+    Users\UserController};
 
 
 use Illuminate\Support\Facades\Route;
@@ -56,8 +61,18 @@ Route::post('login', [LoginController::class , 'login']);
 
 Route::middleware(['auth:api']) ->group(function(){
     Route::post('user/logout' , LogoutController::class)->name('logout');
-    Route::resource('user'  , UserController::class);
-    Route::resource('major' , MajorController::class);
+
+  /*  Route::resource('user'        , UserController::class);
+    Route::resource('major'       , MajorController::class);
+    Route::resource('userProject' , UserProjectController::class);*/
+    Route::apiResources([
+        'user'  => UserController::class,
+        'major' => MajorController::class,
+        'userProject' => UserProjectController::class,
+        'skill' => SkillController::class,
+        'user_skills' => UserSkillsController::class
+    ]);
+
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
     Route::resource('freelancer' , FreelancerController::class);
@@ -86,9 +101,9 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::post('report/send', [ReportController::class, 'store']);
 
     // for PayPal
-    Route::post('paypal', [PayPalController::class, 'paypal'])->name('paypal');
-    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
-    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    Route::post('paypal'       ,  [PayPalController::class, 'paypal' ])->name('paypal');
+    Route::get('paypal/success',  [PayPalController::class, 'success'])->name('paypal.success');
+    Route::get('paypal/cancel' ,  [PayPalController::class, 'cancel' ])->name('paypal.cancel');
 
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
