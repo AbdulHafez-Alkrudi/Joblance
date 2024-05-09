@@ -9,6 +9,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\ResetCodePasswordController,
     Chat\ConversationController,
     Chat\MessageController,
+    DocumentAIController,
     Notification\NotificationController,
 
     Report\ReportController,
@@ -91,6 +92,8 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
     Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
 
+    // for Document Ai
+    Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 
