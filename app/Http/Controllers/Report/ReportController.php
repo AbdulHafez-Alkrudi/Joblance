@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\BaseController;
+use App\Mail\AdminReply;
 use App\Models\Report;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 use function PHPUnit\Framework\isEmpty;
@@ -101,5 +104,30 @@ class ReportController extends BaseController
         ]);
 
         return $this->sendResponse($reports);
+    }
+
+    public function reply(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'title'   => 'required',
+            'body'    => 'required',
+            'user_id' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            return $this->sendError($validator->errors());
+        }
+
+        $reply_data = [
+            'title' => $request->title,
+            'body'  => $request->body,
+        ];
+
+        $user = User::query()->find($request->user_id);
+
+        Mail::to($user->email)->send(new AdminReply($reply_data));
+
+        return $this->sendResponse([]);
     }
 }

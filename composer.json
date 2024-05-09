@@ -8,6 +8,7 @@
         "php": "^8.1",
         "beyondcode/laravel-websockets": "^1.14",
         "google/apiclient": "^2.15",
+        "google/cloud-document-ai": "^1.12",
         "guzzlehttp/guzzle": "^7.7",
         "ichtrojan/laravel-otp": "^2.0",
         "illuminate/notifications": "*",

@@ -43,6 +43,10 @@ class LoginController extends BaseController
                 ]);
             }
 
+            $request->user()->update([
+                'device_token' => $request->device_token
+            ]);
+
             $userable = $user->userable;
             $userable['email'] = $user['email'];
             $userable['phone_number'] = $user['phone_number'];

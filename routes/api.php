@@ -9,6 +9,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\ResetCodePasswordController,
     Chat\ConversationController,
     Chat\MessageController,
+    DocumentAIController,
     Notification\NotificationController,
     Payment\PayPalController,
     Report\ReportController,
@@ -99,12 +100,15 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::get('reports', [ReportController::class, 'index']);
     Route::get('newReports', [ReportController::class, 'newReports']);
     Route::post('report/send', [ReportController::class, 'store']);
+    Route::post('report/reply', [ReportController::class, 'reply']);
 
     // for PayPal
     Route::post('paypal'       ,  [PayPalController::class, 'paypal' ])->name('paypal');
     Route::get('paypal/success',  [PayPalController::class, 'success'])->name('paypal.success');
     Route::get('paypal/cancel' ,  [PayPalController::class, 'cancel' ])->name('paypal.cancel');
 
+    // for Document Ai
+    Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 
