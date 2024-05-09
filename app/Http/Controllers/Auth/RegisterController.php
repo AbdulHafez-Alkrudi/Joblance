@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
+use App\Http\Requests\RegisterCompanyRequest;
+use App\Http\Requests\RegisterFreelancerRequest;
 use App\Jobs\DeleteAccount;
 use App\Models\Company;
 use App\Models\Freelancer;
@@ -26,27 +28,11 @@ class RegisterController extends BaseController
         // make validation for user and company
         if ($input['is_company'])
         {
-            $validator = Validator::make($input, [
-                'name'                => 'required',
-                'phone_number'        => 'required|digits:10|unique:users,phone_number',
-                'email'               => 'required|ends_with:@gmail.com|unique:users,email',
-                'password'            => 'required|min:8',
-                'major_id'            => 'required',
-                'location'            => 'required',
-                'num_of_employees'    => 'required',
-                'description'         => 'required',
-                'image'               => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
-            ],[
-                'phone_number.unique' => 'Phone Number is not unique',
-                'phone_number.digits' => 'Phone Number must contain 10 numbers',
-                'email.unique'        => 'Email is not unique',
-                'email.ends_with'     => 'Email must be ends with @gmail.com',
-                'password.min'        => 'Password must be at least 8 characters'
-            ]);
+            $registerRequest = new RegisterCompanyRequest;
+            $validator = Validator::make($input, $registerRequest->rules());
 
-            if($validator->fails())
+            if ($validator->fails())
             {
-                DB::rollBack();
                 return $this->sendError($validator->errors());
             }
 
@@ -83,31 +69,11 @@ class RegisterController extends BaseController
         }
         else
         {
-            $validator = Validator::make($input, [
-                'first_name'   => 'required',
-                'last_name'    => 'required',
-                'phone_number' => 'required|digits:10|unique:users,phone_number',
-                'email'        => 'required|ends_with:@gmail.com|unique:users,email',
-                'password'     => 'required|min:8',
-                'major_id'     => 'required',
-                'location'     => 'required',
-                'study_case_id'=> 'required',
-                'open_to_work' => 'required',
-                'birth_date'   => 'required',
-                'bio'          => 'required',
-                'gender'       => 'required',
-                'image'        => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
-            ],[
-                'phone_number.unique' => 'Phone is not unique',
-                'phone_number.digits' => 'Phone Number must contain numbers only',
-                'email.unique'        => 'Email is not unique',
-                'email.ends_with'     => 'Email must be ends with @gmail.com',
-                'password.min'        => 'Password must be at least 8 characters'
-            ]);
+            $registerRequest = new RegisterFreelancerRequest();
+            $validator = Validator::make($input, $registerRequest->rules());
 
-            if($validator->fails())
+            if ($validator->fails())
             {
-                DB::rollBack();
                 return $this->sendError($validator->errors());
             }
 
