@@ -94,7 +94,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Report::class);
     }
-
+    public function skills(): HasMany
+    {
+        return $this->hasMany(UserSkills::class);
+    }
     public function conversations()
     {
         return $this->belongsToMany(Conversation::class, 'participants')
