@@ -4,23 +4,21 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
+use App\Http\Requests\LoginRequest;
 use App\Models\DeviceToken;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class LoginController extends BaseController
 {
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|ends_with:@gmail.com|exists:users,email',
-            'password' => 'required',
-            'device_token' => 'required|string',
-        ],[
-            'email.ends_with' => 'Email must be ends with @gmail.com',
-            'email.exists'    => 'Email is invalid'
-        ]);
+        $loginRequest = new LoginRequest();
+        $validator = Validator::make($request->all(), $loginRequest->rules($request));
 
         if($validator->fails())
         {
@@ -36,7 +34,7 @@ class LoginController extends BaseController
                 return $this->sendError(['error' => 'email is not verified']);
             }
 
-            if (!DeviceToken::where('user_id', $user->id)->where('token', $request->device_token)->exists()) {
+            if ($user['role_id'] == 2 && !DeviceToken::where('user_id', $user->id)->where('token', $request->device_token)->exists()) {
                 DeviceToken::create([
                     'user_id' => $user->id,
                     'token'   => $request->device_token,
@@ -52,7 +50,10 @@ class LoginController extends BaseController
             $userable['phone_number'] = $user['phone_number'];
             $userable['role_id'] = $user['role_id'];
             $userable['id'] = $user['id'];
-            $userable['type'] = (new UserController())->get_type($user);
+
+            if ($user['role_id'] == 2)
+                $userable['type'] = (new UserController())->get_type($user);
+
             $userable['accessToken'] = $token;
 
             //$request->user()->notify(new UserNotification('Login', 'Welcome To Our App!'));

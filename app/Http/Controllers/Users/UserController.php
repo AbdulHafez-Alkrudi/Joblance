@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Mail\SendCodeEmailVerification;
 use App\Models\Company;
 use App\Models\EmailVerification;
@@ -84,6 +85,14 @@ class UserController extends BaseController
 
     public function changePassword(Request $request)
     {
+        $chandePasswordRequest = new ChangePasswordRequest();
+        $validator = Validator::make($request->all(), $chandePasswordRequest->rules());
+
+        if ($validator->fails())
+        {
+            return $this->sendError($validator->errors());
+        }
+
         $user = Auth::user();
         $user = User::query()->find($user['id']);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\EmailVerification as EventsEmailVerification;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\EmailVerificationRequest;
 use App\Mail\SendCodeEmailVerification;
 use App\Models\EmailVerification;
 use App\Models\User;
@@ -16,13 +17,8 @@ class EmailVerificationController extends BaseController
 {
     public function userCheckCode(Request $request) : JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:email_verifications,email',
-            'code' => 'required|string|exists:email_verifications,code',
-        ],[
-            'email.exists' => 'Email is not valid',
-            'code.exists' => 'Code is not valid',
-        ]);
+        $emailVerificationRequest = new EmailVerificationRequest();
+        $validator = Validator::make($request->all(), $emailVerificationRequest->rules());
 
         if($validator->fails())
         {
@@ -54,17 +50,13 @@ class EmailVerificationController extends BaseController
         // delete current code
         $email_verification->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'code' => $email_verification['code'],
-            'message' => trans('email.code_is_valid'),
-        ], 200);
+        return $this->sendResponse([]);
     }
 
     public function userResendCode(Request $request) : JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:users,email',
+            'email' => ['required', 'email', 'exists:users,email'],
         ]);
 
         if($validator->fails())

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\ResetPasswordCheckCodeRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Mail\SendCodeResetPassword;
 use App\Models\ResetCodePassword;
 use App\Models\User;
@@ -43,18 +45,13 @@ class ResetCodePasswordController extends BaseController
         // Send email to user
         Mail::to($request['email'])->send(new SendCodeResetPassword($codeData['code']));
 
-        return response()->json(['status' => 'success', 'message' => trans('code.sent')], 200);
+        return $this->sendResponse([]);
     }
 
     public function userCheckCode(Request $request) : JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:reset_code_passwords,email',
-            'code' => 'required|string|exists:reset_code_passwords,code',
-        ],[
-            'email.exists' => 'Email is not valid',
-            'code.exists' => 'Code is not valid',
-        ]);
+        $checkCodeRequest = new ResetPasswordCheckCodeRequest();
+        $validator = Validator::make($request->all(), $checkCodeRequest->rules());
 
         if($validator->fails())
         {
@@ -70,22 +67,13 @@ class ResetCodePasswordController extends BaseController
             return $this->sendError(['error' => trans('password.code_is_expire')]);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'code' => $passwordReset['code'],
-            'message' => trans('password.code_is_valid'),
-        ], 200);
+        return $this->sendResponse([]);
     }
 
     public function userResetPassword(Request $request) : JsonResponse
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'email' => 'required|email|exists:reset_code_passwords,email',
-            'password' => 'required',
-        ],[
-            'email' => 'email is not valid'
-        ]);
+        $resetPasswordRequest = new ResetPasswordRequest();
+        $validator = Validator::make($request->all(), $resetPasswordRequest->rules());
 
         if($validator->fails())
         {
@@ -105,26 +93,22 @@ class ResetCodePasswordController extends BaseController
         $user = User::query()->firstWhere('email', $passwordReset['email']);
 
         // update user password
-        $input['password'] = bcrypt($input['password']);
+        $request['password'] = bcrypt($request['password']);
 
         $user->update([
-            'password' => $input['password'],
+            'password' => $request['password'],
         ]);
 
         // delete current code
         $passwordReset->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'password hase been successfully reset',
-        ], 200);
+        return $this->sendResponse([]);
     }
 
     public function userResendCode(Request $request) : JsonResponse
     {
-        $data = $request->all();
-        $validator = Validator::make($data, [
-            'email' => 'required|email|exists:users,email',
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email', 'exists:users,email'],
         ]);
 
         if($validator->fails())

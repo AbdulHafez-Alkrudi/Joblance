@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
+use App\Http\Requests\GoogleLoginCompanyRequest;
 use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
@@ -61,7 +62,6 @@ class GoogleLoginController extends BaseController
             $user['given_name']  = $body->given_name;
             $user['family_name'] = $body->family_name;
 
-            $user['type']        = (new UserController())->get_type($user);
             return $this->sendResponse($user);
         }
         catch (RequestException $e) {
@@ -74,20 +74,8 @@ class GoogleLoginController extends BaseController
         $input = $request->all();
         if ($input['is_company'])
         {
-            $validator = Validator::make($input, [
-                'name'             => 'required',
-                'phone_number'     => 'required|digits:10|unique:users,phone_number',
-                'email'            => 'required|ends_with:@gmail.com|exists:users,email',
-                'major_id'            => 'required',
-                'location'         => 'required',
-                'num_of_employees' => 'required',
-                'image'            => 'required',
-            ],[
-                'phone_number.unique' => 'Phone Nmuber is not unique',
-                'phone_number.digits' => 'Phone Number must contain numbers only',
-                'email.ends_with'     => 'Email must be ends with @gmail.com',
-                'email.exists'        => 'Email is invalid',
-            ]);
+            $googleLoginComapnyRequest = new GoogleLoginCompanyRequest();
+            $validator = Validator::make($input, $googleLoginComapnyRequest->rules());
 
             if($validator->fails())
             {
@@ -104,7 +92,7 @@ class GoogleLoginController extends BaseController
             $company_data = [
                 'name'              => $input['name'],
                 'location'          => $input['location'],
-                'major_id'             => $input['major_id'],
+                'major_id'          => $input['major_id'],
                 'num_of_employees'  => $input['num_of_employees'],
                 'description'       => $input['description'],
                 'image'             => $input['image'],
@@ -114,23 +102,7 @@ class GoogleLoginController extends BaseController
         }
         else
         {
-            $validator = Validator::make($input, [
-                'first_name'         => 'required',
-                'last_name'          => 'required',
-                'phone_number' => 'required|digits:10|unique:users,phone_number',
-                'email'        => 'required|ends_with:@gmail.com|exists:users,email',
-                'major_id'        => 'required',
-                'location'     => 'required',
-                'study_case_id'   => 'required',
-                'open_to_work' => 'required',
-                'birth_date'   => 'required',
-                'image'        => 'required',
-            ],[
-                'phone_number.unique' => 'Phone is not unique',
-                'phone_number.digits' => 'Phone Number must contain numbers only',
-                'email.exists'        => 'Email is invalid',
-                'email.ends_with'     => 'Email must be ends with @gmail.com',
-            ]);
+            $validator = Validator::make($input, );
 
             if($validator->fails())
             {

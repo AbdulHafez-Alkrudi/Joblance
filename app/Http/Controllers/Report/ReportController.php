@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\ReportReplyRequest;
+use App\Http\Requests\ReportSendRequest;
 use App\Mail\AdminReply;
 use App\Models\Report;
 use App\Models\User;
@@ -39,10 +41,8 @@ class ReportController extends BaseController
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'title' => 'required',
-            'body'  => 'required',
-        ]);
+        $reportSendRequest = new ReportSendRequest();
+        $validator = Validator::make($request->all(), $reportSendRequest->rules());
 
         if ($validator->fails())
         {
@@ -108,11 +108,8 @@ class ReportController extends BaseController
 
     public function reply(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            'title'   => 'required',
-            'body'    => 'required',
-            'user_id' => 'required',
-        ]);
+        $replyRequest = new ReportReplyRequest();
+        $validator = Validator::make($request->all(), $replyRequest->rules());
 
         if ($validator->fails())
         {

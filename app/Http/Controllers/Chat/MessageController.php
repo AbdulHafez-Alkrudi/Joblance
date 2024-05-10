@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Chat;
 use App\Events\MessageSent;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\DeleteMessageRequest;
+use App\Http\Requests\MessageRequest;
 use App\Models\Conversation;
 use App\Models\Recipient;
 use Carbon\Carbon;
@@ -53,43 +55,8 @@ class MessageController extends BaseController
 
     public function sendMessage(Request $request)
     {
-        $input = $request->all();
-        $validator = Validator::make($input, [
-            'conversation_id' => [
-                Rule::requiredIf(function() use ($request) {
-                    return !$request->input('user_id');
-                }),
-                'int',
-                'exists:conversations,id',
-            ],
-            'user_id' => [
-                Rule::requiredIf(function() use ($request) {
-                    return !$request->input('conversation_id');
-                }),
-                'int',
-                'exists:users,id',
-            ],
-            'text' => [
-                Rule::requiredIf(function() use ($request) {
-                    return !$request->hasFile('image') && !$request->hasFile('file');
-                }),
-                'string'
-            ],
-            'image' => [
-                Rule::requiredIf(function() use ($request) {
-                    return !$request->post('text') && !$request->hasFile('file');
-                }),
-                'image',
-                'mimes:jpeg,png,bmp,jpg,gif,svg'
-            ],
-            'file' => [
-                Rule::requiredIf(function() use ($request) {
-                    return !$request->hasFile('image') && !$request->post('text');
-                }),
-                'file',
-                'mimes:pdf,doc,txt'
-            ]
-        ]);
+        $messageRequest = new MessageRequest();
+        $validator = Validator::make($request->all(), $messageRequest->rules($request));
 
         if ($validator->fails())
         {
@@ -180,10 +147,8 @@ class MessageController extends BaseController
 
     public function deleteMessage(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'ids'    => ['required', 'array', 'exists:messages,id'],
-            'target' => ['required', 'string', 'in:me,everyone'],
-        ]);
+        $deleteMessageRequest = new DeleteMessageRequest();
+        $validator = Validator::make($request->all(), $deleteMessageRequest->rules());
 
         if ($validator->fails())
         {
