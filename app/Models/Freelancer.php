@@ -81,7 +81,7 @@ class Freelancer extends Authenticatable
     public function get_freelancer_info(Freelancer $freelancer , string $lang): array
     {
         return [
-            'id'           => $freelancer->id,
+            'id'           => $freelancer->user->id,
             'name'         => $freelancer->first_name .' '. $freelancer->last_name,
             'image'        => $freelancer->image,
             'bio'          => is_null($freelancer->bio) ? "" : $freelancer->bio,
@@ -99,7 +99,5 @@ class Freelancer extends Authenticatable
             $freelancers[$key] = $this->get_freelancer_info($freelancer , $lang);
         }
         return $freelancers;
-
-
     }
 }
