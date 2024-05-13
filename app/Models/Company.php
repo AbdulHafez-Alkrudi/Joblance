@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -65,5 +66,27 @@ class Company extends Authenticatable
     public function major(): BelongsTo
     {
         return $this->belongsTo(Major::class);
+    }
+
+    public function get_info(Company $company , string $lang): array
+    {
+        return [
+            'id'               => $company->user->id,
+            'name'             => $company->name,
+            'image'            => $company->image,
+            'description'      => is_null($company->description) ? "" : $company->description,
+            'major'            => (new Major)->get_major($company->major_id , $lang , false),
+            'location'         => $company->location,
+            'num_of_employees' => $company->num_of_employees,
+        ];
+    }
+
+    public function get_all_companies(string $lang): Collection
+    {
+        $companies = $this->all();
+        foreach($companies as $key => $company){
+            $companies[$key] = $this->get_info($company , $lang);
+        }
+        return $companies;
     }
 }

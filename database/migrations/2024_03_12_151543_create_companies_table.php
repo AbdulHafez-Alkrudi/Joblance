@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('major_id')->constrained();
             $table->string('name')->nullable();
-            $table->enum('gender', ['male', 'female']);
             $table->string('location')->nullable();
             $table->string('num_of_employees')->nullable();
             $table->longText('description')->nullable();

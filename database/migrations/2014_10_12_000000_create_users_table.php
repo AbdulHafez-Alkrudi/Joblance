@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('userable_id')->nullable();
             $table->string('userable_type')->nullable();
 
-            $table->string('device_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -78,7 +78,7 @@ class Freelancer extends Authenticatable
        return $this->hasMany(JobApplication::class);
    }
    // This method returns the freelancer information according to requested language
-    public function get_freelancer_info(Freelancer $freelancer , string $lang): array
+    public function get_info(Freelancer $freelancer , string $lang): array
     {
         return [
             'id'           => $freelancer->user->id,
@@ -86,6 +86,7 @@ class Freelancer extends Authenticatable
             'image'        => $freelancer->image,
             'bio'          => is_null($freelancer->bio) ? "" : $freelancer->bio,
             'major'        => (new Major)->get_major($freelancer->major_id , $lang , false),
+            'study_case'   => (new StudyCase)->get_study_case($freelancer->study_case_id, $lang, false),
             'location'     => $freelancer->location,
             'open_to_work' => $freelancer->open_to_work,
         ];

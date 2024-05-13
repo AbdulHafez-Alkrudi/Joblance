@@ -23,7 +23,7 @@ class FreelancerController extends BaseController
      */
     public function show(Freelancer $freelancer)
     {
-        return $this->sendResponse( (new Freelancer)->get_freelancer_info($freelancer , \request('lang')) );
+        return $this->sendResponse( (new Freelancer)->get_info($freelancer , \request('lang')) );
     }
 
     /**
