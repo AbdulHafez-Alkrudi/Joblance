@@ -51,9 +51,11 @@ class UserController extends BaseController
             return $this->sendError(['error' => 'id is invalid']);
         }
 
-        $user = $user->userable->get_info($user->userable, \request('lang'), false);
+        $userable = $user->userable->get_info($user->userable, \request('lang'), false);
+        $userable['phone_number'] = $user['phone_number'];
+        $userable['email'] = $user['email'];
 
-        return $this->sendResponse($user);
+        return $this->sendResponse($userable);
     }
 
     /**

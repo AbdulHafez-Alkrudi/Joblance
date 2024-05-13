@@ -82,7 +82,8 @@ class Freelancer extends Authenticatable
     {
         return [
             'id'           => $freelancer->user->id,
-            'name'         => $freelancer->first_name .' '. $freelancer->last_name,
+            'first_name'   => $freelancer->first_name ,
+            'last_name'    => $freelancer->last_name,
             'image'        => $freelancer->image,
             'bio'          => is_null($freelancer->bio) ? "" : $freelancer->bio,
             'major'        => (new Major)->get_major($freelancer->major_id , $lang , false),
