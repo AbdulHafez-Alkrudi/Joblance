@@ -97,7 +97,7 @@ class Freelancer extends Authenticatable
     {
         $freelancers = $this->all();
         foreach($freelancers as $key => $freelancer){
-            $freelancers[$key] = $this->get_freelancer_info($freelancer , $lang);
+            $freelancers[$key] = $this->get_info($freelancer , $lang);
         }
         return $freelancers;
     }
