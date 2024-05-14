@@ -76,6 +76,7 @@ class Company extends Authenticatable
             'image'            => $company->image,
             'description'      => is_null($company->description) ? "" : $company->description,
             'major'            => (new Major)->get_major($company->major_id , $lang , false),
+            'major_id'         => $company->major_id,
             'location'         => $company->location,
             'num_of_employees' => $company->num_of_employees,
         ];
