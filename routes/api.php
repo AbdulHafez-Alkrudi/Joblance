@@ -9,6 +9,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\ResetCodePasswordController,
     Chat\ConversationController,
     Chat\MessageController,
+    CVController,
     DocumentAIController,
     Notification\NotificationController,
     Payment\PayPalController,
@@ -109,6 +110,9 @@ Route::middleware(['auth:api']) ->group(function(){
 
     // for Document Ai
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
+
+    // for CVs
+    Route::post('/generate-cv', [CVController::class, 'create']);
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 
