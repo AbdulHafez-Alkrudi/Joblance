@@ -12,12 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('budgets', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
-            $table->unsignedBigInteger('balance');
+            $table->double('balance');
+            $table->string('code')->nullable();
+
+            $table->foreignId('transactions_type_id')->constrained('transactions_types')->cascadeOnDelete();
+            $table->foreignId('transaction_status_id')->constrained('transaction_statuses')->cascadeOnDelete();
+
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('budgets');
+        Schema::dropIfExists('transactions');
     }
 };

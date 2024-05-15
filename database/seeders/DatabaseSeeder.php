@@ -19,5 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MajorSeeder::class);
         $this->call(ExperienceLevelSeeder::class);
         $this->call(BudgetSeeder::class);
+        $this->call(TransactionTypesSeeder::class);
+        $this->call(TransactionStatusSeeder::class);
     }
 }
