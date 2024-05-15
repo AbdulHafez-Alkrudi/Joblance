@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\CV;
 
 use App\Http\Controllers\BaseController;
 use App\Models\CV;
@@ -49,6 +49,6 @@ class CVController extends BaseController
         ]);
 
         // Return a response indicating success
-        return $this->sendResponse();
+        return $this->sendResponse(['cv' => $path . $filename]);
     }
 }

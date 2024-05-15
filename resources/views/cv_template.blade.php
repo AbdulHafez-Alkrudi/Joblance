@@ -2,43 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $name }}'s CV</title>
+    <title>CV</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #0A3F5C;
+            color: white;
+            margin: 0;
+            padding: 0;
         }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-        }
-        header {
+        .header {
+            background-color: #0A3F5C;
+            padding: 20px;
             text-align: center;
         }
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 20px;
+            vertical-align: top;
+        }
+        .profile-info {
+            display: inline-block;
+            text-align: left;
+        }
+        .profile-info h1 {
+            margin: 0;
+        }
+        .profile-info p {
+            margin: 5px 0;
+        }
+        .main-content {
+            padding: 20px;
+        }
         .section {
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
         .section-title {
-            font-size: 20px;
-            text-decoration: underline;
+            border-bottom: 2px solid #06AED5;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .details-list {
+            list-style: none;
+            padding: 0;
+        }
+        .details-list li {
+            margin-bottom: 5px;
+        }
+        .footer {
+            background-color: #06AED5;
+            padding: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Curriculum Vitae</h1>
-        </header>
-        <section class="personal-info section">
-            <h2 class="section-title">Personal Information</h2>
-            <p><strong>Name:</strong> {{ $name }}</p>
-            <p><strong>Email:</strong> {{ $email }}</p>
-            <!-- Add more personal details here -->
-        </section>
-        <section class="education section">
+    <div class="header">
+        <div class="profile-image"></div>
+        <div class="profile-info">
+            <h1>John Doe</h1>
+            <p>Profession: Web Developer</p>
+            <p>Email: johndoe@example.com</p>
+            <p>Phone: +123456789</p>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="section">
             <h2 class="section-title">Education</h2>
-                <p><strong>{{ $education['degree'] }}</strong> - {{ $education['institution'] }} ({{ $education['year'] }})</p>
-        </section>
-        <!-- Add more sections like 'Work Experience', 'Skills', etc. -->
+            <ul class="details-list">
+                <li>Bachelor of Science in Computer Science - University A (2016-2020)</li>
+                <!-- Add more education details here -->
+            </ul>
+        </div>
+        <!-- Add more sections like Experience, Skills, etc. -->
+    </div>
+    <div class="footer">
+        <p>Thank you for considering my application.</p>
     </div>
 </body>
 </html>
