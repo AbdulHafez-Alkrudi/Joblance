@@ -10,6 +10,10 @@ class TransactionTypes extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name_EN', 'name_AR'
+    ];
+
     public function transaction() : HasMany
     {
         return $this->hasMany(Transaction::class);
