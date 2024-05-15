@@ -14,9 +14,18 @@ class TransactionStatusSeeder extends Seeder
     public function run(): void
     {
         $status = [
-            ['name' => 'pending'],
-            ['name' => 'complete'],
-            ['name' => 'cancle'],
+            [
+                'name_EN' => 'pending',
+                'name_AR' => 'قيد الانتظار'
+            ],
+            [
+                'name_EN' => 'complete',
+                'name_AR' => 'مكتمل'
+            ],
+            [
+                'name_EN' => 'cancle',
+                'name_AR' => 'ملغي'
+            ]
             // you can add more here
         ];
         foreach($status as $temp){

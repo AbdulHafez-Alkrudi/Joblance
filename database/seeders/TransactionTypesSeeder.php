@@ -14,10 +14,22 @@ class TransactionTypesSeeder extends Seeder
     public function run(): void
     {
         $types = [
-            ['name' => 'charge by PayPal'],
-            ['name' => 'recieve by PayPal'],
-            ['name' => 'charge Cash'],
-            ['name' => 'recieve Cash'],
+            [
+                'name_EN' => 'charge via PayPal',
+                'name_AR' => 'شحن عبر PayPal'
+            ],
+            [
+                'name_EN' => 'recieve via PayPal',
+                'name_AR' => 'تلقي عبر PayPal'
+            ],
+            [
+                'name_EN' => 'charge Cash',
+                'name_AR' => 'شحن نقداً'
+            ],
+            [
+                'name_EN' => 'recieve Cash',
+                'name_AR' => 'تلقي نقداً'
+            ]
             // you can add more here
         ];
         foreach($types as $type){
