@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('budgets', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
-            $table->unsignedBigInteger('balance');
+        Schema::create('pay_pal_orders', function (Blueprint $table) {
+            $table->id('paypal_order_id');
+            $table->string('order_id');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->unsignedBigInteger('amount');
+            $table->boolean('buy')->default(false);
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('budgets');
+        Schema::dropIfExists('pay_pal_orders');
     }
 };
