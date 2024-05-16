@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\UserProjectImage;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,5 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call(MajorSeeder::class);
         $this->call(ExperienceLevelSeeder::class);
         $this->call(BudgetSeeder::class);
+        $this->call(SkillSeeder::class);
+        $this->call(UserProjectImageSeeder::class);
+        $this->call(UserProjectSeeder::class);
+        $this->call(UserSkillsSeeder::class);
     }
 }
