@@ -18,10 +18,16 @@ class UserProjectController extends BaseController
      */
     public function index()
     {
-        // Here if the admins want all the user's projects, they won't send a specific user_id
-        // else I should return all the projects for a certain user:
+        // if the user send an id with the request then I'll send all the projects related to that user
+        // else I'll send all the user's project, but first I should make sure that the admin has sent this request
+        $id = request('id') ;
+        if($id != null){
+            $user_projects = UserProject::query()->where("user_id" , $id)->get() ;
+            return $this->sendResponse($user_projects);
+        }
+        else{
 
-
+        }
     }
 
     /**
@@ -29,34 +35,37 @@ class UserProjectController extends BaseController
      */
     public function store(Request $request): JsonResponse
     {
-       DB::beginTransaction();
-       $data = $request->all();
-       $validator = Validator::make($data , [
-           'project_name' => 'required' ,
-           'project_description' => 'required' ,
-           'link' => 'required'
-       ]);
-       if($validator->fails()){
-           DB::rollBack();
-           return $this->sendError($validator->errors()) ;
-       }
-       $data['user_id'] = auth()->id();
-       $project = (new UserProject)->store($data);
-       if(array_key_exists('images' , $data))
-       {
-           $response = (new UserProjectImageController)->store($data , $project->id) ;
-           // checking if the creation of the images have done or not
-           // the format of the response if as following:
-           // [status] => success OR failure
-           // if the status is success then there going to bo [images] key
-           // otherwise there going to be [error_message] key
-           if($response['status'] == 'failure'){
-               return $this->sendError($response['error_message']) ;
-           }
-           $project['images'] = $response['images'];
-       }
-       DB::commit();
-       return $this->sendResponse($project);
+        DB::beginTransaction();
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'project_name' => 'required',
+            'project_description' => 'required',
+            'link' => 'required'
+        ]);
+        if ($validator->fails()) {
+            DB::rollBack();
+            return $this->sendError($validator->errors());
+        }
+        $data['user_id'] = auth()->id();
+        $project = (new UserProject)->store($data);
+        if (array_key_exists('images', $data)) {
+
+
+            $response = (new UserProjectImageController)->store($data, $project->id);
+
+
+            // checking if the creation of the images have done or not
+            // the format of the response is as following:
+            // [status] => success OR failure
+            // if the status is success then there going to bo [images] key
+            // otherwise there going to be [error_message] key
+            if ($response['status'] == 'failure') {
+                return $this->sendError($response['error_message']);
+            }
+            $project['images'] = $response['images'];
+        }
+        DB::commit();
+        return $this->sendResponse($project);
     }
 
     /**
@@ -81,6 +90,11 @@ class UserProjectController extends BaseController
      */
     public function destroy(string $id)
     {
-        //
+        $user_project = UserProject::find($id);
+        if ($user_project == null) {
+            return $this->send_error('there is no project with this ID');
+        }
+        $user_project->delete();
+        return $this->sendResponse();
     }
 }
