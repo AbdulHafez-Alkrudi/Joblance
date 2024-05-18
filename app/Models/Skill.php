@@ -13,8 +13,20 @@ class Skill extends Model
     protected $fillable = [
         'name'
     ];
+
     public function UserSkills(): HasMany
     {
         return $this->hasMany(UserSkills::class);
+    }
+
+    public function get_skill(UserSkills $user_skill)
+    {
+        $data = [
+            'id'         => $user_skill->id,
+            'skill_id'   => $user_skill->skill_id,
+            'skill_name' => $user_skill->skill->name,
+        ];
+
+        return $data;
     }
 }

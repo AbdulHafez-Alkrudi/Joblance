@@ -10,18 +10,25 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserProjectController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Here if the admins want all the user's projects, they won't send a specific user_id
-        // else I should return all the projects for a certain user:
+        if ($request->has('user_id')) {
+            return $this->indexByUserId($request->user_id);
+        }
+        elseif ($request->has('project_id')) {
+            return $this->show($request->project_id);
+        }
 
-
+        $user_id = Auth::id();
+        $projects = UserProject::query()->where('user_id', $user_id)->get();
+        return $this->sendResponse($projects);
     }
 
     /**
@@ -64,7 +71,14 @@ class UserProjectController extends BaseController
      */
     public function show(string $id)
     {
-        //
+        $project = UserProject::find($id);
+        return $this->sendResponse($project);
+    }
+
+    protected function indexByUserId(string $userId)
+    {
+        $projects = UserProject::query()->where('user_id', $userId)->get();
+        return $this->sendResponse($projects);
     }
 
 
@@ -81,6 +95,12 @@ class UserProjectController extends BaseController
      */
     public function destroy(string $id)
     {
-        //
+        $user_project = UserProject::find($id);
+        if ($user_project == null)
+        {
+            return $this->sendError('The user does not have a skill with this ID');
+        }
+        $user_project->delete();
+        return $this->sendResponse();
     }
 }

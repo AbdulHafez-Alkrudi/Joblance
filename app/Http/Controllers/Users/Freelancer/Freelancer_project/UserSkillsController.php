@@ -16,8 +16,11 @@ class UserSkillsController extends BaseController
     public function index()
     {
         $user_id = auth()->id();
-        $skills = UserSkills::query()->where('user_id' , $user_id)->get();
-        return $this->sendResponse($skills);
+        $user_skills = UserSkills::query()->where('user_id' , $user_id)->get();
+
+        $user_skills = (new UserSkills)->get_skills($user_skills);
+
+        return $this->sendResponse($user_skills);
     }
 
     /**

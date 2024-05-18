@@ -95,7 +95,6 @@ class Freelancer extends Authenticatable
         ];
     }
 
-
     public function get_all_freelancers(string $lang): Collection
     {
         $freelancers = $this->all();

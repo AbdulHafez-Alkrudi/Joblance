@@ -70,10 +70,12 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::apiResources([
         'user'  => UserController::class,
         'major' => MajorController::class,
-        'userProject' => UserProjectController::class,
+       // 'userProject' => UserProjectController::class,
         'skill' => SkillController::class,
         'user_skills' => UserSkillsController::class
     ]);
+
+    Route::resource('userProject', UserProjectController::class);
 
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
