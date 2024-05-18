@@ -9,6 +9,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\ResetCodePasswordController,
     Chat\ConversationController,
     Chat\MessageController,
+    CV\CVController,
     DocumentAIController,
     Notification\NotificationController,
     Payment\PayPalController,
@@ -69,10 +70,12 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::apiResources([
         'user'  => UserController::class,
         'major' => MajorController::class,
-        'userProject' => UserProjectController::class,
+       // 'userProject' => UserProjectController::class,
         'skill' => SkillController::class,
         'user_skills' => UserSkillsController::class
     ]);
+
+    Route::resource('userProject', UserProjectController::class);
 
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
@@ -109,6 +112,9 @@ Route::middleware(['auth:api']) ->group(function(){
 
     // for Document Ai
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
+
+    // for CVs
+    Route::post('/generate-cv', [CVController::class, 'create']);
 
     Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
 

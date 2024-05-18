@@ -81,23 +81,25 @@ class Freelancer extends Authenticatable
     public function get_info(Freelancer $freelancer , string $lang): array
     {
         return [
-            'id'           => $freelancer->user->id,
-            'name'         => $freelancer->first_name .' '. $freelancer->last_name,
-            'image'        => $freelancer->image,
-            'bio'          => is_null($freelancer->bio) ? "" : $freelancer->bio,
-            'major'        => (new Major)->get_major($freelancer->major_id , $lang , false),
-            'study_case'   => (new StudyCase)->get_study_case($freelancer->study_case_id, $lang, false),
-            'location'     => $freelancer->location,
-            'open_to_work' => $freelancer->open_to_work,
+            'id'            => $freelancer->user->id,
+            'first_name'    => $freelancer->first_name ,
+            'last_name'     => $freelancer->last_name,
+            'image'         => $freelancer->image,
+            'bio'           => is_null($freelancer->bio) ? "" : $freelancer->bio,
+            'major'         => (new Major)->get_major($freelancer->major_id , $lang , false),
+            'major_id'      => $freelancer->major_id,
+            'study_case'    => (new StudyCase)->get_study_case($freelancer->study_case_id, $lang, false),
+            'study_case_id' => $freelancer->study_case_id,
+            'location'      => $freelancer->location,
+            'open_to_work'  => $freelancer->open_to_work,
         ];
     }
-
 
     public function get_all_freelancers(string $lang): Collection
     {
         $freelancers = $this->all();
         foreach($freelancers as $key => $freelancer){
-            $freelancers[$key] = $this->get_freelancer_info($freelancer , $lang);
+            $freelancers[$key] = $this->get_info($freelancer , $lang);
         }
         return $freelancers;
     }

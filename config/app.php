@@ -189,6 +189,7 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Kreait\Laravel\Firebase\ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -214,6 +215,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Socialite' => 'Laravel\\Socialite\\Facades\\Socialite',
+        'PDF' => 'Barryvdh\\DomPDF\\Facade::class',
     ])->toArray(),
 
 ];

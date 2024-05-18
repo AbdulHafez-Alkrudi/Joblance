@@ -10,24 +10,25 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserProjectController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // if the user send an id with the request then I'll send all the projects related to that user
-        // else I'll send all the user's project, but first I should make sure that the admin has sent this request
-        $id = request('id') ;
-        if($id != null){
-            $user_projects = UserProject::query()->where("user_id" , $id)->get() ;
-            return $this->sendResponse($user_projects);
+        if ($request->has('user_id')) {
+            return $this->indexByUserId($request->user_id);
         }
-        else{
+        elseif ($request->has('project_id')) {
+            return $this->show($request->project_id);
+        }
 
-        }
+        $user_id = Auth::id();
+        $projects = UserProject::query()->where('user_id', $user_id)->get();
+        return $this->sendResponse($projects);
     }
 
     /**
@@ -73,7 +74,14 @@ class UserProjectController extends BaseController
      */
     public function show(string $id)
     {
-        //
+        $project = UserProject::find($id);
+        return $this->sendResponse($project);
+    }
+
+    protected function indexByUserId(string $userId)
+    {
+        $projects = UserProject::query()->where('user_id', $userId)->get();
+        return $this->sendResponse($projects);
     }
 
 
