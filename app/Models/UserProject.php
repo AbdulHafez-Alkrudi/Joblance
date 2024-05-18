@@ -17,7 +17,7 @@ class UserProject extends Model
     ];
     public function images(): HasMany
     {
-        return $this->hasMany(UserProjectImage::class);
+        return $this->hasMany(UserProjectImage::class , 'project_id');
     }
 
     public function store($data)
