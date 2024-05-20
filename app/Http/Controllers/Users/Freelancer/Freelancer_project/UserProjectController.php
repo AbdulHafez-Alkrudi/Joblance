@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users\Freelancer\Freelancer_project;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserProject;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -72,11 +73,20 @@ class UserProjectController extends BaseController
     public function show(string $id)
     {
         $project = UserProject::find($id);
+
+        if (is_null($project)) {
+            return $this->sendError('There is no project with this ID');
+        }
+
         return $this->sendResponse($project);
     }
 
     protected function indexByUserId(string $userId)
     {
+        if (is_null(User::find($userId))) {
+            return $this->sendError('There is no user with this ID');
+        }
+
         $projects = UserProject::query()->where('user_id', $userId)->get();
         return $this->sendResponse($projects);
     }
@@ -98,7 +108,7 @@ class UserProjectController extends BaseController
         $user_project = UserProject::find($id);
         if ($user_project == null)
         {
-            return $this->sendError('The user does not have a skill with this ID');
+            return $this->sendError('There is no project with this ID');
         }
         $user_project->delete();
         return $this->sendResponse();

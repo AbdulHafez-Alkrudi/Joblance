@@ -12,16 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->double('balance');
-            $table->string('code')->nullable();
-
-            $table->foreignId('transaction_type_id')->constrained('transactions_types')->cascadeOnDelete();
-            $table->foreignId('transaction_status_id')->constrained('transaction_statuses')->cascadeOnDelete();
-
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-
+            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
+            $table->integer('level');
+            $table->text('comment');
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('reviews');
     }
 };
