@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users\UserProjects;
 use App\Http\Controllers\BaseController;
 use App\Models\UserProject;
 use Illuminate\Http\JsonResponse;
+use App\Models\UserProjectImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -72,8 +73,11 @@ class UserProjectController extends BaseController
      */
     public function show(string $id)
     {
-        $project = UserProject::find($id);
-        return $this->sendResponse($project);
+
+        $project = UserProject::query()->findOrFail($id);
+        $projectImages = UserProjectImage::query()->where('project_id', $project->id)->get();
+
+        return $this->sendResponse(['project' => $project, 'images' => $projectImages]);
     }
 
     protected function indexByUserId(string $userId)
