@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Users\Freelancer\Freelancer_project;
+namespace App\Http\Controllers\Users\UserProjects;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Models\UserProjectImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

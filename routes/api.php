@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Freelancer;
 use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\GoogleLoginController,
     Auth\LoginController,
@@ -14,16 +13,14 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Notification\NotificationController,
     Payment\PayPalController,
     Report\ReportController,
-    Users\Freelancer\Freelancer_project\UserProjectController,
-    Users\Freelancer\Freelancer_project\UserSkillsController,
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
     Users\MajorController,
-    Users\UserController};
-
-
-use Illuminate\Support\Facades\Route;
+    Users\UserController,
+    Users\UserProjects\UserProjectController,
+    Users\UserProjects\UserSkillsController};
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
 
 
 /*

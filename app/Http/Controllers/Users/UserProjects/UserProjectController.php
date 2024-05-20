@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Users\Freelancer\Freelancer_project;
+namespace App\Http\Controllers\Users\UserProjects;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Models\UserProject;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserProjectController extends BaseController
 {
