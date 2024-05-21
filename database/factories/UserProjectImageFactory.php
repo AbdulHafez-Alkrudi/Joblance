@@ -19,7 +19,7 @@ class UserProjectImageFactory extends Factory
     {
         return [
             'project_id' => UserProject::factory(),
-            'image' => $this->faker->image
+            'image_path' => $this->faker->image
         ];
     }
 }

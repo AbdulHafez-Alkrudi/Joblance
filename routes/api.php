@@ -14,11 +14,14 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Notification\NotificationController,
     Payment\PayPalController,
     Report\ReportController,
+    Users\Company\CompanyController,
     Review\ReviewController,
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
     Users\MajorController,
-    Users\UserController};
+    Users\UserController,
+    Users\UserProjects\UserProjectController,
+    Users\UserProjects\UserSkillsController};
 
 
 use Illuminate\Support\Facades\Broadcast;
@@ -35,7 +38,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Broadcast::routes(['middlewere'=>['auth:api']]);
+
+Broadcast::routes(['middlewere' => ['auth:api']]);
 
 
 Route::get('contests', function ($id) {
@@ -57,27 +61,26 @@ Route::post('auth/google/login', [GoogleLoginController::class, 'googleLogin']);
 Route::post('auth/google/userinfo', [GoogleLoginController::class, 'getUserINfo']);
 
 // for Authentication
-Route::post('register' , RegisterController::class);
-Route::post('login', [LoginController::class , 'login']);
+Route::post('register', RegisterController::class);
+Route::post('login', [LoginController::class, 'login']);
 
-Route::middleware(['auth:api']) ->group(function(){
-    Route::post('user/logout' , LogoutController::class)->name('logout');
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('user/logout', LogoutController::class)->name('logout');
 
-  /*  Route::resource('user'        , UserController::class);
-    Route::resource('major'       , MajorController::class);
-    Route::resource('userProject' , UserProjectController::class);*/
     Route::apiResources([
-        'user'  => UserController::class,
-        'major' => MajorController::class,
-        'userProject' => UserProjectController::class,
-        'skill' => SkillController::class,
+        'user'        => UserController::class,
+        'major'       => MajorController::class,
+        'skill'       => SkillController::class,
         'user_skills' => UserSkillsController::class,
-        // 'review' => ReviewController::class,
+        'freelancer'  => FreelancerController::class,
+        'company'     => CompanyController::class
     ]);
+
+    Route::resource('userProject', UserProjectController::class)->except(['update']);
+    Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
 
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
-    Route::resource('freelancer' , FreelancerController::class);
     Route::resource('review', ReviewController::class);
 
 
@@ -105,9 +108,9 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::post('report/reply', [ReportController::class, 'reply']);
 
     // for PayPal
-    Route::post('paypal'       ,  [PayPalController::class, 'paypal' ])->name('paypal');
+    Route::post('paypal',  [PayPalController::class, 'paypal'])->name('paypal');
     Route::get('paypal/success',  [PayPalController::class, 'success'])->name('paypal.success');
-    Route::get('paypal/cancel' ,  [PayPalController::class, 'cancel' ])->name('paypal.cancel');
+    Route::get('paypal/cancel',  [PayPalController::class, 'cancel'])->name('paypal.cancel');
 
     // for Document Ai
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
@@ -115,10 +118,9 @@ Route::middleware(['auth:api']) ->group(function(){
     // for CVs
     Route::post('/generate-cv', [CVController::class, 'create']);
 
-    Route::middleware(['auth:api', 'can:isCompany']) ->group(function(){
-
+    Route::middleware(['auth:api', 'can:isCompany'])->group(function () {
     });
 
-    Route::middleware(['auth:api', 'can:isFreelancer']) ->group(function(){
+    Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
     });
 });
