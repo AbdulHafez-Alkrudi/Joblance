@@ -23,7 +23,7 @@ class ReviewRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'exists:users,id'],
-            'level'   => ['required', 'integer', 'min:0', 'max:5'],
+            'level'   => ['required', 'integer', 'min:0.00', 'max:5.00'],
             'comment' => ['required']
         ];
     }

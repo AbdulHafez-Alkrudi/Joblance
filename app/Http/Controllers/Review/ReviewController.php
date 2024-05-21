@@ -10,6 +10,7 @@ use App\Models\Review;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,7 +43,7 @@ class ReviewController extends BaseController
     public function store(Request $request)
     {
         DB::beginTransaction();
-        try {
+        // try {
             $reviewRequest = new ReviewRequest();
             $validator = Validator::make($request->all(), $reviewRequest->rules());
 
@@ -54,6 +55,7 @@ class ReviewController extends BaseController
             $user = User::find($request->user_id);
             $review_data = [
                 'company_id' => $user->userable_id,
+                'user_id'    => Auth::id(),
                 'level'      => $request->level,
                 'comment'    => $request->comment,
             ];
@@ -63,10 +65,10 @@ class ReviewController extends BaseController
             DB::commit();
 
             return $this->sendResponse($review);
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return $this->sendError(['message' => $ex->getMessage()]);
-        }
+        // } catch (Exception $ex) {
+        //     DB::rollBack();
+        //     return $this->sendError(['message' => $ex->getMessage()]);
+        // }
     }
 
     /**
@@ -94,7 +96,8 @@ class ReviewController extends BaseController
             return $this->sendError(['message' => 'Userable type is not Company']);
         }
 
-        return $this->sendResponse($user->userable->reviews);
+        $reviews = (new Review)->get_all_reviews($user->userable->reviews);
+        return $this->sendResponse($reviews);
     }
 
     /**

@@ -11,7 +11,10 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id', 'level', 'comment'
+        'company_id',
+        'level',
+        'comment',
+        'user_id',
     ];
 
     /**
@@ -27,5 +30,27 @@ class Review extends Model
     public function company() : BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function get_all_reviews($reviews)
+    {
+        foreach ($reviews as $key => $review) {
+            $reviews[$key] = $this->get_info($review);
+        }
+        return $reviews;
+    }
+
+    public function get_info($review)
+    {
+        $user = User::find($review->user_id);
+        return [
+            'id' => $review->id,
+            'level' => $review->level,
+            'comment' => $review->comment,
+            'user_id' => $review->user_id,
+            'first_name' => $user->userable->first_name,
+            'last_name' => $user->userable->last_name,
+            'image' => $user->userable->image,
+        ];
     }
 }
