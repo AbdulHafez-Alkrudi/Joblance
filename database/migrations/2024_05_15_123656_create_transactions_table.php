@@ -17,7 +17,7 @@ return new class extends Migration
             $table->double('balance');
             $table->string('code')->nullable();
 
-            $table->foreignId('transactions_type_id')->constrained('transactions_types')->cascadeOnDelete();
+            $table->foreignId('transaction_type_id')->constrained('transactions_types')->cascadeOnDelete();
             $table->foreignId('transaction_status_id')->constrained('transaction_statuses')->cascadeOnDelete();
 
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();

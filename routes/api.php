@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Freelancer;
 use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\GoogleLoginController,
     Auth\LoginController,
@@ -9,16 +10,17 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     CV\CVController,
-    DocumentAIController,
+    DocumentAI\DocumentAIController,
     Notification\NotificationController,
     Payment\PayPalController,
     Report\ReportController,
+    Review\ReviewController,
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
     Users\MajorController,
-    Users\UserController,
-    Users\UserProjects\UserProjectController,
-    Users\UserProjects\UserSkillsController};
+    Users\UserController};
+
+
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -67,16 +69,16 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::apiResources([
         'user'  => UserController::class,
         'major' => MajorController::class,
-       // 'userProject' => UserProjectController::class,
+        'userProject' => UserProjectController::class,
         'skill' => SkillController::class,
-        'user_skills' => UserSkillsController::class
+        'user_skills' => UserSkillsController::class,
+        // 'review' => ReviewController::class,
     ]);
-
-    Route::resource('userProject', UserProjectController::class);
 
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
     Route::resource('freelancer' , FreelancerController::class);
+    Route::resource('review', ReviewController::class);
 
 
     // for Notifications
