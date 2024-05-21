@@ -11,7 +11,7 @@ class UserProjectImage extends Model
     use HasFactory;
     protected $fillable = [
         'project_id',
-        'image'
+        'image_path'
     ];
     public function UserProject(): BelongsTo
     {
@@ -21,17 +21,13 @@ class UserProjectImage extends Model
     public function store($images , $project_id): array
     {
         $data = array();
-        $cnt = 0 ;
-        foreach($images as $array_image){
-            $image = $array_image['image'];
-            $image_name = (time() + $cnt++) .'.'.$image->getClientOriginalExtension();
-
-            $path = 'images/UserProjects/' ;
-
-            $image->move($path,$image_name);
-            $image_name = $path.$image_name ;
-
-            $final_data = ['project_id' => $project_id , 'image' => $image_name];
+        if(!is_array($images)){
+            // if I sent a single image, I'll convert it to an array
+            $images = [$images] ;
+        }
+        foreach($images as $image){
+            $path = $image->store('project_images' , 'public');
+            $final_data = ['project_id' => $project_id , 'image_path' => $path];
             $data[] = UserProjectImage::create($final_data);
         }
         return $data;

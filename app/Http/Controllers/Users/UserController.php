@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends BaseController
@@ -79,7 +80,15 @@ class UserController extends BaseController
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::find($id) ;
+        if($user == null){
+            return $this->sendError('there is no user with this ID');
+        }
+        $company_image = $user->userable->image;
+        if($company_image != null){
+            Storage::disk('public')->delete($company_image);
+        }
+        $user->delete();
     }
 
     public function changePassword(Request $request)

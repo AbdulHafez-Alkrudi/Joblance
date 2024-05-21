@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\UserProjectImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserProjectImageController extends BaseController
@@ -23,10 +24,9 @@ class UserProjectImageController extends BaseController
      */
     public function store($data , $project_id): JsonResponse|array
     {
-
         $validator = Validator::make($data , [
             'images' => ['array' , 'present'],
-            'images.*.image' => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
+            'images.*' => ['image' , 'mimes:jpeg,png,bmp,jpg,gif,svg']
         ]);
         if($validator->fails())
         {
@@ -44,23 +44,7 @@ class UserProjectImageController extends BaseController
      */
     public function show(string $id)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
     }
 
     /**
@@ -68,6 +52,12 @@ class UserProjectImageController extends BaseController
      */
     public function destroy(string $id)
     {
-        //
+        $project_image = UserProjectImage::find($id) ;
+        if($project_image == null){
+            return $this->sendError('there is no image with the provided ID');
+        }
+        // before I delete the image from the database I should remove it from the public directory:
+        Storage::disk('public')->delete($project_image->image_path);
+        $project_image->delete() ;
     }
 }
