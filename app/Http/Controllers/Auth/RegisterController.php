@@ -113,20 +113,16 @@ class RegisterController extends BaseController
      */
     public function get_image(Request $request, string $type): string
     {
-        $user_image_name = "";
+        $user_image_path = "";
 
         if($request->hasFile('image'))
         {
-            $image = $request->file('image');
-            $user_image_name = time().'.'.$image->getClientOriginalExtension();
-
-            $path = 'images/' . $type.'/' ;
-
-            $image->move($path,$user_image_name);
-            $user_image_name = $path.$user_image_name ;
+            $image = $request['image'] ;
+            // check config/filesystem.php to know the meaning of public in the second parameter
+            $user_image_path = $image->store($type , 'public');
         }
 
-        return $user_image_name ;
+        return $user_image_path ;
     }
 
     /**

@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('user_project_images', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id');
-            $table->string('image');
+            $table->foreignId('project_id')->references('id')->on('user_projects');
+            $table->string('image_path');
             $table->timestamps();
 
-            $table->foreign('project_id')->references('id')->on('user_projects')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
     }

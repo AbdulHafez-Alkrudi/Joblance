@@ -9,8 +9,10 @@ use App\Models\UserProject;
 use Illuminate\Http\JsonResponse;
 use App\Models\UserProjectImage;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserProjectController extends BaseController
@@ -34,7 +36,7 @@ class UserProjectController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         DB::beginTransaction();
         $data = $request->all();
@@ -55,7 +57,7 @@ class UserProjectController extends BaseController
             $response = (new UserProjectImageController)->store($data, $project->id);
 
 
-            // checking if the creation of the images have done or not
+            // checking if the creation of the images has done or not
             // the format of the response is as following:
             // [status] => success OR failure
             // if the status is success then there going to bo [images] key
@@ -94,7 +96,26 @@ class UserProjectController extends BaseController
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $request->all() ;
+        $project = UserProject::find($id);
+        if($project == null){
+            return $this->sendError('there is no project with this ID');
+        }
+        // first I'll check if the user want to edit the images:
+        // here there are two types of editing:
+        // he can remove an existing image/images and add new one/ones
+        if($request->input('images_del')){
+            foreach($data['images_del'] as $image_id){
+                (new UserProjectImageController)->destroy($image_id);
+            }
+        }
+        if($request->hasFile('images_add')){
+            (new UserProjectImage)->store($data['images_add'] , $id) ;
+        }
+        // excluding images_del and images_add from the array if they are existed
+        $data = array_diff_key($data , array_flip(['images_del' , 'images_add']));
+        $project->update($data);
+        return $this->sendResponse($project->with('images'));
     }
 
     /**
