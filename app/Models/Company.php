@@ -68,6 +68,11 @@ class Company extends Authenticatable
         return $this->belongsTo(Major::class);
     }
 
+    public function reviews() : HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function get_info(Company $company , string $lang): array
     {
         return [

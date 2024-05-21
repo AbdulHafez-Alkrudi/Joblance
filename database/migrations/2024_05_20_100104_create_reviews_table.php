@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('user_project_images', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->references('id')->on('user_projects');
-            $table->string('image_path');
+            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
+            $table->integer('level');
+            $table->text('comment');
             $table->timestamps();
-
         });
         Schema::enableForeignKeyConstraints();
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_projct_images');
+        Schema::dropIfExists('reviews');
     }
 };

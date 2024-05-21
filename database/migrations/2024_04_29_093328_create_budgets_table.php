@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->cascadeOnDelete();
-            $table->unsignedBigInteger('balance');
+            $table->unsignedBigInteger('balance')->default(0);
+            $table->unsignedBigInteger('freeze_balance')->default(0);
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
