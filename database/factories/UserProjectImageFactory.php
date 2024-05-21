@@ -6,9 +6,9 @@ use App\Models\UserProject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserProjctImage>
+ * @extends Factory
  */
-class UserProjctImageFactory extends Factory
+class UserProjectImageFactory extends Factory
 {
     /**
      * Define the model's default state.

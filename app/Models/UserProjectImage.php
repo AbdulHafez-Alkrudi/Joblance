@@ -15,15 +15,16 @@ class UserProjectImage extends Model
     ];
     public function UserProject(): BelongsTo
     {
-        return $this->belongsTo(UserProject::class , 'project_id');
+        return $this->belongsTo(UserProject::class );
     }
 
     public function store($images , $project_id): array
     {
         $data = array();
+        $cnt = 0 ;
         foreach($images as $array_image){
             $image = $array_image['image'];
-            $image_name = time().'.'.$image->getClientOriginalExtension();
+            $image_name = (time() + $cnt++) .'.'.$image->getClientOriginalExtension();
 
             $path = 'images/UserProjects/' ;
 

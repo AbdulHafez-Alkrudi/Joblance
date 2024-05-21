@@ -18,7 +18,7 @@ class UserProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::factory()->forFreelancer(),
             'project_name' => $this->faker->company,
             'project_description' => $this->faker->realText(),
             'link' => $this->faker->url

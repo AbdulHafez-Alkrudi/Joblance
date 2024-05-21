@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends Factory
  */
 class FreelancerFactory extends Factory
 {
@@ -25,7 +26,8 @@ class FreelancerFactory extends Factory
             'major_id'      => $this->faker->numberBetween(1 , 5),
             'open_to_work'  => $this->faker->boolean,
             'image'         => $this->faker->image,
-            'bio'           => $this->faker->realText
+            'bio'           => $this->faker->realText,
+            'gender'        => $this->faker->randomElement(['male' , 'female'])
         ];
     }
 }

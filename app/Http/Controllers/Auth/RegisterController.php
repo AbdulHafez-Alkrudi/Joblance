@@ -5,22 +5,15 @@ namespace App\Http\Controllers\Auth;
 use App\Events\EmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
-use App\Http\Requests\RegisterCompanyRequest;
-use App\Http\Requests\RegisterFreelancerRequest;
+use App\Http\Requests\{RegisterCompanyRequest, RegisterFreelancerRequest};
 use App\Jobs\DeleteAccount;
-use App\Models\Company;
-use App\Models\Freelancer;
-use App\Models\Role;
-use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use App\Models\{Company, Freelancer, Role, User};
+use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Support\{Facades\DB, Facades\Hash, Facades\Validator};
 
 class RegisterController extends BaseController
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request)
     {
         DB::beginTransaction();
         $input = $request->all();
@@ -33,6 +26,7 @@ class RegisterController extends BaseController
 
             if ($validator->fails())
             {
+                DB::rollBack();
                 return $this->sendError($validator->errors());
             }
 
@@ -74,12 +68,12 @@ class RegisterController extends BaseController
 
             if ($validator->fails())
             {
+                DB::rollBack();
                 return $this->sendError($validator->errors());
             }
 
             $input['password'] = Hash::make($input['password']);
             $input['role_id']  = Role::ROLE_USER;
-
             $user_data = [
                 'phone_number' => $input['phone_number'],
                 'email'        => $input['email'],
@@ -88,6 +82,7 @@ class RegisterController extends BaseController
             ];
 
             $user = User::create($user_data);
+
             $input['image'] = $this->get_image($request, "freelancer");
 
             $freelancer_data = [
@@ -105,6 +100,7 @@ class RegisterController extends BaseController
 
             $response = $this->extracted_data($user , Freelancer::create($freelancer_data));
         }
+
 
         DB::commit();
         return $response ;
@@ -148,10 +144,10 @@ class RegisterController extends BaseController
         // just to send it to the API
         $token = $user->createToken('Personal Access Token')->accessToken;
 
+        $specified_user_data['id'] = $user['id'];
         $specified_user_data['phone_number'] = $user['phone_number'];
         $specified_user_data['email'] = $user['email'];
         $specified_user_data['role_id'] = $user['role_id'];
-        $specified_user_data['id'] = $user['id'];
         $specified_user_data['type'] = (new UserController)->get_type($user) ;
         $specified_user_data['accessToken'] = $token;
 
@@ -160,6 +156,7 @@ class RegisterController extends BaseController
         {
             EmailVerification::dispatch($user);
             DeleteAccount::dispatch($user)->delay(86400);
+
         }
 
         return $this->sendResponse($specified_user_data);

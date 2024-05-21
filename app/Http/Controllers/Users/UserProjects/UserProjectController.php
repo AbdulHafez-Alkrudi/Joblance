@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Users\Freelancer\Freelancer_project;
+namespace App\Http\Controllers\Users\UserProjects;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserProject;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-
+use App\Models\UserProjectImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserProjectController extends BaseController
 {
@@ -27,8 +27,7 @@ class UserProjectController extends BaseController
             return $this->show($request->project_id);
         }
 
-        $user_id = Auth::id();
-        $projects = UserProject::query()->where('user_id', $user_id)->get();
+        $projects = UserProject::query()->where('user_id', Auth::id())->get();
         return $this->sendResponse($projects);
     }
 
@@ -37,34 +36,37 @@ class UserProjectController extends BaseController
      */
     public function store(Request $request): JsonResponse
     {
-       DB::beginTransaction();
-       $data = $request->all();
-       $validator = Validator::make($data , [
-           'project_name' => 'required' ,
-           'project_description' => 'required' ,
-           'link' => 'required'
-       ]);
-       if($validator->fails()){
-           DB::rollBack();
-           return $this->sendError($validator->errors()) ;
-       }
-       $data['user_id'] = auth()->id();
-       $project = (new UserProject)->store($data);
-       if(array_key_exists('images' , $data))
-       {
-           $response = (new UserProjectImageController)->store($data , $project->id) ;
-           // checking if the creation of the images have done or not
-           // the format of the response if as following:
-           // [status] => success OR failure
-           // if the status is success then there going to bo [images] key
-           // otherwise there going to be [error_message] key
-           if($response['status'] == 'failure'){
-               return $this->sendError($response['error_message']) ;
-           }
-           $project['images'] = $response['images'];
-       }
-       DB::commit();
-       return $this->sendResponse($project);
+        DB::beginTransaction();
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'project_name' => 'required',
+            'project_description' => 'required',
+            'link' => 'required'
+        ]);
+        if ($validator->fails()) {
+            DB::rollBack();
+            return $this->sendError($validator->errors());
+        }
+        $data['user_id'] = auth()->id();
+        $project = (new UserProject)->store($data);
+        if (array_key_exists('images', $data)) {
+
+
+            $response = (new UserProjectImageController)->store($data, $project->id);
+
+
+            // checking if the creation of the images have done or not
+            // the format of the response is as following:
+            // [status] => success OR failure
+            // if the status is success then there going to bo [images] key
+            // otherwise there going to be [error_message] key
+            if ($response['status'] == 'failure') {
+                return $this->sendError($response['error_message']);
+            }
+            $project['images'] = $response['images'];
+        }
+        DB::commit();
+        return $this->sendResponse($project);
     }
 
     /**
@@ -73,11 +75,6 @@ class UserProjectController extends BaseController
     public function show(string $id)
     {
         $project = UserProject::find($id);
-
-        if (is_null($project)) {
-            return $this->sendError('There is no project with this ID');
-        }
-
         return $this->sendResponse($project);
     }
 
@@ -106,9 +103,8 @@ class UserProjectController extends BaseController
     public function destroy(string $id)
     {
         $user_project = UserProject::find($id);
-        if ($user_project == null)
-        {
-            return $this->sendError('There is no project with this ID');
+        if ($user_project == null) {
+            return $this->send_error('there is no project with this ID');
         }
         $user_project->delete();
         return $this->sendResponse();
