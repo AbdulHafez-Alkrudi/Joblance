@@ -76,8 +76,10 @@ class UserProjectController extends BaseController
      */
     public function show(string $id)
     {
-        $project = UserProject::find($id);
-        return $this->sendResponse($project);
+        $project = UserProject::query()->findOrFail($id);
+        $projectImages = UserProjectImage::query()->where('project_id', $project->id)->get();
+
+        return $this->sendResponse(['project' => $project, 'images' => $projectImages]);
     }
 
     protected function indexByUserId(string $userId)
