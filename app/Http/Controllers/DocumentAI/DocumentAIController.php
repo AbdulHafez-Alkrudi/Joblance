@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\DocumentAI;
 
 use App\Http\Controllers\BaseController;
 use Google\Cloud\DocumentAI\V1\DocumentProcessorServiceClient;
