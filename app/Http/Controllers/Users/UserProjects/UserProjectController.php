@@ -74,13 +74,16 @@ class UserProjectController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
-        $project = UserProject::find($id);
-        return $this->sendResponse($project);
+
+        $project = UserProject::query()->findOrFail($id);
+        $projectImages = UserProjectImage::query()->where('project_id', $project->id)->get();
+
+        return $this->sendResponse(['project' => $project, 'images' => $projectImages]);
     }
 
-    protected function indexByUserId(string $userId)
+    protected function indexByUserId(string $userId): JsonResponse
     {
         if (is_null(User::find($userId))) {
             return $this->sendError('There is no user with this ID');
@@ -94,7 +97,7 @@ class UserProjectController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): JsonResponse
     {
         $data = $request->all() ;
         $project = UserProject::find($id);
@@ -121,7 +124,7 @@ class UserProjectController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $user_project = UserProject::find($id);
         if ($user_project == null) {
