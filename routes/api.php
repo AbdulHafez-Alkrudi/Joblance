@@ -9,10 +9,11 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\ConversationController,
     Chat\MessageController,
     CV\CVController,
-    DocumentAIController,
+    DocumentAI\DocumentAIController,
     Notification\NotificationController,
     Payment\PayPalController,
     Report\ReportController,
+    Users\Company\CompanyController,
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
     Users\MajorController,
@@ -65,19 +66,18 @@ Route::middleware(['auth:api']) ->group(function(){
     Route::resource('major'       , MajorController::class);
     Route::resource('userProject' , UserProjectController::class);*/
     Route::apiResources([
-        'user'  => UserController::class,
-        'major' => MajorController::class,
-       // 'userProject' => UserProjectController::class,
-        'skill' => SkillController::class,
-        'user_skills' => UserSkillsController::class
+        'user'        => UserController::class,
+        'major'       => MajorController::class,
+        'skill'       => SkillController::class,
+        'user_skills' => UserSkillsController::class,
+        'freelancer'  => FreelancerController::class ,
+        'company'     => CompanyController::class
     ]);
 
-    Route::resource('userProject', UserProjectController::class);
+    Route::resource('userProject', UserProjectController::class)->except(['update']);
+    Route::post('userProject/{userProject}' , [UserProjectController::class , 'update']);
 
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
-
-    Route::resource('freelancer' , FreelancerController::class);
-
 
     // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
