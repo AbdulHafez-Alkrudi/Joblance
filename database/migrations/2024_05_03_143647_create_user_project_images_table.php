@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('user_project_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id');
-            $table->string('image');
+            $table->foreignId('project_id')->references('id')->on('user_projects');
+            $table->string('image_path');
             $table->timestamps();
+
+
         });
     }
 
