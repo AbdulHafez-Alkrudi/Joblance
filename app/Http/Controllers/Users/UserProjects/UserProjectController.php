@@ -13,6 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserProjectController extends BaseController
@@ -82,7 +83,9 @@ class UserProjectController extends BaseController
         }
 
         $projectImages = UserProjectImage::query()->where('project_id', $project->id)->get();
-
+        foreach($projectImages as $image){
+            $image['image_path'] = asset('storage/' . $image->image_path);
+        }
         return $this->sendResponse(['project' => $project, 'images' => $projectImages]);
     }
 
