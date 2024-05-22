@@ -51,6 +51,7 @@ class Review extends Model
             'first_name' => $user->userable->first_name,
             'last_name' => $user->userable->last_name,
             'image' => $user->userable->image,
+            'created_at' => $review->created_at->format('Y-m-d'),
         ];
     }
 }
