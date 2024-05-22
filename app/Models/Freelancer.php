@@ -91,6 +91,7 @@ class Freelancer extends Authenticatable
             'study_case'    => (new StudyCase)->get_study_case($freelancer->study_case_id, $lang, false),
             'study_case_id' => $freelancer->study_case_id,
             'location'      => $freelancer->location,
+            "open_to_work"  => $freelancer->open_to_work,
             'open_to_work'  => $freelancer->open_to_work,
         ];
     }
