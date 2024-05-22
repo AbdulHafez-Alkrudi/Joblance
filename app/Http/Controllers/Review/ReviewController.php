@@ -6,6 +6,8 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Company;
+use App\Models\Evaluation;
+use App\Models\Freelancer;
 use App\Models\Review;
 use App\Models\User;
 use Exception;
@@ -43,7 +45,7 @@ class ReviewController extends BaseController
     public function store(Request $request)
     {
         DB::beginTransaction();
-        // try {
+        try {
             $reviewRequest = new ReviewRequest();
             $validator = Validator::make($request->all(), $reviewRequest->rules());
 
@@ -65,10 +67,10 @@ class ReviewController extends BaseController
             DB::commit();
 
             return $this->sendResponse($review);
-        // } catch (Exception $ex) {
-        //     DB::rollBack();
-        //     return $this->sendError(['message' => $ex->getMessage()]);
-        // }
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return $this->sendError(['message' => $ex->getMessage()]);
+        }
     }
 
     /**

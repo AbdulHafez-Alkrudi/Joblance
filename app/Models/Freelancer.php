@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Passport\HasApiTokens;
+use PhpParser\Node\Expr\Cast\Double;
 
 class Freelancer extends Authenticatable
 {
@@ -26,7 +27,7 @@ class Freelancer extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded = [
-        'id'
+        'id',
     ];
 
     /**
@@ -82,6 +83,8 @@ class Freelancer extends Authenticatable
             'location'      => $freelancer->location,
             "open_to_work"  => $freelancer->open_to_work,
             'open_to_work'  => $freelancer->open_to_work,
+            'rate'          => $this->rate($freelancer->sum, $freelancer->counter),
+            'counter'       => $freelancer->counter,
         ];
     }
 
@@ -92,5 +95,10 @@ class Freelancer extends Authenticatable
             $freelancers[$key] = $this->get_info($freelancer , $lang);
         }
         return $freelancers;
+    }
+
+    public function rate($sum, $counter)
+    {
+        return $sum / $counter;
     }
 }

@@ -10,11 +10,8 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'company_id',
-        'level',
-        'comment',
-        'user_id',
+    protected $guarded = [
+        'id'
     ];
 
     /**
@@ -26,11 +23,6 @@ class Review extends Model
         'created_at' => 'datetime:Y-m-d',
         'updated_at' => 'datetime:Y-m-d',
     ];
-
-    public function company() : BelongsTo
-    {
-        return $this->belongsTo(Company::class);
-    }
 
     public function get_all_reviews($reviews)
     {
