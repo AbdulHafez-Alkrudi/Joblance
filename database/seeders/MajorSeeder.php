@@ -15,16 +15,16 @@ class MajorSeeder extends Seeder
     {
         Major::create([
 
-            'name_EN' => 'engineering',
+            'name_EN' => 'Engineering',
             'name_AR' => 'هندسة'
         ]);
         Major::create([
-            'name_EN' => 'medical',
+            'name_EN' => 'Medical',
             'name_AR' => 'طبي'
         ]);
         Major::create([
             'name_EN' => 'Technology',
-            'name_AR' => 'تقني'
+            'name_AR' => 'تكنولوجيا'
         ]);
         Major::create([
            'name_EN' => 'Designing',
@@ -35,5 +35,6 @@ class MajorSeeder extends Seeder
             'name_AR' => 'خدمة العملاء'
 
         ]);
+       
     }
 }
