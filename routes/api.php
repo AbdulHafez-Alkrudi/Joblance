@@ -22,8 +22,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Users\UserController,
     Users\UserProjects\UserProjectController,
     Users\UserProjects\UserSkillsController};
-
-
+use App\Http\Controllers\Review\EvaluationController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -73,16 +72,15 @@ Route::middleware(['auth:api'])->group(function () {
         'skill'       => SkillController::class,
         'user_skills' => UserSkillsController::class,
         'freelancer'  => FreelancerController::class,
-        'company'     => CompanyController::class
+        'company'     => CompanyController::class,
+        'review'      => ReviewController::class,
+        'evaluation'  => EvaluationController::class,
     ]);
 
     Route::resource('userProject', UserProjectController::class)->except(['update']);
     Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
 
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
-
-    Route::resource('review', ReviewController::class);
-
 
     // for Notifications
     Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->boolean('open_to_work')->default(false);
             $table->string('image')->nullable();
             $table->text('bio')->nullable();
+            $table->double('sum')->default(0.00);
+            $table->double('counter')->default(0.00);
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
