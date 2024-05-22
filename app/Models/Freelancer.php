@@ -25,19 +25,8 @@ class Freelancer extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'major_id',
-        'location',
-        'study_case',
-        'open_to_work',
-        'user_id',
-        'image',
-        'study_case_id',
-        'birth_date',
-        'bio',
-        'gender',
+    protected $guarded = [
+        'id'
     ];
 
     /**
