@@ -77,7 +77,7 @@ class Freelancer extends Authenticatable
             'image'            => asset('storage/' . $freelancer->image),
             'bio'           => is_null($freelancer->bio) ? "" : $freelancer->bio,
             'major'         => (new Major)->get_major($freelancer->major_id , $lang , false),
-            'major_id'      => $freelancer->major_idg,
+            'major_id'      => $freelancer->major_id,
             'study_case'    => (new StudyCase)->get_study_case($freelancer->study_case_id, $lang, false),
             'study_case_id' => $freelancer->study_case_id,
             'location'      => $freelancer->location,
