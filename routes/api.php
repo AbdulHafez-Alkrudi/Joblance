@@ -90,6 +90,7 @@ Route::middleware(['auth:api'])->group(function () {
     // Custom update routes
     Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
     Route::post('company/{company}', [CompanyController::class, 'update']);
+    Route::post('freelancer/{freelancer}', [FreelancerController::class, 'update']);
 
     // Change password route
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
