@@ -35,7 +35,7 @@ class CompanyController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,Company $company)
+    public function update(Request $request,$company)
     {
         $company = User::find($company)->userable;
 
