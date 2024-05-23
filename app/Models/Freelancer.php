@@ -71,13 +71,13 @@ class Freelancer extends Authenticatable
     public function get_info(Freelancer $freelancer , string $lang): array
     {
         return [
-            'id'            => $freelancer->user->id,
+            'id'            => $freelancer->id,
             'first_name'    => $freelancer->first_name ,
             'last_name'     => $freelancer->last_name,
             'image'            => asset('storage/' . $freelancer->image),
             'bio'           => is_null($freelancer->bio) ? "" : $freelancer->bio,
             'major'         => (new Major)->get_major($freelancer->major_id , $lang , false),
-            'major_id'      => $freelancer->major_id,
+            'major_id'      => $freelancer->major_idg,
             'study_case'    => (new StudyCase)->get_study_case($freelancer->study_case_id, $lang, false),
             'study_case_id' => $freelancer->study_case_id,
             'location'      => $freelancer->location,
@@ -98,6 +98,7 @@ class Freelancer extends Authenticatable
 
     public function rate($sum, $counter)
     {
+        if($counter == 0) return 0 ;
         return $sum / $counter;
     }
 }
