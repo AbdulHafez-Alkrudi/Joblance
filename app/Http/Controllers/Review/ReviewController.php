@@ -6,10 +6,13 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Company;
+use App\Models\Evaluation;
+use App\Models\Freelancer;
 use App\Models\Review;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,6 +57,7 @@ class ReviewController extends BaseController
             $user = User::find($request->user_id);
             $review_data = [
                 'company_id' => $user->userable_id,
+                'user_id'    => Auth::id(),
                 'level'      => $request->level,
                 'comment'    => $request->comment,
             ];
@@ -94,7 +98,8 @@ class ReviewController extends BaseController
             return $this->sendError(['message' => 'Userable type is not Company']);
         }
 
-        return $this->sendResponse($user->userable->reviews);
+        $reviews = (new Review)->get_all_reviews($user->userable->reviews);
+        return $this->sendResponse($reviews);
     }
 
     /**

@@ -12,16 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('evaluations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('freelancer_id');
             $table->double('level');
-            $table->text('comment');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->foreign('freelancer_id')->references('id')->on('freelancers')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('evaluations');
     }
 };

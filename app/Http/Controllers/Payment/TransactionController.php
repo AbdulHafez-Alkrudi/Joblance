@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Payment;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Models\Transaction;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,15 @@ class TransactionController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->has('user_id')) {
+            return $this->indexByUserId($request->user_id);
+        }
+        else if ($request->has('transaction_id')) {
+            return $this->show($request->transaction_id);
+        }
+
         $lang = \request('lang');
         $transactions = (new Transaction)->get_all_transactions($lang);
         return $this->sendResponse($transactions);
@@ -75,6 +83,16 @@ class TransactionController extends BaseController
         $transaction = $transaction->get_info($transaction, $lang);
 
         return $this->sendResponse($transaction);
+    }
+
+    public function indexByUserId(string $userId)
+    {
+        if (is_null(User::find($userId))) {
+            return $this->sendError('There is no user with this ID');
+        }
+
+        $transactions = Transaction::query()->where('user_id', $userId)->get();
+        return $this->sendResponse($transactions);
     }
 
     /**

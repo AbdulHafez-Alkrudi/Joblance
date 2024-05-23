@@ -13,7 +13,7 @@ class TransactionStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        $status = [
+        $statuses = [
             [
                 'name_EN' => 'pending',
                 'name_AR' => 'قيد الانتظار'
@@ -28,8 +28,8 @@ class TransactionStatusSeeder extends Seeder
             ]
             // you can add more here
         ];
-        foreach($status as $temp){
-            TransactionStatus::create($temp);
+        foreach($statuses as $status){
+            TransactionStatus::create($status);
         }
     }
 }

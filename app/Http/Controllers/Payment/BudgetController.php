@@ -73,7 +73,7 @@ class BudgetController extends BaseController
         $budget = Budget::find($id);
 
         if ($budget->user_id != Auth::id()) {
-            return $this->sendError(['message' => 'you can not access this wallet']);
+            return $this->sendError(['message' => 'you can not access this budget']);
         }
 
         return $this->sendResponse($budget);

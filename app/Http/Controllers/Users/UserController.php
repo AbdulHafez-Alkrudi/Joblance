@@ -7,6 +7,9 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Mail\SendCodeEmailVerification;
 use App\Models\Company;
 use App\Models\EmailVerification;
+use App\Models\Evaluation;
+use App\Models\Freelancer;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,15 +50,26 @@ class UserController extends BaseController
     public function show(string $id)
     {
         $user = User::query()->find($id);
-        if (!$user)
+        if (is_null($user))
         {
-            return $this->sendError(['error' => 'id is invalid']);
+            return $this->sendError(['error' => 'There is not user with this ID']);
         }
 
         $userable = $user->userable->get_info($user->userable, \request('lang'), false);
         $userable['phone_number'] = $user['phone_number'];
         $userable['email'] = $user['email'];
 
+        $evaluated = false;
+        if ($user->userable_type == Company::class) {
+            if (Review::query()->where('user_id', Auth::id())->where('company_id', $user->userable_id)->exists())
+                $evaluated = true;
+        }
+        else {
+            if (Evaluation::query()->where('user_id', Auth::id())->where('freelancer_id', $user->userable_id)->exists())
+                $evaluated = true;
+        }
+
+        $userable['evaluated'] = $evaluated;
         return $this->sendResponse($userable);
     }
 
