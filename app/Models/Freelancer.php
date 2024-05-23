@@ -74,7 +74,7 @@ class Freelancer extends Authenticatable
             'id'            => $freelancer->user->id,
             'first_name'    => $freelancer->first_name ,
             'last_name'     => $freelancer->last_name,
-            'image'         => $freelancer->image,
+            'image'            => asset('storage/' . $freelancer->image),
             'bio'           => is_null($freelancer->bio) ? "" : $freelancer->bio,
             'major'         => (new Major)->get_major($freelancer->major_id , $lang , false),
             'major_id'      => $freelancer->major_id,
@@ -82,7 +82,6 @@ class Freelancer extends Authenticatable
             'study_case_id' => $freelancer->study_case_id,
             'location'      => $freelancer->location,
             "open_to_work"  => $freelancer->open_to_work,
-            'open_to_work'  => $freelancer->open_to_work,
             'rate'          => $this->rate($freelancer->sum, $freelancer->counter),
             'counter'       => $freelancer->counter,
         ];
