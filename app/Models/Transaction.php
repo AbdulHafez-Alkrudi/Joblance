@@ -54,8 +54,10 @@ class Transaction extends Model
             'id' => $transaction->id,
             'balance' => $transaction->balance,
             'code' => is_null($transaction->code) ? "" : $transaction->code,
-            'transaction_type_id' => (new TransactionTypes)->get_transaction_type($transaction->transactions_type_id, $lang, 0),
-            'transaction_status_id' => (new TransactionStatus)->get_transaction_status($transaction->transaction_status_id, $lang, 0),
+            'transaction_type_name' => (new TransactionTypes)->get_transaction_type($transaction->transactions_type_id, $lang, 0),
+            'transaction_type_id' => $transaction->transaction_type_id,
+            'transaction_status_name' => (new TransactionStatus)->get_transaction_status($transaction->transaction_status_id, $lang, 0),
+            'transaction_status_id' => $transaction->transaction_status_id,
             'user_id' => $transaction->user_id,
         ];
     }

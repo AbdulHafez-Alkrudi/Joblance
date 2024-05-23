@@ -6,12 +6,9 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Requests\LoginRequest;
 use App\Models\DeviceToken;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class LoginController extends BaseController
 {

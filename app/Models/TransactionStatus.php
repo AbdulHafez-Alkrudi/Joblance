@@ -15,7 +15,7 @@ class TransactionStatus extends Model
         'name_EN', 'name_AR'
     ];
 
-    public function transaction() : HasMany
+    public function transactions() : HasMany
     {
         return $this->hasMany(Transaction::class);
     }

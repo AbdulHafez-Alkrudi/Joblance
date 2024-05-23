@@ -14,10 +14,14 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
-            $table->integer('level');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('user_id');
+            $table->double('level');
             $table->text('comment');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
     }
