@@ -6,13 +6,10 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserProject;
-use Illuminate\Http\JsonResponse;
 use App\Models\UserProjectImage;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -53,11 +50,7 @@ class UserProjectController extends BaseController
         $data['user_id'] = auth()->id();
         $project = (new UserProject)->store($data);
         if (array_key_exists('images', $data)) {
-
-
             $response = (new UserProjectImageController)->store($data, $project->id);
-
-
             // checking if the creation of the images has done or not
             // the format of the response is as following:
             // [status] => success OR failure
@@ -120,7 +113,12 @@ class UserProjectController extends BaseController
         // excluding images_del and images_add from the array if they are existed
         $data = array_diff_key($data , array_flip(['images_del' , 'images_add']));
         $project->update($data);
-        return $this->sendResponse($project->with('images'));
+        $project['images'] = $project->images;
+        // edit the paths of the images ;
+        foreach($project['images'] as $image){
+            $image['image_path'] = asset('storage/'.$image['image_path']);
+        }
+        return $this->sendResponse($project);
     }
 
     /**
@@ -130,7 +128,10 @@ class UserProjectController extends BaseController
     {
         $user_project = UserProject::find($id);
         if ($user_project == null) {
-            return $this->send_error('there is no project with this ID');
+            return $this->sendError('there is no project with this ID');
+        }
+        foreach($user_project->images as $image){
+            Storage::disk('public')->delete($image->image_path);
         }
         $user_project->delete();
         return $this->sendResponse();

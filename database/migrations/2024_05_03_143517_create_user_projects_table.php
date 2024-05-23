@@ -19,8 +19,6 @@ return new class extends Migration
             $table->text('project_description');
             $table->string('link');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
     }

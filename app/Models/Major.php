@@ -26,6 +26,7 @@ class Major extends Model
                 return $query->select('id' , 'name_AR as name')->where('id' , $id)->first();
             }
         );
+
         if($to_array) return $major ;
         return $major->name;
     }

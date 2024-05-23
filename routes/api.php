@@ -1,7 +1,9 @@
 <?php
 
-use App\Models\Freelancer;
-use App\Http\Controllers\{Auth\EmailVerificationController,
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{
+    Auth\EmailVerificationController,
     Auth\GoogleLoginController,
     Auth\LoginController,
     Auth\LogoutController,
@@ -21,12 +23,8 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Users\MajorController,
     Users\UserController,
     Users\UserProjects\UserProjectController,
-    Users\UserProjects\UserSkillsController};
-
-
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Route;
-
+    Users\UserProjects\UserSkillsController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -39,88 +37,109 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Broadcast::routes(['middlewere' => ['auth:api']]);
+// Broadcast routes
+Broadcast::routes(['middleware' => ['auth:api']]);
 
-
+// Placeholder route
 Route::get('contests', function ($id) {
     return view('welcome');
 });
 
-// for reset password
-Route::post('user/password/email', [ResetCodePasswordController::class, 'userForgotPassword']);
-Route::post('user/password/email/resend', [ResetCodePasswordController::class, 'userResendCode']);
-Route::post('user/password/code/check', [ResetCodePasswordController::class, 'userCheckCode']);
-Route::post('user/password/reset', [ResetCodePasswordController::class, 'userResetPassword']);
+// Password reset routes
+Route::prefix('user/password')->group(function () {
+    Route::post('email', [ResetCodePasswordController::class, 'userForgotPassword']);
+    Route::post('email/resend', [ResetCodePasswordController::class, 'userResendCode']);
+    Route::post('code/check', [ResetCodePasswordController::class, 'userCheckCode']);
+    Route::post('reset', [ResetCodePasswordController::class, 'userResetPassword']);
+});
 
-// for email verification
-Route::post('user/email/code/check', [EmailVerificationController::class, 'userCheckCode']);
-Route::post('user/email/code/resend', [EmailVerificationController::class, 'userResendCode']);
+// Email verification routes
+Route::prefix('user/email/code')->group(function () {
+    Route::post('check', [EmailVerificationController::class, 'userCheckCode']);
+    Route::post('resend', [EmailVerificationController::class, 'userResendCode']);
+});
 
-// for google login
-Route::post('auth/google/login', [GoogleLoginController::class, 'googleLogin']);
-Route::post('auth/google/userinfo', [GoogleLoginController::class, 'getUserINfo']);
+// Google login routes
+Route::prefix('auth/google')->group(function () {
+    Route::post('login', [GoogleLoginController::class, 'googleLogin']);
+    Route::post('userinfo', [GoogleLoginController::class, 'getUserINfo']);
+});
 
-// for Authentication
+// Authentication routes
 Route::post('register', RegisterController::class);
 Route::post('login', [LoginController::class, 'login']);
 
 Route::middleware(['auth:api'])->group(function () {
+    // Logout route
     Route::post('user/logout', LogoutController::class)->name('logout');
 
+    // Resource routes
     Route::apiResources([
         'user'        => UserController::class,
         'major'       => MajorController::class,
         'skill'       => SkillController::class,
         'user_skills' => UserSkillsController::class,
         'freelancer'  => FreelancerController::class,
-        'company'     => CompanyController::class
+        'userProject' => UserProjectController::class,
+        'company'     => CompanyController::class,
+        'review'      => ReviewController::class
     ]);
 
-    Route::resource('userProject', UserProjectController::class)->except(['update']);
+    // Custom update routes
     Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
+    Route::post('company/{company}', [CompanyController::class, 'update']);
 
+    // Change password route
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
-    Route::resource('review', ReviewController::class);
+    // Notification routes
+    Route::prefix('user')->group(function () {
+        Route::post('mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
+        Route::post('newnotifications', [NotificationController::class, 'newNotifications'])->name('newNotifications');
+    });
 
+    // Conversation routes
+    Route::prefix('conversations')->group(function () {
+        Route::get('/', [ConversationController::class, 'index']);
+        Route::get('{id}', [ConversationController::class, 'show']);
+        Route::post('addparticipant', [ConversationController::class, 'addParticipant']);
+        Route::delete('removeparticipant', [ConversationController::class, 'removeParticipant']);
+        Route::put('{id}/read', [ConversationController::class, 'markAsRead']);
+        Route::delete('delete/{id}', [ConversationController::class, 'destroy']);
 
-    // for Notifications
-    Route::post('user/mynotifications', [NotificationController::class, 'myNotifications'])->name('myNotifications');
-    Route::post('user/newnotifications', [NotificationController::class, 'newNotifications'])->name('newNotifications');
+        // Message routes
+        Route::get('{id}/messages', [MessageController::class, 'getMessages']);
+        Route::post('message/send', [MessageController::class, 'sendMessage']);
+        Route::delete('message/{id}/delete', [MessageController::class, 'deleteMessage']);
+    });
 
-    // for Conversations
-    Route::get('conversations', [ConversationController::class, 'index']);
-    Route::get('conversations/{id}', [ConversationController::class, 'show']);
-    Route::post('conversations/addparticipant', [ConversationController::class, 'addParticipant']);
-    Route::delete('conversations/removeparticipant', [ConversationController::class, 'removeParticipant']);
-    Route::put('conversations/{id}/read', [ConversationController::class, 'markAsRead']);
-    Route::delete('conversations/delete/{id}', [ConversationController::class, 'destroy']);
+    // Report routes
+    Route::prefix('reports')->group(function () {
+        Route::get('/', [ReportController::class, 'index']);
+        Route::get('newReports', [ReportController::class, 'newReports']);
+        Route::post('send', [ReportController::class, 'store']);
+        Route::post('reply', [ReportController::class, 'reply']);
+    });
 
-    // for Messages
-    Route::get('conversations/{id}/messages', [MessageController::class, 'getMessages']);
-    Route::post('message/send', [MessageController::class, 'sendMessage']);
-    Route::delete('message/{id}/delete', [MessageController::class, 'deleteMessage']);
+    // PayPal routes
+    Route::prefix('paypal')->group(function () {
+        Route::post('/', [PayPalController::class, 'paypal'])->name('paypal');
+        Route::get('success', [PayPalController::class, 'success'])->name('paypal.success');
+        Route::get('cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    });
 
-    // for Report
-    Route::get('reports', [ReportController::class, 'index']);
-    Route::get('newReports', [ReportController::class, 'newReports']);
-    Route::post('report/send', [ReportController::class, 'store']);
-    Route::post('report/reply', [ReportController::class, 'reply']);
-
-    // for PayPal
-    Route::post('paypal',  [PayPalController::class, 'paypal'])->name('paypal');
-    Route::get('paypal/success',  [PayPalController::class, 'success'])->name('paypal.success');
-    Route::get('paypal/cancel',  [PayPalController::class, 'cancel'])->name('paypal.cancel');
-
-    // for Document Ai
+    // Document AI route
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
 
-    // for CVs
-    Route::post('/generate-cv', [CVController::class, 'create']);
+    // CV route
+    Route::post('generate-cv', [CVController::class, 'create']);
 
+    // Middleware-specific routes (empty groups for future expansion)
     Route::middleware(['auth:api', 'can:isCompany'])->group(function () {
+        // Add company-specific routes here
     });
 
     Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
+        // Add freelancer-specific routes here
     });
 });

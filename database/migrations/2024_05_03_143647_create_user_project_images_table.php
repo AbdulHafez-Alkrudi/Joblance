@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('user_project_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->references('id')->on('user_projects');
+            $table->foreignId('project_id')->references('id')->on('user_projects')->cascadeOnDelete();
             $table->string('image_path');
             $table->timestamps();
 

@@ -73,26 +73,23 @@ class Company extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
-    public function get_info(Company $company , string $lang): array
+    public function get_info(Company $company , string $lang)
     {
-        return [
-            'id'               => $company->user->id,
+        return collect([
+            'id'               => $company->id,
             'name'             => $company->name,
-            'image'            => $company->image,
+            'image'            => asset('storage/' . $company->image),
             'description'      => is_null($company->description) ? "" : $company->description,
             'major'            => (new Major)->get_major($company->major_id , $lang , false),
             'major_id'         => $company->major_id,
             'location'         => $company->location,
             'num_of_employees' => $company->num_of_employees,
-        ];
+        ]);
     }
 
-    public function get_all_companies(string $lang): Collection
+    public function get_all_companies(string $lang)
     {
         $companies = $this->all();
-        foreach($companies as $key => $company){
-            $companies[$key] = $this->get_info($company , $lang);
-        }
-        return $companies;
+        return $companies->map(fn($company) => $this->get_info($company , $lang));
     }
 }
