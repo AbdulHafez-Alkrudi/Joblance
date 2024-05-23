@@ -23,8 +23,10 @@ class CompanyController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(Company $company)
+    public function show($company)
     {
+        $company = User::find($company)->userable;
+
         $lang = request('lang');
 
         $company = (new Company)->get_info($company , $lang);
@@ -35,6 +37,8 @@ class CompanyController extends BaseController
      */
     public function update(Request $request,Company $company)
     {
+        $company = User::find($company)->userable;
+
         // Check if there is any data related to the User table:
         $data = $request->all();
         if(array_key_exists('phone_number' , $data)){

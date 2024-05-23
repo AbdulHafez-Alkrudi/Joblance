@@ -22,16 +22,18 @@ class FreelancerController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(Freelancer $freelancer)
+    public function show($freelancer)
     {
+        $freelancer = User::find($freelancer)->userable;
         return $this->sendResponse( (new Freelancer)->get_info($freelancer , \request('lang')) );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,Freelancer $freelancer)
+    public function update(Request $request,$freelancer)
     {
+        $freelancer = User::find($freelancer)->userable;
         // the user may change something like the phone number which is not in the freelancer table, so I must retrieve
         // the user information from the User table that represents that freelancer
         $data = $request->all() ;
