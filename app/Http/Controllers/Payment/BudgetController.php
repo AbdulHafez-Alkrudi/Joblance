@@ -6,9 +6,11 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\ChargeBudgetRequest;
 use App\Http\Requests\StoreBudgetRequest;
 use App\Models\Budget;
+use App\Models\User;
 use App\Models\Transaction;
 use App\Models\TransactionStatus;
 use App\Models\TransactionTypes;
+use Svg\Tag\Rect;
 
 ;
 use Exception;
@@ -135,21 +137,23 @@ class BudgetController extends BaseController
     {
         DB::beginTransaction();
         try {
-            $chargeBudgetRequest = new ChargeBudgetRequest();
-            $validator = Validator::make($request->all(), $chargeBudgetRequest->rules());
+            $validator = Validator::make($request->all(), [
+                'balance' => ['required', 'numeric', 'min:1']
+            ]);
 
             if ($validator->fails())
             {
                 return $this->sendError($validator->errors());
             }
 
-            $budget = Budget::find($request->budget_id);
-            if (Auth::id() != $budget->user_id) {
-                return $this->sendError(['message' => 'you can not charge a wallet']);
-            }
+            $lang = \request('lang');
+            $user_budget = Budget::where('user_id', Auth::id());
 
-            $transaction_type    = TransactionTypes::query()->where('name', 'recieve Cash')->first();
-            $transaction_status  = TransactionStatus::query()->where('name', 'complete')->first();
+            $type_name = $lang == 'en' ? 'recieve Cash' : 'تلقي نقداً';
+            $transaction_type = (new TransactionTypes)->get_transaction_type($type_name, $lang, 1);
+
+            $status_name = $lang == 'en' ? 'complete' : 'مكتمل';
+            $transaction_status = (new TransactionStatus)->get_transaction_status($status_name, $lang, 1);
 
             $transaction_request = new Request($request->all());
             $transaction_request['transaction_type_id'] = $transaction_type->id;
@@ -160,56 +164,63 @@ class BudgetController extends BaseController
                 return $transaction;
             }
 
-            $budget->update([
-                'balance' => $budget->balance + $request->value,
+            $user_budget->update([
+                'balance' => $user_budget->balance + $request->balance,
             ]);
-            $budget->refresh();
+            $user_budget->refresh();
 
             DB::commit();
 
-            return $this->sendResponse($budget);
+            return $this->sendResponse($user_budget);
         } catch (Exception $ex) {
             return $this->sendError(['message' => $ex->getMessage()]);
         }
     }
 
-    public function pay_using_my_wallet($amount)
+    public function pay_using_my_budget(Request $request)
     {
         DB::beginTransaction();
         try {
-            $user = Auth::user();
-            $user_budget = Budget::query()->where('user_id', $user->id);
-
-            Budget::create([
-                'balance' => $user_budget->balance - $amount,
-                'freeze_balance' => $user_budget->freeze_balance + $amount
+            $validator = Validator::make($request->all(), [
+                'balance' => ['required', 'numeric', 'min:1']
             ]);
 
-            DB::commit();
-
-            return $this->sendResponse();
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return $this->sendError(['message' => $ex->getMessage()]);
-        }
-    }
-
-    public function try_to_pay($amount)
-    {
-        DB::beginTransaction();
-        try {
-            $response = ($this->pay_using_my_wallet($amount));
-            if ($response->getData()->success)
-            {
-                DB::commit();
-                $budget = Budget::query()->where('user_id', Auth::id())->first();
-
-                return $this->sendResponse($budget);
+            if ($validator->fails()) {
+                return $this->sendError($validator->errors());
             }
 
+            $lang = \request('lang');
+            $user_budget = Budget::where('user_id', Auth::id());
+
+            if ($user_budget->balance < $request->balance) {
+                return $this->sendError(['message' => "Your budget's balance less than request's balance"]);
+            }
+
+            $type_name = $lang == 'en' ? 'charge Cash' : 'دفع نقداً';
+            $transaction_type    = (new TransactionTypes)->get_transaction_type($type_name, $lang, 1);
+
+            $status_name = $lang == 'en' ? 'complete' : 'مكتمل';
+            $transaction_status  = (new TransactionStatus)->get_transaction_status($status_name, $lang, 1);
+
+            $transaction_request = new Request($request->all());
+            $transaction_request['transaction_type_id'] = $transaction_type->id;
+            $transaction_request['transaction_status_id'] = $transaction_status->id;
+
+            $transaction = (new TransactionController)->store($transaction_request);
+            if ($transaction->getData()->status == 'failure') {
+                return $transaction;
+            }
+
+            $user_budget->update([
+                'balance' => $user_budget->balance - $request->balance,
+            ]);
+            $user_budget->refresh();
+
             DB::commit();
-            return $response;
+
+            return $this->sendResponse($user_budget);
         } catch (Exception $ex) {
+            DB::rollBack();
             return $this->sendError(['message' => $ex->getMessage()]);
         }
     }

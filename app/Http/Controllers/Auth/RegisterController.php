@@ -7,7 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Requests\{RegisterCompanyRequest, RegisterFreelancerRequest};
 use App\Jobs\DeleteAccount;
-use App\Models\{Company, Freelancer, Role, User};
+use App\Models\{Budget, Company, Freelancer, Role, User};
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\{Facades\DB, Facades\Hash, Facades\Validator};
 
@@ -147,12 +147,16 @@ class RegisterController extends BaseController
         $specified_user_data['type'] = (new UserController)->get_type($user) ;
         $specified_user_data['accessToken'] = $token;
 
+        // just to create budget
+        Budget::create([
+            'user_id' =>$user->id,
+        ]);
+
         // just to send email verification EmailVerification::dispatch($user);
         if (!$user['email_verified'])
         {
             EmailVerification::dispatch($user);
             DeleteAccount::dispatch($user)->delay(86400);
-
         }
 
         return $this->sendResponse($specified_user_data);

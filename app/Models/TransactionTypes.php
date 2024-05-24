@@ -32,14 +32,15 @@ class TransactionTypes extends Model
         )->get();
     }
 
-    public function get_transaction_type($id , string $lang , bool $to_array){
+    public function get_transaction_type(string $name, string $lang , bool $to_array)
+    {
         $transaction_type = TransactionTypes::query()->when($lang == 'en' ,
-            function($query) use($id){
-                return $query->select('id' , 'name_EN as name')->where('id' , $id)->first();
+            function($query) use($name){
+                return $query->select('id' , 'name_EN as name')->where('name_EN' , $name)->first();
             }
             ,
-            function($query) use($id){
-                return $query->select('id' , 'name_AR as name')->where('id' , $id)->first();
+            function($query) use($name){
+                return $query->select('id' , 'name_AR as name')->where('name_AR', $name)->first();
             }
         );
         if($to_array) return $transaction_type ;
