@@ -13,6 +13,6 @@ class UserSkillsSeeder extends Seeder
      */
     public function run(): void
     {
-        //UserSkills::factory(5)->create();
+        UserSkills::factory(5)->create();
     }
 }

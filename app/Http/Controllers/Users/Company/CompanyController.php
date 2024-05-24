@@ -66,13 +66,19 @@ class CompanyController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company $company)
+    public function destroy($user_id)
     {
+        $user = User::find($user_id);
+        if($user == null){
+            return $this->sendError("there is no user with this ID");
+        }
+        $company = $user->userable;
         if($company->image != null){
             Storage::disk('public')->delete($company->image);
         }
-        $user = $company->user ;
         $user->delete();
+        $company->delete();
+
         return $this->sendResponse();
     }
 }

@@ -61,14 +61,19 @@ class FreelancerController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Freelancer $freelancer)
+    public function destroy($user_id)
     {
+        $user = User::find($user_id);
+        if(is_null($user)){
+            return $this->sendError('there is no user with this ID');
+        }
+        $freelancer = $user->userable;
         if($freelancer->image != null){
             Storage::disk('public')->delete($freelancer->image);
         }
         $user = $freelancer->user ;
         $user->delete();
-
+        $freelancer->delete();
         return $this->sendResponse(true);
     }
 }
