@@ -71,7 +71,7 @@ class Freelancer extends Authenticatable
     public function get_info(Freelancer $freelancer , string $lang): array
     {
         return [
-            'id'            => $freelancer->user->id,
+            'id'            => $freelancer->id,
             'first_name'    => $freelancer->first_name ,
             'last_name'     => $freelancer->last_name,
             'image'            => asset('storage/' . $freelancer->image),
