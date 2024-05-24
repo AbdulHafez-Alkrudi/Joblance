@@ -24,7 +24,10 @@ class FreelancerController extends BaseController
      */
     public function show($freelancer)
     {
-        $freelancer = User::find($freelancer)->userable;
+        $freelancer = User::find($freelancer);
+        if(is_null($freelancer)){
+            return $this->sendError('there is no user with this ID');
+        }
         return $this->sendResponse( (new Freelancer)->get_info($freelancer , \request('lang')) );
     }
 
@@ -33,7 +36,10 @@ class FreelancerController extends BaseController
      */
     public function update(Request $request,$freelancer)
     {
-        $freelancer = User::find($freelancer)->userable;
+        $freelancer = User::find($freelancer);
+        if(is_null($freelancer)){
+            return $this->sendError('there is no user with this ID');
+        }
         // the user may change something like the phone number which is not in the freelancer table, so I must retrieve
         // the user information from the User table that represents that freelancer
         $data = $request->all() ;

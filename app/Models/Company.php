@@ -76,7 +76,7 @@ class Company extends Authenticatable
     public function get_info(Company $company , string $lang)
     {
         return collect([
-            'id'               => $company->id,
+            'id'               => $company->user->id,
             'name'             => $company->name,
             'image'            => asset('storage/' . $company->image),
             'description'      => is_null($company->description) ? "" : $company->description,

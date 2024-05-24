@@ -25,7 +25,11 @@ class CompanyController extends BaseController
      */
     public function show($company)
     {
-        $company = User::find($company)->userable;
+        $company = User::find($company);
+        if($company == null){
+            return $this->sendError("there is no user with this ID");
+        }
+        $company = $company->userable;
 
         $lang = request('lang');
 
