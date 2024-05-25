@@ -23,7 +23,7 @@ class StoreTransactionRequest extends FormRequest
     {
         return [
             'balance' => ['required', 'numeric', 'min:1'],
-            'transactions_type_id' => ['required', 'exists:transaction_types,id'],
+            'transaction_type_id' => ['required', 'exists:transaction_types,id'],
             'transaction_status_id' => ['required', 'exists:transaction_statuses,id'],
         ];
     }

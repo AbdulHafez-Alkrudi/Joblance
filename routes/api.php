@@ -24,6 +24,7 @@ use App\Http\Controllers\{
     Users\UserController,
     Users\UserProjects\UserProjectController,
     Users\UserProjects\UserSkillsController};
+use App\Http\Controllers\Payment\BudgetController;
 use App\Http\Controllers\Review\EvaluationController;
 
 
@@ -129,6 +130,12 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/', [PayPalController::class, 'paypal'])->name('paypal');
         Route::get('success', [PayPalController::class, 'success'])->name('paypal.success');
         Route::get('cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    });
+
+    // Budget routes
+    Route::prefix('budget')->group(function () {
+        Route::post('pay', [BudgetController::class, 'pay']);
+        Route::post('charge', [BudgetController::class, 'charge']);
     });
 
     // Document AI route

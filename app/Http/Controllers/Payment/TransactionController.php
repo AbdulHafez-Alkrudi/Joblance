@@ -45,7 +45,7 @@ class TransactionController extends BaseController
     public function store(Request $request)
     {
         DB::beginTransaction();
-        try {
+       // try {
             $storeTransactionRequest = new StoreTransactionRequest();
             $validator = Validator::make($request->all(), $storeTransactionRequest->rules());
 
@@ -54,22 +54,40 @@ class TransactionController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
+            // Verify if related records exist
+            $transactionTypeExists = DB::table('transaction_types')->where('id', $request->transaction_type_id)->exists();
+            $transactionStatusExists = DB::table('transaction_statuses')->where('id', $request->transaction_status_id)->exists();
+            $userExists = DB::table('users')->where('id', Auth::id())->exists();
+
+            if (!$transactionTypeExists || !$transactionStatusExists || !$userExists) {
+                $errors = [];
+                if (!$transactionTypeExists) {
+                    $errors[] = 'Invalid transaction type ID';
+                }
+                if (!$transactionStatusExists) {
+                    $errors[] = 'Invalid transaction status ID';
+                }
+                if (!$userExists) {
+                    $errors[] = 'Invalid user ID';
+                }
+                return $this->sendError(['message' => $errors]);
+            }
             $transaction_data = [
                 'balance' => $request->balance,
-                'transactions_type_id'  => $request->transactions_type_id,
+                'transaction_type_id'  => $request->transaction_type_id,
                 'transaction_status_id' => $request->transaction_status_id,
                 'user_id' => Auth::id(),
             ];
 
             $transaction = Transaction::create($transaction_data);
-
+            
             DB::commit();
 
             return $this->sendResponse($transaction);
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return $this->sendError(['message' => $ex->getMessage()]);
-        }
+        // } catch (Exception $ex) {
+        //     DB::rollBack();
+        //     return $this->sendError(['message' => $ex->getMessage()]);
+        // }
     }
 
     /**
