@@ -3,6 +3,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/files
 /storage/*.key
 /vendor
 .env
@@ -15,7 +16,6 @@
 *.mwb
 *.pdf
 
-/public/
 .env.backup
 .env.production
 Homestead.json
