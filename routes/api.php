@@ -84,7 +84,8 @@ Route::middleware(['auth:api'])->group(function () {
         'freelancer'  => FreelancerController::class,
         'userProject' => UserProjectController::class,
         'company'     => CompanyController::class,
-        'review'      => ReviewController::class
+        'review'      => ReviewController::class,
+        "evaluation"  => EvaluationController::class, 
     ]);
 
     // Custom update routes
