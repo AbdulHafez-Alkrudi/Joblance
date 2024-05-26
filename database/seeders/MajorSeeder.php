@@ -16,24 +16,29 @@ class MajorSeeder extends Seeder
         Major::create([
 
             'name_EN' => 'Engineering',
-            'name_AR' => 'هندسة'
-        ]);
+            'name_AR' => 'هندسة',
+            'image'   => 'images/Majors_Pic/engineering.png'
+            ]);
         Major::create([
             'name_EN' => 'Medical',
-            'name_AR' => 'طبي'
+            'name_AR' => 'طبي',
+            'image'   => 'images/Majors_Pic/medical.png'
         ]);
         Major::create([
             'name_EN' => 'Technology',
-            'name_AR' => 'تكنولوجيا'
+            'name_AR' => 'تكنولوجيا',
+            'image'   => 'images/Majors_Pic/technology.png'
         ]);
         Major::create([
            'name_EN' => 'Designing',
-           'name_AR' => 'تصميم'
+           'name_AR' => 'تصميم',
+           'image'   => 'images/Majors_Pic/designing2.png'
         ]);
         Major::create([
             'name_EN' => 'Customer services',
-            'name_AR' => 'خدمة العملاء'
-
+            'name_AR' => 'خدمة العملاء',
+            'image'   => 'images/Majors_Pic/servicing.png'
+           
         ]);
        
     }
