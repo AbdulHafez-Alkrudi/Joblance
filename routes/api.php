@@ -2,8 +2,7 @@
 
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{
-    Auth\EmailVerificationController,
+use App\Http\Controllers\{Auth\EmailVerificationController,
     Auth\GoogleLoginController,
     Auth\LoginController,
     Auth\LogoutController,
@@ -21,6 +20,7 @@ use App\Http\Controllers\{
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
     Users\MajorController,
+    Users\TaskController,
     Users\UserController,
     Users\UserProjects\UserProjectController,
     Users\UserProjects\UserSkillsController};
@@ -84,14 +84,15 @@ Route::middleware(['auth:api'])->group(function () {
         'freelancer'  => FreelancerController::class,
         'userProject' => UserProjectController::class,
         'company'     => CompanyController::class,
-        'review'      => ReviewController::class
+        'review'      => ReviewController::class,
+        'task'        => TaskController::class
     ]);
 
     // Custom update routes
     Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
     Route::post('company/{company}', [CompanyController::class, 'update']);
     Route::post('freelancer/{freelancer}', [FreelancerController::class, 'update']);
-
+    Route::post('task/{task}' , [TaskController::class , 'update']);
     // Change password route
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
