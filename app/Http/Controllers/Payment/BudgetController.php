@@ -133,7 +133,7 @@ class BudgetController extends BaseController
         return $this->sendResponse();
     }
 
-    public function charge(Request $request)
+    public function chargeBudget(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -147,7 +147,7 @@ class BudgetController extends BaseController
             }
 
             $lang = \request('lang');
-            $user_budget = Budget::where('user_id', Auth::id())->first();
+            $user_budget = Budget::where('user_id', Auth::id());
 
             $type_name = $lang == 'en' ? 'recieve Cash' : 'تلقي نقداً';
             $transaction_type = (new TransactionTypes)->get_transaction_type($type_name, $lang, 1);
@@ -177,7 +177,7 @@ class BudgetController extends BaseController
         }
     }
 
-    public function pay(Request $request)
+    public function pay_using_my_budget(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -190,7 +190,7 @@ class BudgetController extends BaseController
             }
 
             $lang = \request('lang');
-            $user_budget = Budget::where('user_id', Auth::id())->first();
+            $user_budget = Budget::where('user_id', Auth::id());
 
             if ($user_budget->balance < $request->balance) {
                 return $this->sendError(['message' => "Your budget's balance less than request's balance"]);
