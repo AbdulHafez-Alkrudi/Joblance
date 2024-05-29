@@ -103,6 +103,7 @@ class UserController extends BaseController
             Storage::disk('public')->delete($company_image);
         }
         $user->delete();
+        return $this->sendResponse([]);
     }
 
     public function changePassword(Request $request)

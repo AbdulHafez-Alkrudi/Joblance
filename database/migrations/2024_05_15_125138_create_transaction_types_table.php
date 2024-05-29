@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('transaction_types', function (Blueprint $table) {
             $table->id();
             $table->string('name_EN');
             $table->string('name_AR');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

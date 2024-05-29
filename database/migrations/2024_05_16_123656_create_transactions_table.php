@@ -17,12 +17,15 @@ return new class extends Migration
             $table->double('balance');
             $table->string('code')->nullable();
 
-            $table->foreignId('transaction_type_id')->constrained('transactions_types')->cascadeOnDelete();
-            $table->foreignId('transaction_status_id')->constrained('transaction_statuses')->cascadeOnDelete();
-
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->unsignedBigInteger('transaction_type_id');
+            $table->unsignedBigInteger('transaction_status_id');
+            $table->unsignedBigInteger('user_id');
 
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('transaction_type_id')->references('id')->on('transaction_types')->onDelete('cascade');
+            $table->foreign('transaction_status_id')->references('id')->on('transaction_statuses')->onDelete('cascade');
         });
         Schema::enableForeignKeyConstraints();
     }

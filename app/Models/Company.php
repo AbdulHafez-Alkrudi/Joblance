@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\Company\CompanyResource;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -75,21 +76,19 @@ class Company extends Authenticatable
 
     public function get_info(Company $company , string $lang)
     {
-        return collect([
-            'id'               => $company->user->id,
-            'name'             => $company->name,
-            'image'            => asset('storage/' . $company->image),
-            'description'      => is_null($company->description) ? "" : $company->description,
-            'major'            => (new Major)->get_major($company->major_id , $lang , false),
-            'major_id'         => $company->major_id,
-            'location'         => $company->location,
-            'num_of_employees' => $company->num_of_employees,
-        ]);
+        return new CompanyResource($company);
     }
 
     public function get_all_companies(string $lang)
     {
-        $companies = $this->all();
-        return $companies->map(fn($company) => $this->get_info($company , $lang));
+        return Company::query()
+            ->select('id',
+                'name',
+                'image',
+                'description',
+                'major_id',
+                'location',
+                'num_of_employees'
+            )->paginate();
     }
 }

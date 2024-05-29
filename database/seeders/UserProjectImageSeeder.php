@@ -13,6 +13,6 @@ class UserProjectImageSeeder extends Seeder
      */
     public function run(): void
     {
-        UserProjectImage::factory(5)->create();
+       // UserProjectImage::factory(5)->create();
     }
 }

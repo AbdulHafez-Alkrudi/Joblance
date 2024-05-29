@@ -24,6 +24,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Users\UserController,
     Users\UserProjects\UserProjectController,
     Users\UserProjects\UserSkillsController};
+use App\Http\Controllers\Payment\BudgetController;
 use App\Http\Controllers\Review\EvaluationController;
 
 
@@ -85,7 +86,8 @@ Route::middleware(['auth:api'])->group(function () {
         'userProject' => UserProjectController::class,
         'company'     => CompanyController::class,
         'review'      => ReviewController::class,
-        'task'        => TaskController::class
+        'task'        => TaskController::class,
+        "evaluation"  => EvaluationController::class,
     ]);
 
     // Custom update routes
@@ -130,6 +132,12 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/', [PayPalController::class, 'paypal'])->name('paypal');
         Route::get('success', [PayPalController::class, 'success'])->name('paypal.success');
         Route::get('cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    });
+
+    // Budget routes
+    Route::prefix('budget')->group(function () {
+        Route::post('pay', [BudgetController::class, 'pay']);
+        Route::post('charge', [BudgetController::class, 'charge']);
     });
 
     // Document AI route
