@@ -51,7 +51,7 @@ class TaskController extends BaseController
         if(is_null($task)){
             return $this->sendError('there is no task with this ID');
         }
-        $task['image'] = $user->userable->image;
+        $task['image'] = ($user->userable->image != null ? asset('storage/' . $user->userable->image) : "");
         if($user->userable->name!=null)
         $task['name'] = $user->userable->name;
         else
