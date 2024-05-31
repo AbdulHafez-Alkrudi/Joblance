@@ -21,6 +21,8 @@ class FreelancerResource extends JsonResource
             'first_name'   => $this->first_name,
             'last_name'    => $this->last_name,
             'image'        => ($this->image != null ? asset('storage/' . $this->image) : ""),
+            'email'        => $this->email,
+            "phone_number" => $this->phone_number,
             'bio'          => $this->bio,
             'major'        => (new Major)->get_major($this->major_id , request('lang') , true), // Assuming you have a Major resource
             'location'     => $this->location,

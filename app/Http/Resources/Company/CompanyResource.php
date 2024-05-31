@@ -19,6 +19,8 @@ class CompanyResource extends JsonResource
             'id'               => $this->user->id,
             'name'             => $this->name,
             'image'            => $this->image != null ? asset('storage/' . $this->image) : "",
+            'email'            => $this->email,
+            "phone_number"     => $this->phone_number,
             'description'      => is_null($this->description) ? "" : $this->description,
             'major'            => (new Major)->get_major($this->major_id , request('lang') , true),
             'location'         => $this->location,
