@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,9 +47,15 @@ class TaskController extends BaseController
     public function show(string $id)
     {
         $task = Task::find($id);
+        $user = User::find($task->user_id);
         if(is_null($task)){
             return $this->sendError('there is no task with this ID');
         }
+        $task['image'] = $user->userable->image;
+        if($user->userable->name!=null)
+        $task['name'] = $user->userable->name;
+        else
+        $task['name'] = $user->userable->first_name.' '.$user->userable->last_name;
         return $this->sendResponse($task);
     }
 
