@@ -55,18 +55,20 @@ class Freelancer extends Authenticatable
 
 
     public function user(): MorphOne
-   {
-       return $this->MorphOne(User::class , 'userable');
-   }
+    {
+        return $this->MorphOne(User::class , 'userable');
+    }
 
-   public function study_case(): BelongsTo
-   {
-       return $this->belongsTo(StudyCase::class);
-   }
-   public function job_applications(): HasMany
-   {
-       return $this->hasMany(JobApplication::class);
-   }
+    public function study_case(): BelongsTo
+    {
+        return $this->belongsTo(StudyCase::class);
+    }
+    
+    public function job_applications(): HasMany
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
    // This method returns the freelancer information according to requested language
     public function get_info(Freelancer $freelancer , string $lang): array
     {
@@ -84,6 +86,7 @@ class Freelancer extends Authenticatable
             "open_to_work"  => $freelancer->open_to_work,
             'rate'          => $this->rate($freelancer->sum, $freelancer->counter),
             'counter'       => $freelancer->counter,
+            'subscriped'       => User::where('userable_id', $freelancer->id)->first()->hasActiveSubscription(),
         ];
     }
 

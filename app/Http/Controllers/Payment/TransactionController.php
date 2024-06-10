@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\GetTransactionsRequest;
 use App\Http\Requests\StoreTransactionRequest;
-use App\Models\Transaction;
+use App\Models\Payment\Transaction;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,17 +18,24 @@ class TransactionController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index($userId, Request $request)
     {
-        if ($request->has('user_id')) {
-            return $this->indexByUserId($request->user_id);
-        }
-        else if ($request->has('transaction_id')) {
-            return $this->show($request->transaction_id);
+        $getTransactions = new GetTransactionsRequest();
+        $validator = Validator::make($request->all(), $getTransactions->rules());
+
+        if ($validator->fails())
+        {
+            return $this->sendError($validator->errors());
         }
 
-        $lang = \request('lang');
-        $transactions = (new Transaction)->get_all_transactions($lang);
+        $request['userId'] = $userId;
+        if ($request->has('day')) {
+            $transactions = (new Transaction)->getTransactionsForUserInDay($request, request('lang'));
+        }
+        else {
+            $transactions = (new Transaction)->getTransactionsForUserInMonth($request, request('lang'));
+        }
+
         return $this->sendResponse($transactions);
     }
 
@@ -45,7 +53,7 @@ class TransactionController extends BaseController
     public function store(Request $request)
     {
         DB::beginTransaction();
-       // try {
+        try {
             $storeTransactionRequest = new StoreTransactionRequest();
             $validator = Validator::make($request->all(), $storeTransactionRequest->rules());
 
@@ -54,24 +62,6 @@ class TransactionController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
-            // Verify if related records exist
-            $transactionTypeExists = DB::table('transaction_types')->where('id', $request->transaction_type_id)->exists();
-            $transactionStatusExists = DB::table('transaction_statuses')->where('id', $request->transaction_status_id)->exists();
-            $userExists = DB::table('users')->where('id', Auth::id())->exists();
-
-            if (!$transactionTypeExists || !$transactionStatusExists || !$userExists) {
-                $errors = [];
-                if (!$transactionTypeExists) {
-                    $errors[] = 'Invalid transaction type ID';
-                }
-                if (!$transactionStatusExists) {
-                    $errors[] = 'Invalid transaction status ID';
-                }
-                if (!$userExists) {
-                    $errors[] = 'Invalid user ID';
-                }
-                return $this->sendError(['message' => $errors]);
-            }
             $transaction_data = [
                 'balance' => $request->balance,
                 'transaction_type_id'  => $request->transaction_type_id,
@@ -80,14 +70,14 @@ class TransactionController extends BaseController
             ];
 
             $transaction = Transaction::create($transaction_data);
-            
+
             DB::commit();
 
             return $this->sendResponse($transaction);
-        // } catch (Exception $ex) {
-        //     DB::rollBack();
-        //     return $this->sendError(['message' => $ex->getMessage()]);
-        // }
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return $this->sendError(['message' => $ex->getMessage()]);
+        }
     }
 
     /**
@@ -101,16 +91,6 @@ class TransactionController extends BaseController
         $transaction = $transaction->get_info($transaction, $lang);
 
         return $this->sendResponse($transaction);
-    }
-
-    public function indexByUserId(string $userId)
-    {
-        if (is_null(User::find($userId))) {
-            return $this->sendError('There is no user with this ID');
-        }
-
-        $transactions = Transaction::query()->where('user_id', $userId)->get();
-        return $this->sendResponse($transactions);
     }
 
     /**

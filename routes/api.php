@@ -18,6 +18,7 @@ use App\Http\Controllers\{
     Report\ReportController,
     Users\Company\CompanyController,
     Review\ReviewController,
+    Subscription\SubscriptionController,
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
     Users\MajorController,
@@ -25,6 +26,7 @@ use App\Http\Controllers\{
     Users\UserProjects\UserProjectController,
     Users\UserProjects\UserSkillsController};
 use App\Http\Controllers\Payment\BudgetController;
+use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Review\EvaluationController;
 
 
@@ -78,16 +80,20 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Resource routes
     Route::apiResources([
-        'user'        => UserController::class,
-        'major'       => MajorController::class,
-        'skill'       => SkillController::class,
-        'user_skills' => UserSkillsController::class,
-        'freelancer'  => FreelancerController::class,
-        'userProject' => UserProjectController::class,
-        'company'     => CompanyController::class,
-        'review'      => ReviewController::class,
-        "evaluation"  => EvaluationController::class, 
+        'user'         => UserController::class,
+        'major'        => MajorController::class,
+        'skill'        => SkillController::class,
+        'user_skills'  => UserSkillsController::class,
+        'freelancer'   => FreelancerController::class,
+        'userProject'  => UserProjectController::class,
+        'company'      => CompanyController::class,
+        'review'       => ReviewController::class,
+        "evaluation"   => EvaluationController::class,
+        'subscription' => SubscriptionController::class,
     ]);
+
+    // Search Skills
+    Route::post('skills/search', [SkillController::class, 'search']);
 
     // Custom update routes
     Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
@@ -118,13 +124,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('message/{id}/delete', [MessageController::class, 'deleteMessage']);
     });
 
-    // Report routes
-    Route::prefix('reports')->group(function () {
-        Route::get('/', [ReportController::class, 'index']);
-        Route::get('newReports', [ReportController::class, 'newReports']);
-        Route::post('send', [ReportController::class, 'store']);
-        Route::post('reply', [ReportController::class, 'reply']);
-    });
+    // Report route
+    Route::post('reports/send', [ReportController::class, 'store']);
 
     // PayPal routes
     Route::prefix('paypal')->group(function () {
@@ -135,22 +136,40 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Budget routes
     Route::prefix('budget')->group(function () {
+        Route::get('details', [BudgetController::class, 'get_budget']);
         Route::post('pay', [BudgetController::class, 'pay']);
-        Route::post('charge', [BudgetController::class, 'charge']);
     });
 
     // Document AI route
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
 
-    // CV route
-    Route::post('generate-cv', [CVController::class, 'create']);
+
 
     // Middleware-specific routes (empty groups for future expansion)
-    Route::middleware(['auth:api', 'can:isCompany'])->group(function () {
+    Route::middleware(['auth:api', 'can:isCompany', 'subscribed'])->group(function () {
         // Add company-specific routes here
     });
 
+
     Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
-        // Add freelancer-specific routes here
+        // CV route
+        Route::post('generate-cv', [CVController::class, 'create']);
+    });
+
+
+    Route::middleware(['auth:api', 'can:isAdmin'])->group(function () {
+        // Transactions route
+        Route::get('users/{userID}/transactions', [TransactionController::class, 'index']);
+
+        // Budget route
+        Route::post('budget/charge', [BudgetController::class, 'charge']);
+
+        // Report route
+        Route::post('reports/send', [ReportController::class, 'store']);
+        Route::prefix('reports')->group(function () {
+            Route::get('/', [ReportController::class, 'index']);
+            Route::get('newReports', [ReportController::class, 'newReports']);
+            Route::post('reply', [ReportController::class, 'reply']);
+        });
     });
 });

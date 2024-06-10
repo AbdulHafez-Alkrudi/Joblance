@@ -84,6 +84,7 @@ class Company extends Authenticatable
             'major_id'         => $company->major_id,
             'location'         => $company->location,
             'num_of_employees' => $company->num_of_employees,
+            'subscriped'       => User::where('userable_id', $company->id)->first()->hasActiveSubscription(),
         ]);
     }
 

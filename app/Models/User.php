@@ -91,6 +91,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->deviceToken()->pluck('token')->toArray();
     }
 
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    public function hasActiveSubscription()
+    {
+        return $this->subscription && $this->subscription->ends_at->isFuture();
+    }
+
     public function reports() :HasMany
     {
         return $this->hasMany(Report::class);

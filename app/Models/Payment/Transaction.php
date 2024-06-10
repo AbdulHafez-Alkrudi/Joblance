@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Payment;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,9 +39,8 @@ class Transaction extends Model
         return $this->belongsTo(TransactionStatus::class);
     }
 
-    public function get_all_transactions($lang)
+    public function get_transactions($transactions, $lang)
     {
-        $transactions = $this->all();
         foreach ($transactions as $key => $transaction) {
             $transactions[$key] = $this->get_info($transaction, $lang);
         }
@@ -54,11 +53,33 @@ class Transaction extends Model
             'id' => $transaction->id,
             'balance' => $transaction->balance,
             'code' => is_null($transaction->code) ? "" : $transaction->code,
-            'transaction_type_name' => (new TransactionTypes)->get_transaction_type($transaction->transactions_type_id, $lang, 0),
+            'transaction_type_name' => (new TransactionTypes)->get_transaction_type($transaction->transaction_type_id, $lang, 0),
             'transaction_type_id' => $transaction->transaction_type_id,
             'transaction_status_name' => (new TransactionStatus)->get_transaction_status($transaction->transaction_status_id, $lang, 0),
             'transaction_status_id' => $transaction->transaction_status_id,
+            'date'    => $transaction->created_at->format('Y-m-d H:i:s'),
             'user_id' => $transaction->user_id,
         ];
+    }
+
+    public function getTransactionsForUserInMonth($request, $lang)
+    {
+        $transactions = self::where('user_id', $request->userId)
+                            ->whereYear('created_at', $request->year)
+                            ->whereMonth('created_at', $request->month)
+                            ->get();
+
+        return $this->get_transactions($transactions, $lang);
+    }
+
+    public function getTransactionsForUserInDay($request, $lang)
+    {
+        $transactions = self::where('user_id', $request->userId)
+                            ->whereYear('created_at', $request->year)
+                            ->whereMonth('created_at', $request->month)
+                            ->whereDay('created_at', $request->day)
+                            ->get();
+
+        return $this->get_transactions($transactions, $lang);
     }
 }

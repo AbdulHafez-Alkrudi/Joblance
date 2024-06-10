@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Payment;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,17 +32,17 @@ class TransactionStatus extends Model
         )->get();
     }
 
-    public function get_transaction_status(string $name, string $lang, bool $to_array)
+    public function get_transaction_status($id, string $lang, bool $to_array)
     {
         $transaction_status = TransactionStatus::query()->when($lang == 'en' ,
-            function($query) use($name){
-                return $query->select('id' , 'name_EN as name')->where('name_EN' , $name)->first();
+            function($query) use($id){
+                return $query->select('id' , 'name_EN as name')->where('id', $id);
             }
             ,
-            function($query) use($name){
-                return $query->select('id' , 'name_AR as name')->where('name_AR' , $name)->first();
+            function($query) use($id){
+                return $query->select('id' , 'name_AR as name')->where('id', $id);
             }
-        );
+        )->first();
         if($to_array) return $transaction_status ;
         return $transaction_status->name;
     }

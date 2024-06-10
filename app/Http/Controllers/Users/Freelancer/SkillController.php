@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Skill;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SkillController extends BaseController
@@ -58,5 +59,17 @@ class SkillController extends BaseController
         }
         $skill->delete();
         return $this->sendResponse();
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->get('search');
+
+        $skills = DB::table('skills')
+                    ->select('id', 'name')
+                    ->where('name', 'REGEXP', $search)
+                    ->get();
+
+        return $this->sendResponse($skills);
     }
 }

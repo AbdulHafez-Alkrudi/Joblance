@@ -29,4 +29,6 @@ class Skill extends Model
 
         return $data;
     }
+
+    
 }

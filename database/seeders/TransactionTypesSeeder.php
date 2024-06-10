@@ -23,8 +23,8 @@ class TransactionTypesSeeder extends Seeder
                 'name_AR' => 'تلقي عبر PayPal'
             ],
             [
-                'name_EN' => 'charge Cash',
-                'name_AR' => 'شحن نقداً'
+                'name_EN' => 'pay Cash',
+                'name_AR' => 'دفع نقداً'
             ],
             [
                 'name_EN' => 'recieve Cash',

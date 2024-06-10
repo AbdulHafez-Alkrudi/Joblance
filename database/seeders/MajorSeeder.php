@@ -14,7 +14,6 @@ class MajorSeeder extends Seeder
     public function run(): void
     {
         Major::create([
-
             'name_EN' => 'Engineering',
             'name_AR' => 'هندسة'
         ]);
@@ -33,8 +32,7 @@ class MajorSeeder extends Seeder
         Major::create([
             'name_EN' => 'Customer services',
             'name_AR' => 'خدمة العملاء'
-
         ]);
-       
+
     }
 }
