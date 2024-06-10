@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
+use App\Http\Resources\Freelancer\FreelancerResource;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
-use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Passport\HasApiTokens;
-use PhpParser\Node\Expr\Cast\Double;
 
 class Freelancer extends Authenticatable
 {
@@ -52,8 +51,6 @@ class Freelancer extends Authenticatable
         'updated_at' => 'datetime:Y-m-d'
     ];
 
-
-
     public function user(): MorphOne
     {
         return $this->MorphOne(User::class , 'userable');
@@ -63,40 +60,39 @@ class Freelancer extends Authenticatable
     {
         return $this->belongsTo(StudyCase::class);
     }
-    
+
     public function job_applications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
     }
 
-   // This method returns the freelancer information according to requested language
-    public function get_info(Freelancer $freelancer , string $lang): array
+    // TODO: code the logic of the filters
+    public function scopeFilter(Request $request , array $filters)
     {
-        return [
-            'id'            => $freelancer->user->id,
-            'first_name'    => $freelancer->first_name ,
-            'last_name'     => $freelancer->last_name,
-            'image'            => asset('storage/' . $freelancer->image),
-            'bio'           => is_null($freelancer->bio) ? "" : $freelancer->bio,
-            'major'         => (new Major)->get_major($freelancer->major_id , $lang , false),
-            'major_id'      => $freelancer->major_id,
-            'study_case'    => (new StudyCase)->get_study_case($freelancer->study_case_id, $lang, false),
-            'study_case_id' => $freelancer->study_case_id,
-            'location'      => $freelancer->location,
-            "open_to_work"  => $freelancer->open_to_work,
-            'rate'          => $this->rate($freelancer->sum, $freelancer->counter),
-            'counter'       => $freelancer->counter,
-            'subscriped'       => User::where('userable_id', $freelancer->id)->first()->hasActiveSubscription(),
-        ];
+
     }
 
-    public function get_all_freelancers(string $lang): Collection
+   // This method returns the freelancer information according to requested language
+    public function get_info(Freelancer $freelancer , string $lang): FreelancerResource
     {
-        $freelancers = $this->all();
-        foreach($freelancers as $key => $freelancer){
-            $freelancers[$key] = $this->get_info($freelancer , $lang);
-        }
-        return $freelancers;
+        return new FreelancerResource($freelancer);
+    }
+
+    public function get_all_freelancers(string $lang): LengthAwarePaginator
+    {
+        return Freelancer::query()
+            ->select('id' ,
+                    'first_name',
+                    'last_name',
+                    'image',
+                    'bio',
+                    'major_id',
+                    'study_case_id',
+                    'location',
+                    'open_to_work',
+                    'counter',
+                    'sum_rate'
+                )->paginate();
     }
 
     public function rate($sum, $counter)

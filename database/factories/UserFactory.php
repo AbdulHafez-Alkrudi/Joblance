@@ -39,9 +39,7 @@ class UserFactory extends Factory
         return $this->state( function(array $attributes) {
            return [
                'userable_id' => Freelancer::factory(),
-               'userable_type' => function(array $attributes){
-                return Freelancer::find($attributes['userable_id'])->getMorphClass();
-               }
+               'userable_type' => Freelancer::class
            ];
         });
     }
@@ -50,9 +48,7 @@ class UserFactory extends Factory
         return $this->state( function(array $attributes){
                 return [
                   'userable_id' => Company::factory(),
-                  'userable_type' => function(array $attributes){
-                        return Company::find($attributes['userable_id'])->getMorphClass();
-                  }
+                  'userable_type' => Company::class
                 ];
             }
         );

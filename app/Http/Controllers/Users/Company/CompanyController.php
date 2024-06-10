@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users\Company;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Resources\Company\CompanyCollection;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class CompanyController extends BaseController
     {
         $lang = request('lang');
         $companies = (new Company)->get_all_companies($lang);
-        return $this->sendResponse($companies);
+        return $this->sendResponse(new CompanyCollection($companies));
 
     }
     /**

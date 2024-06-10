@@ -19,14 +19,13 @@ class Major extends Model
     public function get_major($id , string $lang , bool $to_array){
         $major = Major::query()->when($lang == 'en' ,
             function($query) use($id){
-                return $query->select('id' , 'name_EN as name')->where('id' , $id)->first();
+                return $query->select('id' , 'name_EN as name' , 'image')->where('id' , $id)->first();
             }
             ,
             function($query) use($id){
-                return $query->select('id' , 'name_AR as name')->where('id' , $id)->first();
+                return $query->select('id' , 'name_AR as name' , 'image')->where('id' , $id)->first();
             }
         );
-
         if($to_array) return $major ;
         return $major->name;
     }
@@ -35,10 +34,10 @@ class Major extends Model
     {
         return Major::query()->when($lang == 'en' ,
             function($query){
-                return $query->select('id','name_EN as name');
+                return $query->select('id','name_EN as name' , 'image');
             },
             function($query){
-                return $query->select('id','name_AR as name');
+                return $query->select('id','name_AR as name' , 'image');
             }
         )->get();
     }

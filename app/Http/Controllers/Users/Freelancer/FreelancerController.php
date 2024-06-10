@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Users\Freelancer;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Resources\Freelancer\FreelancerCollection;
 use App\Models\Freelancer;
 use App\Models\User;
-use App\Models\Major;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,6 +15,8 @@ class FreelancerController extends BaseController
     {
         $lang = \request('lang');
         $freelancers = (new Freelancer)->get_all_freelancers($lang) ;
+        $freelancers = new FreelancerCollection($freelancers);
+
         return $this->sendResponse($freelancers);
     }
 
@@ -22,13 +24,13 @@ class FreelancerController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show($freelancer)
+    public function show($user_id)
     {
-        $freelancer = User::find($freelancer);
-        if(is_null($freelancer)){
+        $user = User::find($user_id);
+        if(is_null($user)){
             return $this->sendError('there is no user with this ID');
         }
-        return $this->sendResponse( (new Freelancer)->get_info($freelancer , \request('lang')) );
+        return $this->sendResponse( (new Freelancer)->get_info($user->userable , \request('lang')) );
     }
 
     /**
