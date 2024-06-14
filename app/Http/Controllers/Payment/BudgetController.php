@@ -6,7 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\ChargeBudgetRequest;
 use App\Http\Requests\StoreBudgetRequest;
 use App\Models\Payment\Budget;
-use App\Models\User;
+use App\Models\Users\User;
 use App\Models\Payment\Transaction;
 use App\Models\Payment\TransactionStatus;
 use App\Models\Payment\TransactionTypes;

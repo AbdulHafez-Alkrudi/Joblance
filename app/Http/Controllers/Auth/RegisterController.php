@@ -7,9 +7,10 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Requests\{RegisterCompanyRequest, RegisterFreelancerRequest};
 use App\Jobs\DeleteAccount;
-use App\Models\{Budget, Company, Freelancer, Role, User};
+use App\Models\{Payment\Budget, Users\Company\Company, Users\Freelancer\Freelancer, Users\Role, Users\User};
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\{Facades\DB, Facades\Hash, Facades\Validator};
+use PHPUnit\Metadata\Uses;
 
 class RegisterController extends BaseController
 {
@@ -104,25 +105,6 @@ class RegisterController extends BaseController
 
         DB::commit();
         return $response ;
-    }
-
-    /**
-     * @param Request $request
-     * @param array $input
-     * @return string
-     */
-    public function get_image(Request $request, string $type): string
-    {
-        $user_image_path = "";
-
-        if($request->hasFile('image'))
-        {
-            $image = $request['image'] ;
-            // check config/filesystem.php to know the meaning of public in the second parameter
-            $user_image_path = $image->store($type , 'public');
-        }
-
-        return $user_image_path ;
     }
 
     /**

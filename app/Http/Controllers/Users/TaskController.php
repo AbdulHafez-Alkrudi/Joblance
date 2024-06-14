@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskRequest;
-use App\Models\Task;
-use App\Models\User;
+use App\Models\Users\Task;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 

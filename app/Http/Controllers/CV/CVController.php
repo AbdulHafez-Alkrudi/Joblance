@@ -5,7 +5,7 @@ namespace App\Http\Controllers\CV;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CVRequest;
-use App\Models\CV;
+use App\Models\CV\CV;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\PDF as PDF;
 use Illuminate\Support\Facades\Auth;

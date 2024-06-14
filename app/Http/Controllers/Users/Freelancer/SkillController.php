@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Users\Freelancer;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
-use App\Models\Skill;
+use App\Models\Users\Freelancer\Skill;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

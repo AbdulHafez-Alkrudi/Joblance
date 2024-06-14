@@ -6,8 +6,10 @@ use App\Events\EmailVerification as EventsEmailVerification;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\EmailVerificationRequest;
 use App\Mail\SendCodeEmailVerification;
+use App\Models\Auth\EmailVerification as AuthEmailVerification;
 use App\Models\EmailVerification;
 use App\Models\User;
+use App\Models\Users\User as UsersUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -26,7 +28,7 @@ class EmailVerificationController extends BaseController
         }
 
         // find the code
-        $email_verification = EmailVerification::query()->firstWhere('email', $request['email']);
+        $email_verification = AuthEmailVerification::query()->firstWhere('email', $request['email']);
 
         if ($request['code'] != $email_verification['code'])
         {
@@ -40,7 +42,7 @@ class EmailVerificationController extends BaseController
         }
 
         // find user's email
-        $user = User::query()->where('email', $email_verification['email']);
+        $user = UsersUser::query()->where('email', $email_verification['email']);
 
         // update user email_verified
         $user->update([
@@ -64,7 +66,7 @@ class EmailVerificationController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $user = User::query()->where('email', $request->email);
+        $user = UsersUser::query()->where('email', $request->email);
         $user->sendCode($request->email);
 
         return $this->sendResponse([]);

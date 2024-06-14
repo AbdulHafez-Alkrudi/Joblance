@@ -9,12 +9,12 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Payment\BudgetController;
 use App\Jobs\CheckPayoutStatus;
 use App\Mail\SendPayoutEmail;
-use App\Models\Budget;
-use App\Models\PayPalOrder;
-use App\Models\Transaction;
-use App\Models\TransactionStatus;
-use App\Models\TransactionTypes;
-use App\Models\User;
+use App\Models\Payment\Budget;
+use App\Models\Payment\PayPalOrder;
+use App\Models\Payment\Transaction;
+use App\Models\Payment\TransactionStatus;
+use App\Models\Payment\TransactionTypes;
+use App\Models\Users\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -378,7 +378,7 @@ class PayPalController extends BaseController
         }
 
         PaypalOrder::where('user_id', Auth::id())->delete();
-        
+
         return $this->charge_using_paypal($request);
     }
 

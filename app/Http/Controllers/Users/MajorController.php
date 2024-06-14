@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMajorRequest;
-use App\Models\Major;
+use App\Models\Users\Major;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +37,7 @@ class MajorController extends BaseController
             $major = Major::create([
                 'name_EN' => $request->name_EN,
                 'name_AR' => $request->name_AR,
-                'image'   => $request->image
+                'image'   => $this->get_image($request, "Majors_Pic")
             ]);
 
             DB::commit();

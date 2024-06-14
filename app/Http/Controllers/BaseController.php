@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller as Controller;
+use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
@@ -28,5 +29,24 @@ class BaseController extends Controller
         }
 
         return response()->json($response, $code);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $type
+     * @return string
+     */
+    public function get_image(Request $request, string $type): string
+    {
+        $image_path = "";
+
+        if($request->hasFile('image'))
+        {
+            $image = $request['image'] ;
+            // check config/filesystem.php to know the meaning of public in the second parameter
+            $image_path = $image->store($type , 'public');
+        }
+
+        return $image_path ;
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users\UserProjects;
 
 use App\Http\Controllers\BaseController;
-use App\Models\UserProjectImage;
+use App\Models\Users\UserProjects\UserProjectImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;

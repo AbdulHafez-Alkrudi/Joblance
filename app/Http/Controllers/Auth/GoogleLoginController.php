@@ -9,6 +9,10 @@ use App\Models\Company;
 use App\Models\Freelancer;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Users\Company\Company as CompanyCompany;
+use App\Models\Users\Freelancer\Freelancer as FreelancerFreelancer;
+use App\Models\Users\Role as UsersRole;
+use App\Models\Users\User as UsersUser;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -44,17 +48,17 @@ class GoogleLoginController extends BaseController
             $statusCode = $response->getStatusCode();
             $body = json_decode($response->getBody()->getContents());
             $email = $body->email;
-            $existingUser = User::where('email', $email)->first();
+            $existingUser = UsersUser::where('email', $email)->first();
 
             if (is_null($existingUser))
             {
-                $existingUser = User::query()->create([
+                $existingUser = UsersUser::query()->create([
                     'email'    => $email,
                     'password' => bcrypt(Str::random(13)),
                 ]);
             }
 
-            $user = User::query()->where('email', $email)->first();
+            $user = UsersUser::query()->where('email', $email)->first();
             $user['accessToken'] = $user->createToken('Personal Access Token')->accessToken;
             $user['authorized']  = $user['email_verified'];
             $user['image']       = $body->picture;
@@ -82,9 +86,9 @@ class GoogleLoginController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
-            $user = User::query()->where('email', $input['email'])->first();
+            $user = UsersUser::query()->where('email', $input['email'])->first();
             $user->update([
-                'role_id' => Role::ROLE_USER,
+                'role_id' => UsersRole::ROLE_USER,
                 'phone_number' => $input['phone_number'],
                 'email_verified' => 1,
             ]);
@@ -98,7 +102,7 @@ class GoogleLoginController extends BaseController
                 'image'             => $input['image'],
             ];
 
-            $response = (new RegisterController)->extracted_data($user , Company::create($company_data));
+            $response = (new RegisterController)->extracted_data($user , CompanyCompany::create($company_data));
         }
         else
         {
@@ -109,9 +113,9 @@ class GoogleLoginController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
-            $user = User::query()->where('email', $input['email'])->first();
+            $user = UsersUser::query()->where('email', $input['email'])->first();
             $user->update([
-                'role_id' => Role::ROLE_USER,
+                'role_id' => UsersRole::ROLE_USER,
                 'phone_number' => $input['phone_number'],
                 'email_verified' => 1,
             ]);
@@ -127,7 +131,7 @@ class GoogleLoginController extends BaseController
                 'image'          => $input['image'],
             ];
 
-            $response = (new RegisterController)->extracted_data($user , Freelancer::create($freelancer_data));
+            $response = (new RegisterController)->extracted_data($user , FreelancerFreelancer::create($freelancer_data));
         }
         return $response;
     }

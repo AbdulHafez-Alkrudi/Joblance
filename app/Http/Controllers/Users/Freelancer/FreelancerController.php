@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Users\Freelancer;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\Freelancer\FreelancerCollection;
-use App\Models\Freelancer;
-use App\Models\User;
+use App\Models\Users\Freelancer\Freelancer;
+use App\Models\Users\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 

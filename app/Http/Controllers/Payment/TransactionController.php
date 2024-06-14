@@ -6,7 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\GetTransactionsRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Models\Payment\Transaction;
-use App\Models\User;
+use App\Models\Users\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

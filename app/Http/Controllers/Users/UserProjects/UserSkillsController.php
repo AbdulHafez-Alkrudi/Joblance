@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users\UserProjects;
 
 use App\Http\Controllers\BaseController;
-use App\Models\UserSkills;
+use App\Models\Users\UserProjects\UserSkills;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
