@@ -3,7 +3,7 @@
 namespace App\Models\Users\Freelancer;
 
 use App\Http\Resources\Freelancer\FreelancerResource;
-use App\Models\Users\User;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

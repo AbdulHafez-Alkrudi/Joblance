@@ -7,7 +7,7 @@ use App\Http\Controllers\Payment\BudgetController;
 use App\Models\Payment\Transaction;
 use App\Models\Payment\TransactionStatus;
 use App\Models\Payment\TransactionTypes;
-use App\Models\Users\User;
+use App\Models\User;
 use App\Models\Users\Subscription;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

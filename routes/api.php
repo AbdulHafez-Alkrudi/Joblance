@@ -80,7 +80,6 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Resource routes
     Route::apiResources([
-<<<<<<< HEAD
         'user'         => UserController::class,
         'major'        => MajorController::class,
         'skill'        => SkillController::class,
@@ -91,7 +90,6 @@ Route::middleware(['auth:api'])->group(function () {
         'review'       => ReviewController::class,
         "evaluation"   => EvaluationController::class,
         'subscription' => SubscriptionController::class,
-=======
         'user'        => UserController::class,
         'major'       => MajorController::class,
         'skill'       => SkillController::class,
@@ -102,7 +100,6 @@ Route::middleware(['auth:api'])->group(function () {
         'review'      => ReviewController::class,
         'task'        => TaskController::class,
         "evaluation"  => EvaluationController::class,
->>>>>>> 67183a5d5248898df215efc65573614fc7366ac5
     ]);
 
     // Search Skills

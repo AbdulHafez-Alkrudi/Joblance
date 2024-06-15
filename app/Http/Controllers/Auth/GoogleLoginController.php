@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Models\Users\Company\Company as CompanyCompany;
 use App\Models\Users\Freelancer\Freelancer as FreelancerFreelancer;
 use App\Models\Users\Role as UsersRole;
-use App\Models\Users\User as UsersUser;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -48,17 +47,17 @@ class GoogleLoginController extends BaseController
             $statusCode = $response->getStatusCode();
             $body = json_decode($response->getBody()->getContents());
             $email = $body->email;
-            $existingUser = UsersUser::where('email', $email)->first();
+            $existingUser = User::where('email', $email)->first();
 
             if (is_null($existingUser))
             {
-                $existingUser = UsersUser::query()->create([
+                $existingUser = User::query()->create([
                     'email'    => $email,
                     'password' => bcrypt(Str::random(13)),
                 ]);
             }
 
-            $user = UsersUser::query()->where('email', $email)->first();
+            $user = User::query()->where('email', $email)->first();
             $user['accessToken'] = $user->createToken('Personal Access Token')->accessToken;
             $user['authorized']  = $user['email_verified'];
             $user['image']       = $body->picture;
@@ -86,7 +85,7 @@ class GoogleLoginController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
-            $user = UsersUser::query()->where('email', $input['email'])->first();
+            $user = User::query()->where('email', $input['email'])->first();
             $user->update([
                 'role_id' => UsersRole::ROLE_USER,
                 'phone_number' => $input['phone_number'],
@@ -113,7 +112,7 @@ class GoogleLoginController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
-            $user = UsersUser::query()->where('email', $input['email'])->first();
+            $user = User::query()->where('email', $input['email'])->first();
             $user->update([
                 'role_id' => UsersRole::ROLE_USER,
                 'phone_number' => $input['phone_number'],

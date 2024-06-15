@@ -10,7 +10,7 @@ use App\Models\Auth\EmailVerification;
 use App\Models\Users\Evaluation;
 use App\Models\Users\Freelancer\Freelancer;
 use App\Models\Review\Review;
-use App\Models\Users\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
