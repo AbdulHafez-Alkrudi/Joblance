@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
-use App\Models\Auth\DeviceToken as AuthDeviceToken;
-use App\Models\DeviceToken;
+use App\Models\Auth\DeviceToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +16,7 @@ class LogoutController extends BaseController
             'device_token' => 'required'
         ]);
 
-        AuthDeviceToken::query()->where('token', $request->device_token)->delete();
+        DeviceToken::query()->where('token', $request->device_token)->delete();
         $request->user()->token()->revoke();
         return $this->sendResponse([]);
     }

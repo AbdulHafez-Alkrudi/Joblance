@@ -7,7 +7,7 @@ use App\Http\Requests\ResetPasswordCheckCodeRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Mail\SendCodeResetPassword;
 use App\Models\Auth\ResetCodePassword;
-use App\Models\Users\User;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;

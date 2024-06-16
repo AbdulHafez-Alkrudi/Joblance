@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\TaskRequest;
 use App\Models\Users\Task;
-use App\Models\Users\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,10 +18,14 @@ class TaskController extends BaseController
     {
         $lang = request('lang');
         $user_id = request('user_id');
-        if(!is_null($user_id)){
-            return $this->sendResponse((new Task)->get_all_tasks($user_id));
-        }
 
+        $tasks = Task::all();
+        if(!is_null($user_id)){
+            $tasks = Task::query()->where('user_id', $user_id)->get();
+        }
+        $tasks = (new Task)->get_all_tasks($tasks);
+
+        return $this->sendResponse($tasks);
     }
 
     /**

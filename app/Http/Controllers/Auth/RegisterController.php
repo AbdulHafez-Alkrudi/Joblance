@@ -7,7 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Requests\{RegisterCompanyRequest, RegisterFreelancerRequest};
 use App\Jobs\DeleteAccount;
-use App\Models\{Payment\Budget, Users\Company\Company, Users\Freelancer\Freelancer, Users\Role, Users\User};
+use App\Models\{Payment\Budget, Users\Company\Company, Users\Freelancer\Freelancer, Users\Role, User};
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\{Facades\DB, Facades\Hash, Facades\Validator};
 use PHPUnit\Metadata\Uses;
@@ -119,15 +119,11 @@ class RegisterController extends BaseController
         $user->userable()->associate($specified_user_data);
         $user->save();
 
-        // just to send it to the API
-        $token = $user->createToken('Personal Access Token')->accessToken;
-
         $specified_user_data['id'] = $user['id'];
         $specified_user_data['phone_number'] = $user['phone_number'];
         $specified_user_data['email'] = $user['email'];
         $specified_user_data['role_id'] = $user['role_id'];
         $specified_user_data['type'] = (new UserController)->get_type($user) ;
-        $specified_user_data['accessToken'] = $token;
 
         // just to create budget
         Budget::create([

@@ -7,7 +7,7 @@ use App\Http\Requests\ReportReplyRequest;
 use App\Http\Requests\ReportSendRequest;
 use App\Mail\AdminReply;
 use App\Models\Report\Report;
-use App\Models\Users\User;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

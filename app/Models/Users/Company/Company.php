@@ -5,7 +5,7 @@ namespace App\Models\Users\Company;
 use App\Http\Resources\Company\CompanyResource;
 use App\Models\Review\Review;
 use App\Models\Users\Major;
-use App\Models\Users\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Users;
+namespace App\Models;
 
 use App\Http\Controllers\Users\UserController;
 use App\Mail\SendCodeEmailVerification;

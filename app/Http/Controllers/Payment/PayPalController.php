@@ -14,7 +14,7 @@ use App\Models\Payment\PayPalOrder;
 use App\Models\Payment\Transaction;
 use App\Models\Payment\TransactionStatus;
 use App\Models\Payment\TransactionTypes;
-use App\Models\Users\User;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
