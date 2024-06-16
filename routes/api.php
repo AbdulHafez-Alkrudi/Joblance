@@ -153,7 +153,8 @@ Route::middleware(['auth:api'])->group(function () {
     // Document AI route
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
 
-
+    // Send Report
+    Route::post('reports/send', [ReportController::class, 'store']);
 
     // Middleware-specific routes (empty groups for future expansion)
     Route::middleware(['auth:api', 'can:isCompany', 'subscribed'])->group(function () {
@@ -166,7 +167,6 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('generate-cv', [CVController::class, 'create']);
     });
 
-
     Route::middleware(['auth:api', 'can:isAdmin'])->group(function () {
         // Transactions route
         Route::get('users/{userID}/transactions', [TransactionController::class, 'index']);
@@ -175,7 +175,6 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('budget/charge', [BudgetController::class, 'charge']);
 
         // Report route
-        Route::post('reports/send', [ReportController::class, 'store']);
         Route::prefix('reports')->group(function () {
             Route::get('/', [ReportController::class, 'index']);
             Route::get('newReports', [ReportController::class, 'newReports']);

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Budget;
+use App\Models\Payment\Budget;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

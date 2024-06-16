@@ -99,10 +99,6 @@ class ReportController extends BaseController
             return $this->sendResponse([]);
         }
 
-        $reports->toQuery()->update([
-            'read_at' => Carbon::now(),
-        ]);
-
         return $this->sendResponse($reports);
     }
 
@@ -121,7 +117,12 @@ class ReportController extends BaseController
             'body'  => $request->body,
         ];
 
-        $user = User::query()->find($request->user_id);
+        $report = Report::find($request->report_id);
+        $report->update([
+            'read_at' => Carbon::now()
+        ]);
+
+        $user = User::find($report->user_id);
 
         Mail::to($user->email)->send(new AdminReply($reply_data));
 

@@ -18,6 +18,11 @@ class Major extends Model
         return $this->hasMany(Company::class);
     }
 
+    public function tasks() : HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function get_major($id , string $lang , bool $to_array){
         $major = Major::query()->when($lang == 'en' ,
             function($query) use($id){
