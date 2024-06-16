@@ -81,7 +81,7 @@ class ReviewController extends BaseController
         $review = Review::find($id);
 
         if (is_null($review)) {
-            return $this->sendError(['message' => 'There is no project with this ID']);
+            return $this->sendError(['message' => 'There is no review with this ID']);
         }
 
         return $this->sendResponse($review);

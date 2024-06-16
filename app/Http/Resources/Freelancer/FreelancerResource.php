@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Freelancer;
 
-use App\Models\Freelancer;
-use App\Models\Major;
-use App\Models\StudyCase;
+use App\Models\Users\Freelancer\Freelancer;
+use App\Models\Users\Major;
+use App\Models\Users\Freelancer\StudyCase;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FreelancerResource extends JsonResource

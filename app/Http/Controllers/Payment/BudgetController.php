@@ -97,7 +97,7 @@ class BudgetController extends BaseController
     public function charge(Request $request)
     {
         DB::beginTransaction();
-        try {
+        // try {
             $validator = Validator::make($request->all(), [
                 'balance' => ['required', 'numeric', 'min:1']
             ]);
@@ -107,14 +107,29 @@ class BudgetController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
-            $lang = \request('lang');
+            $lang = request('lang');
             $user_budget = Budget::where('user_id', Auth::id())->first();
 
-            $type_name = $lang == 'en' ? 'recieve Cash' : 'تلقي نقداً';
-            $transaction_type = (new TransactionTypes)->get_transaction_type($type_name, $lang, 1);
+            $transaction_status = TransactionStatus::query()->when($lang == 'en',
+                function($query) {
+                    return $query->select('id')->where('name_EN', 'complete');
+                }
+                ,
+                function($query) {
+                    return $query->select('id')->where('name_AR', 'مكتمل');
+                }
+            )->first();
 
-            $status_name = $lang == 'en' ? 'complete' : 'مكتمل';
-            $transaction_status = (new TransactionStatus)->get_transaction_status($status_name, $lang, 1);
+
+            $transaction_type = TransactionTypes::query()->when($lang == 'en',
+                function($query) {
+                    return $query->select('id')->where('name_EN', 'recieve Cash');
+                }
+                ,
+                function($query) {
+                    return $query->select('id')->where('name_AR', 'تلقي نقداً');
+                }
+            )->first();
 
             $transaction_request = new Request($request->all());
             $transaction_request['transaction_type_id'] = $transaction_type->id;
@@ -134,9 +149,9 @@ class BudgetController extends BaseController
             DB::commit();
 
             return $this->sendResponse($user_budget);
-        } catch (Exception $ex) {
-            return $this->sendError(['message' => $ex->getMessage()]);
-        }
+        // } catch (Exception $ex) {
+        //     return $this->sendError(['message' => $ex->getMessage()]);
+        // }
     }
 
     public function pay(Request $request)
@@ -158,11 +173,25 @@ class BudgetController extends BaseController
                 return $this->sendError(['message' => "Your budget's balance less than request's balance"]);
             }
 
-            $type_name = $lang == 'en' ? 'charge Cash' : 'دفع نقداً';
-            $transaction_type    = (new TransactionTypes)->get_transaction_type($type_name, $lang, 1);
+            $transaction_status = TransactionStatus::query()->when($lang == 'en',
+                function($query) {
+                    return $query->select('id')->where('name_EN', 'complete');
+                }
+                ,
+                function($query) {
+                    return $query->select('id')->where('name_AR', 'مكتمل');
+                }
+            )->first();
 
-            $status_name = $lang == 'en' ? 'complete' : 'مكتمل';
-            $transaction_status  = (new TransactionStatus)->get_transaction_status($status_name, $lang, 1);
+            $transaction_type = TransactionTypes::query()->when($lang == 'en',
+                function($query) {
+                    return $query->select('id')->where('name_EN', 'pay Cash');
+                }
+                ,
+                function($query) {
+                    return $query->select('id')->where('name_AR', 'دفع نقداً');
+                }
+            )->first();
 
             $transaction_request = new Request($request->all());
             $transaction_request['transaction_type_id'] = $transaction_type->id;
