@@ -60,9 +60,9 @@ class SkillController extends BaseController
         return $this->sendResponse();
     }
 
-    public function search(Request $request)
+    public function search()
     {
-        $search = $request->get('search');
+        $search = request('search');
 
         $skills = DB::table('skills')
                     ->select('id', 'name')

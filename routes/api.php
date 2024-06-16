@@ -17,7 +17,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Report\ReportController,
     Users\Company\CompanyController,
     Review\ReviewController,
-    Subscription\SubscriptionController,
+    Users\SubscriptionController,
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
     Users\MajorController,
@@ -103,7 +103,7 @@ Route::middleware(['auth:api'])->group(function () {
     ]);
 
     // Search Skills
-    Route::post('skills/search', [SkillController::class, 'search']);
+    Route::get('skills/search', [SkillController::class, 'search']);
 
     // Custom update routes
     Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
