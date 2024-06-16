@@ -23,7 +23,7 @@ class TaskController extends BaseController
         if(!is_null($user_id)){
             $tasks = Task::query()->where('user_id', $user_id)->get();
         }
-        $tasks = (new Task)->get_all_tasks($tasks);
+        $tasks = (new Task)->get_all_tasks($tasks, $lang);
 
         return $this->sendResponse($tasks);
     }
@@ -41,7 +41,6 @@ class TaskController extends BaseController
         $data['user_id'] = auth()->id();
         $task = Task::create($data);
         return $this->sendResponse($task);
-
     }
 
     /**
@@ -49,16 +48,12 @@ class TaskController extends BaseController
      */
     public function show(string $id)
     {
+        $lang = request('lang');
         $task = Task::find($id);
-        $user = User::find($task->user_id);
         if(is_null($task)){
             return $this->sendError('there is no task with this ID');
         }
-        $task['image'] = ($user->userable->image != null ? asset('storage/' . $user->userable->image) : "");
-        if($user->userable->name!=null)
-        $task['name'] = $user->userable->name;
-        else
-        $task['name'] = $user->userable->first_name.' '.$user->userable->last_name;
+        $task = $task->get_task($task, $lang);
         return $this->sendResponse($task);
     }
 

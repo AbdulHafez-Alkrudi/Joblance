@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\UserProjectImage;
+use App\Models\Users\UserProjects\UserProjectImage;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

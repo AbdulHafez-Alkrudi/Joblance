@@ -4,9 +4,9 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
-use App\Models\Company;
-use App\Models\Freelancer;
-use App\Models\Role;
+use App\Models\Users\Company\Company;
+use App\Models\Users\Freelancer\Freelancer;
+use App\Models\Users\Role;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 

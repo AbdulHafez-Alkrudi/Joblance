@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\ExperienceLevel;
+use App\Models\Users\Freelancer\ExperienceLevel;
 use Illuminate\Database\Seeder;
 
 class ExperienceLevelSeeder extends Seeder
@@ -17,8 +17,8 @@ class ExperienceLevelSeeder extends Seeder
             'name_AR' => 'خبير'
         ]);
         ExperienceLevel::create([
-           'name_EN' => 'Junior',
-           'name_AR' => 'مبتدئ'
+            'name_EN' => 'Junior',
+            'name_AR' => 'مبتدئ'
         ]);
         ExperienceLevel::create([
             'name_EN' => 'Director',

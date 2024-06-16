@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('major_id')->constrained('majors')->onDelete('cascade');
             $table->string('task_title');
             $table->text('about_task');
             $table->text('requirements');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->integer('task_duration');
             $table->integer('budget_min');
             $table->integer('budget_max');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();

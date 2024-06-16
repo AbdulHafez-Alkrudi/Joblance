@@ -14,13 +14,15 @@ class Task extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'major_id',
         'task_title' ,
         'about_task' ,
         'requirements' ,
         'additional_information' ,
         'task_duration' ,
         'budget_min' ,
-        'budget_max'
+        'budget_max',
+        'active'
     ];
 
     // TODO: write the filter scope
@@ -30,17 +32,24 @@ class Task extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function get_all_tasks($tasks)
+
+    public function major() : BelongsTo
+    {
+        return $this->belongsTo(Major::class);
+    }
+
+    public function get_all_tasks($tasks, $lang)
     {
         foreach ($tasks as $key => $task) {
-            $tasks[$key] = $this->get_task($task);
+            $tasks[$key] = $this->get_task($task, $lang);
         }
         return $tasks;
     }
 
-    public function get_task($task)
+    public function get_task($task, $lang)
     {
         $user = User::find($task->user_id)->userable;
+        $task['major_name'] = (new Major)->get_major($task->major_id, $lang, 0);
         $task['image'] = $user->image;
         $task['name']  = $user['name'] ? $user['name'] : $user['first_name'].' '.$user['last_name'];
 

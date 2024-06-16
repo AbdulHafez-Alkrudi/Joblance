@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\TransactionStatus;
+use App\Models\Payment\TransactionStatus;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

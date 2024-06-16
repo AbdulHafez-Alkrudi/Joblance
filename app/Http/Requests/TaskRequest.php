@@ -27,7 +27,8 @@ class TaskRequest extends FormRequest
             'requirements'=> 'required',
             'task_duration' => 'required',
             'budget_min' => 'required',
-            'budget_max' => 'required'
+            'budget_max' => 'required',
+            'major_id' => ['required', 'exists:majors,id']
         ];
     }
 }
