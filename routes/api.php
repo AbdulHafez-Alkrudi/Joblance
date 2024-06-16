@@ -91,16 +91,6 @@ Route::middleware(['auth:api'])->group(function () {
         "evaluation"   => EvaluationController::class,
         "task"         => TaskController::class,
         'subscription' => SubscriptionController::class,
-        'user'        => UserController::class,
-        'major'       => MajorController::class,
-        'skill'       => SkillController::class,
-        'user_skills' => UserSkillsController::class,
-        'freelancer'  => FreelancerController::class,
-        'userProject' => UserProjectController::class,
-        'company'     => CompanyController::class,
-        'review'      => ReviewController::class,
-        'task'        => TaskController::class,
-        "evaluation"  => EvaluationController::class,
     ]);
 
     // Search Skills
