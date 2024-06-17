@@ -12,6 +12,7 @@ use App\Models\Payment\Budget;
 use App\Models\Report\Report;
 use App\Models\Users\Company\Company;
 use App\Models\Users\Follower;
+use App\Models\Users\Freelancer\Offer;
 use App\Models\Users\Role;
 use App\Models\Users\Subscription;
 use App\Models\Users\Task;
@@ -125,6 +126,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserSkills::class);
     }
+
+    public function offers() : HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
+
     public function conversations()
     {
         return $this->belongsToMany(Conversation::class, 'participants')

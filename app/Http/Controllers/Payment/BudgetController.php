@@ -97,7 +97,7 @@ class BudgetController extends BaseController
     public function charge(Request $request)
     {
         DB::beginTransaction();
-        // try {
+        try {
             $validator = Validator::make($request->all(), [
                 'balance' => ['required', 'numeric', 'min:1']
             ]);
@@ -148,10 +148,10 @@ class BudgetController extends BaseController
 
             DB::commit();
 
-            return $this->sendResponse($user_budget);
-        // } catch (Exception $ex) {
-        //     return $this->sendError(['message' => $ex->getMessage()]);
-        // }
+            return $this->sendResponse($transaction);
+        } catch (Exception $ex) {
+            return $this->sendError(['message' => $ex->getMessage()]);
+        }
     }
 
     public function pay(Request $request)
@@ -209,7 +209,7 @@ class BudgetController extends BaseController
 
             DB::commit();
 
-            return $this->sendResponse($user_budget);
+            return $this->sendResponse($transaction);
         } catch (Exception $ex) {
             DB::rollBack();
             return $this->sendError(['message' => $ex->getMessage()]);
