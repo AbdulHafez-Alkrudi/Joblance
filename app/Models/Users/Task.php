@@ -4,9 +4,11 @@ namespace App\Models\Users;
 
 use App\Models\User;
 use App\Models\Users\Company\Company;
+use App\Models\Users\Freelancer\Offer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class Task extends Model
@@ -36,6 +38,11 @@ class Task extends Model
     public function major() : BelongsTo
     {
         return $this->belongsTo(Major::class);
+    }
+
+    public function offers() : HasMany
+    {
+        return $this->hasMany(Offer::class);
     }
 
     public function get_all_tasks($tasks, $lang)

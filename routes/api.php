@@ -13,6 +13,7 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     CV\CVController,
     DocumentAI\DocumentAIController,
     Notification\NotificationController,
+    OfferController,
     Payment\PayPalController,
     Report\ReportController,
     Users\Company\CompanyController,
@@ -91,6 +92,17 @@ Route::middleware(['auth:api'])->group(function () {
         "evaluation"   => EvaluationController::class,
         "task"         => TaskController::class,
         'subscription' => SubscriptionController::class,
+        'user'        => UserController::class,
+        'major'       => MajorController::class,
+        'skill'       => SkillController::class,
+        'user_skills' => UserSkillsController::class,
+        'freelancer'  => FreelancerController::class,
+        'userProject' => UserProjectController::class,
+        'company'     => CompanyController::class,
+        'review'      => ReviewController::class,
+        'task'        => TaskController::class,
+        "evaluation"  => EvaluationController::class,
+        'offer'       => OfferController::class
     ]);
 
     // Search Skills
@@ -151,7 +163,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['auth:api', 'can:isCompany', 'subscribed'])->group(function () {
         // Add company-specific routes here
     });
-
 
     Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
         // CV route
