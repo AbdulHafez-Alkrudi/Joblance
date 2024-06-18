@@ -57,7 +57,7 @@ class Task extends Model
     {
         $user = User::find($task->user_id)->userable;
         $task['major_name'] = (new Major)->get_major($task->major_id, $lang, 0);
-        $task['image'] = $user->image;
+        $task['image'] = $user->image != null ? asset('storage/' . $user->image) : "";
         $task['name']  = $user['name'] ? $user['name'] : $user['first_name'].' '.$user['last_name'];
 
         return $task;

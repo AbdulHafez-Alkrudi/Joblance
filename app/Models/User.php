@@ -118,6 +118,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->subscription && $this->subscription->ends_at->isFuture();
     }
 
+    public function hasOffer($task_id)
+    {
+        return $this->offers()->where('task_id', $task_id)->first();
+    }
+
     public function reports() :HasMany
     {
         return $this->hasMany(Report::class);

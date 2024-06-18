@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users\Freelancer;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\OfferRequest;
@@ -19,7 +19,7 @@ class OfferController extends BaseController
     public function index(Request $request)
     {
         if ($request->has('task_id')) {
-            $offers = Offer::query()->where('task_id', $request->task_id)->get();
+            $offers = (new Offer)->get_all_offers($request->task_id, request('lang'));
             return $this->sendResponse($offers);
         }
     }
@@ -44,6 +44,12 @@ class OfferController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            if ($user->hasOffer($request->task_id)) {
+                return $this->sendError(['message' => 'This user already offered']);
+            }
+
             $request['user_id'] = Auth::id();
             $offer = Offer::create($request->all());
 
@@ -65,6 +71,7 @@ class OfferController extends BaseController
             return $this->sendError(['message' => 'There is no offer with this ID']);
         }
 
+        $offer = $offer->get_offer($offer, request('lang'));
         return $this->sendResponse($offer);
     }
 
