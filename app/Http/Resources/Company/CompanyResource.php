@@ -19,12 +19,13 @@ class CompanyResource extends JsonResource
             'id'               => $this->user->id,
             'name'             => $this->name,
             'image'            => $this->image != null ? asset('storage/' . $this->image) : "",
-            'email'            => $this->email,
-            "phone_number"     => $this->phone_number,
+            'email'            => $this->user->email,
+            "phone_number"     => $this->user->phone_number,
             'description'      => is_null($this->description) ? "" : $this->description,
             'major'            => (new Major)->get_major($this->major_id , request('lang') , true),
             'location'         => $this->location,
             'num_of_employees' => $this->num_of_employees,
+            'evaluated'        => $this->user->hasEvaluated($this->user)
         ];
     }
 }

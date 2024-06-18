@@ -81,27 +81,18 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Resource routes
     Route::apiResources([
+        'user_skills'  => UserSkillsController::class,
+        'userProject'  => UserProjectController::class,
+        'review'       => ReviewController::class,
+        'evaluation'   => EvaluationController::class,
+        'subscription' => SubscriptionController::class,
         'user'         => UserController::class,
         'major'        => MajorController::class,
         'skill'        => SkillController::class,
-        'user_skills'  => UserSkillsController::class,
         'freelancer'   => FreelancerController::class,
-        'userProject'  => UserProjectController::class,
         'company'      => CompanyController::class,
-        'review'       => ReviewController::class,
-        "evaluation"   => EvaluationController::class,
-        'subscription' => SubscriptionController::class,
-        'user'        => UserController::class,
-        'major'       => MajorController::class,
-        'skill'       => SkillController::class,
-        'user_skills' => UserSkillsController::class,
-        'freelancer'  => FreelancerController::class,
-        'userProject' => UserProjectController::class,
-        'company'     => CompanyController::class,
-        'review'      => ReviewController::class,
-        'task'        => TaskController::class,
-        "evaluation"  => EvaluationController::class,
-        'offer'       => OfferController::class
+        'task'         => TaskController::class,
+        'offer'        => OfferController::class
     ]);
 
     // Search Skills
