@@ -55,11 +55,11 @@ class Task extends Model
 
     public function get_task($task, $lang)
     {
-        $user = User::find($task->user_id)->userable;
+        $user = User::find($task->user_id);
         $task['major_name'] = (new Major)->get_major($task->major_id, $lang, 0);
-        $task['image'] = asset('storage/' . $user->image);
-        $task['name']  = $user['name'] ? $user['name'] : $user['first_name'].' '.$user['last_name'];
-
+        $task['image'] = $user->userable->image != null ? asset('storage/' . $user->userable->image) : "";
+        $task['name']  = $user->userable['name'] ? $user->userable['name'] : $user->userable['first_name'].' '.$user->userable['last_name'];
+        $task['user_role'] = $user["role_id"];
         return $task;
     }
 }
