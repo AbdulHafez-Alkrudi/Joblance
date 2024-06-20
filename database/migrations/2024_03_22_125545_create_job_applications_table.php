@@ -15,14 +15,14 @@ return new class extends Migration
 
         Schema::create('job_applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_detail_id')->constrained();
-            $table->foreignId('freelancer_id')->constrained();
+            $table->foreignId('job_detail_id')->constrained('job_details')->onDelete('cascade');
+            $table->foreignId('freelancer_id')->constrained('users')->onDelete('cascade');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
             $table->string('phone_number');
             $table->text('cover_letter')->nullable();
-            $table->string('CV');
+            $table->text('CV');
             $table->timestamps();
         });
 

@@ -14,7 +14,8 @@ return new class extends Migration
         // this table to story the type of the job like if it's remotely,on site , etc.
         Schema::create('job_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name_EN');
+            $table->string('name_AR');
             $table->timestamps();
         });
     }

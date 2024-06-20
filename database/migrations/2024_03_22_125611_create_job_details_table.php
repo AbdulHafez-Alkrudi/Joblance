@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('job_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('job_type_id')->constrained();
-            $table->foreignId('experience_level_id')->constrained();
-            $table->foreignId('remote_id')->constrained();
+            $table->foreignId('company_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('job_type_id')->constrained('job_types')->onDelete('cascade');
+            $table->foreignId('experience_level_id')->constrained('experience_levels')->onDelete('cascade');
+            $table->foreignId('remote_id')->constrained('remotes')->onDelete('cascade');
             $table->integer('salary');
             $table->string('location')->nullable();
             $table->text('job_description');
