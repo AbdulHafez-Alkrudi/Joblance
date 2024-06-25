@@ -19,9 +19,12 @@ class TaskController extends BaseController
         $lang = request('lang');
         $user_id = request('user_id');
 
-        $tasks = Task::all();
+
         if(!is_null($user_id)){
             $tasks = Task::query()->where('user_id', $user_id)->get();
+        }
+        else{
+            $tasks = Task::all();
         }
         $tasks = (new Task)->get_all_tasks($tasks, $lang);
 

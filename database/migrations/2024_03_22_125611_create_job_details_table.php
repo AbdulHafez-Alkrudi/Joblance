@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('remote_id')->references('id')->on('remotes')->cascadeOnDelete();
             $table->foreignId('major_id')->constrained();
             $table->string('title');
-            $table->integer('salary')->nullable();
+            $table->double('salary')->nullable();
             $table->string('location')->nullable();
             $table->text('about_job');
             $table->text('requirements');
@@ -28,8 +28,6 @@ return new class extends Migration
 
             $table->boolean('show_number_of_employees')->default(false);
             $table->boolean('show_about_the_company')->default(false);
-            $table->boolean('show_in_important_jobs')->default(false);
-
 
             $table->timestamps();
         });
