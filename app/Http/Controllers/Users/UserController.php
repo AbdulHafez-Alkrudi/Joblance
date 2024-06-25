@@ -56,20 +56,7 @@ class UserController extends BaseController
         }
 
         $userable = $user->userable->get_info($user->userable, \request('lang'), false);
-        $userable['phone_number'] = $user['phone_number'];
-        $userable['email'] = $user['email'];
 
-        $evaluated = false;
-        if ($user->userable_type == Company::class) {
-            if (Review::query()->where('user_id', Auth::id())->where('company_id', $user->userable_id)->exists())
-                $evaluated = true;
-        }
-        else {
-            if (Evaluation::query()->where('user_id', Auth::id())->where('freelancer_id', $user->userable_id)->exists())
-                $evaluated = true;
-        }
-
-        $userable['evaluated'] = $evaluated;
         return $this->sendResponse($userable);
     }
 

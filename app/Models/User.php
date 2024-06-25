@@ -10,7 +10,9 @@ use App\Models\Chat\Conversation;
 use App\Models\Chat\Message;
 use App\Models\Payment\Budget;
 use App\Models\Report\Report;
+use App\Models\Review\Review;
 use App\Models\Users\Company\Company;
+use App\Models\Users\Evaluation;
 use App\Models\Users\Follower;
 use App\Models\Users\Freelancer\Offer;
 use App\Models\Users\Role;
@@ -25,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Passport\HasApiTokens;
 
@@ -121,6 +124,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasOffer($task_id)
     {
         return $this->offers()->where('task_id', $task_id)->first();
+    }
+
+    public function hasEvaluated($user)
+    {
+        $evaluated = false;
+        if ($user->userable_type == Company::class) {
+            if (Review::query()->where('user_id', Auth::id())->where('company_id', $user->userable_id)->exists())
+                $evaluated = true;
+        }
+        else {
+            if (Evaluation::query()->where('user_id', Auth::id())->where('freelancer_id', $user->userable_id)->exists())
+                $evaluated = true;
+        }
+        return $evaluated;
     }
 
     public function reports() :HasMany

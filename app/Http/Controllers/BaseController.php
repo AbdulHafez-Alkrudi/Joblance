@@ -49,4 +49,14 @@ class BaseController extends Controller
 
         return $image_path ;
     }
+
+    public function get_file($file, $type)
+    {
+        $file_path = "";
+
+        // check config/filesystem.php to know the meaning of public in the second parameter
+        $file_path = $file->store($type , 'public');
+
+        return $file_path;
+    }
 }

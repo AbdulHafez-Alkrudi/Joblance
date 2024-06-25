@@ -29,8 +29,10 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
 use App\Http\Controllers\Payment\BudgetController;
 use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Review\EvaluationController;
-
-
+use App\Http\Controllers\Users\Company\JobDetailController;
+use App\Http\Controllers\Users\FollowerController;
+use App\Http\Controllers\Users\Freelancer\ExperienceLevelController;
+use App\Http\Controllers\Users\Freelancer\JobApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,18 +83,22 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Resource routes
     Route::apiResources([
-        'user'         => UserController::class,
-        'major'        => MajorController::class,
-        'skill'        => SkillController::class,
-        'user_skills'  => UserSkillsController::class,
-        'freelancer'   => FreelancerController::class,
-        'userProject'  => UserProjectController::class,
-        'company'      => CompanyController::class,
-        'review'       => ReviewController::class,
-        "evaluation"   => EvaluationController::class,
-        "task"         => TaskController::class,
-        'subscription' => SubscriptionController::class,
-        'offer'       => OfferController::class
+        'user_skills'     => UserSkillsController::class,
+        'userProject'     => UserProjectController::class,
+        'review'          => ReviewController::class,
+        'evaluation'      => EvaluationController::class,
+        'subscription'    => SubscriptionController::class,
+        'user'            => UserController::class,
+        'major'           => MajorController::class,
+        'skill'           => SkillController::class,
+        'freelancer'      => FreelancerController::class,
+        'company'         => CompanyController::class,
+        'task'            => TaskController::class,
+        'offer'           => OfferController::class,
+        'jobApplication'  => JobApplicationController::class,
+        'experienceLevel' => ExperienceLevelController::class,
+        'jobDetail'       => JobDetailController::class,
+        'follower'        => FollowerController::class
     ]);
 
     // Search Skills

@@ -70,7 +70,6 @@ class UserProjectController extends BaseController
      */
     public function show(string $id): JsonResponse
     {
-
         $project = UserProject::query()->find($id);
         if (is_null($project)) {
             return $this->sendError(['message' => 'Thers is not project with this ID']);

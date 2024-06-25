@@ -10,6 +10,10 @@ class JobType extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name_EN', 'name_AR'
+    ];
+
     public function job_details(): HasMany
     {
         return $this->hasMany(JobDetail::class);
