@@ -1,12 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users;
 
 use App\Models\User;
+use App\Models\Users\Major;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Task>
+ * @extends Factory
  */
 class TaskFactory extends Factory
 {
@@ -19,6 +20,7 @@ class TaskFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'major_id' => $this->faker->numberBetween(1 , 5),
             'task_title'   => $this->faker->name,
             'about_task'   => $this->faker->text(50),
             'requirements' => $this->faker->text(50),

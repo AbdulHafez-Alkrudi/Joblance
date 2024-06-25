@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users\UserProjects;
 
-use App\Models\Skill;
 use App\Models\User;
+use App\Models\Users\Freelancer\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserSkills>
+ * @extends Factory
  */
 class UserSkillsFactory extends Factory
 {

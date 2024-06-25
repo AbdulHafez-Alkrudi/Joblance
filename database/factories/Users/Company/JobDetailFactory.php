@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users\Company;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory
  */
-class ExperienceLevelFactory extends Factory
+class JobDetailFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class ExperienceLevelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'=> $this->faker->name
+            //
         ];
     }
 }

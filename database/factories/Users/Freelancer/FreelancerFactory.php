@@ -1,8 +1,7 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users\Freelancer;
 
-use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,10 +17,10 @@ class FreelancerFactory extends Factory
      */
     public function definition(): array
     {
-        $image = $this->faker->image();
+        /*$image = $this->faker->image();
         $path  = 'freelancer/'.basename($image);
         Storage::disk('public')->put($path , file_get_contents($image));
-        @unlink($image);
+        @unlink($image);*/
         return [
             'study_case_id' => $this->faker->numberBetween(1 , 5),
             'first_name'    => $this->faker->firstName,
@@ -30,7 +29,7 @@ class FreelancerFactory extends Factory
             'location'      => $this->faker->country,
             'major_id'      => $this->faker->numberBetween(1 , 5),
             'open_to_work'  => $this->faker->boolean,
-            'image'         => $path,
+            'image'         => null,
             'bio'           => $this->faker->realText,
             'gender'        => $this->faker->randomElement(['male' , 'female'])
         ];

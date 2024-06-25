@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Company;
-use App\Models\Freelancer;
+use App\Models\Users\Company\Company;
+use App\Models\Users\Freelancer\Freelancer;
 use App\Models\User;
 use Composer\Autoload\ClassLoader;
 use Illuminate\Database\Eloquent\Factories\Factory;
