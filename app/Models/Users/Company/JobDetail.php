@@ -54,7 +54,7 @@ class JobDetail extends Model
     }
     public function get_job($job)
     {
-        $company = User::find($job['company_id'])->userable();
+        $company = User::find($job['company_id'])->userable;
         $job['company_name'] = $company->name;
         $job['image'] =  $company->image != null ? asset('storage/' . $company->image) : "";
         return $job ;
