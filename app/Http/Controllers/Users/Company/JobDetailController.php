@@ -17,7 +17,14 @@ class JobDetailController extends BaseController
         if ($request->has('company_id')) {
             return $this->indexByCompanyId($request->company_id);
         }
-        $jobs_detail = JobDetail::all();
+        $jobs_detail = JobDetail::filter(request([
+            'job_type_id',
+            'experience_level_id',
+            'remote_type',
+            'major_id',
+            'date_posted',
+        ]))->get();
+
         $jobs_detail = (new JobDetail)->get_all_jobs($jobs_detail);
         return $this->sendResponse($jobs_detail);
     }

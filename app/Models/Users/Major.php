@@ -3,6 +3,7 @@
 namespace App\Models\Users;
 
 use App\Models\Users\Company\Company;
+use App\Models\Users\Company\JobDetail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,12 +18,15 @@ class Major extends Model
     {
         return $this->hasMany(Company::class);
     }
-
+    //
     public function tasks() : HasMany
     {
         return $this->hasMany(Task::class);
     }
-
+    public function job_details(): HasMany
+    {
+        return $this->hasMany(JobDetail::class);
+    }
     public function get_major($id , string $lang , bool $to_array){
         $major = Major::query()->when($lang == 'en' ,
             function($query) use($id){
