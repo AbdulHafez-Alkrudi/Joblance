@@ -55,7 +55,17 @@ class JobDetail extends Model
     public function get_job($job)
     {
         $company = User::find($job['company_id'])->userable;
+        $job_type = JobType::find($job['job_type_id']);
+        $experience_level = ExperienceLevel::find($job['experience_level_id']);
+        $remote = Remote::find($job['remote_id']);
+        $major   = Major::find($job['major_id']);
         $job['company_name'] = $company->name;
+
+        $job['job_type_name']         = (request('lang') == 'ar' ? $job_type['name_AR'] : $job_type['name_EN']);
+        $job['experience_level_name'] = (request('lang') == 'ar' ? $experience_level['name_AR'] : $experience_level['name_EN']);
+        $job['remote_name']           = (request('lang') == 'ar' ? $remote['name_AR'] : $remote['name_EN']);
+        $job['major_name']            = (request('lang') == 'ar' ? $major['name_AR'] : $major['name_EN']);
+
         $job['image'] =  $company->image != null ? asset('storage/' . $company->image) : "";
         return $job ;
     }

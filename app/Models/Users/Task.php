@@ -67,7 +67,7 @@ class Task extends Model
         return $task;
     }
 
-    public function scopeFilter($query , array $filter)
+    public function scopeFilter($query , array $filters)
     {
         // searching according to a specific user:
         $query->when($filters['user_id'] ?? false , fn($query , $user_id) =>
