@@ -23,7 +23,8 @@ class JobDetailController extends BaseController
             'remote_type',
             'major_id',
             'date_posted',
-        ]))->get();
+        ]))
+         ->get();
 
         $jobs_detail = (new JobDetail)->get_all_jobs($jobs_detail);
         return $this->sendResponse($jobs_detail);

@@ -21,7 +21,7 @@ class TaskController extends BaseController
             'user_id',
             'major_id',
             'date_posted'
-        ]));
+        ])) -> get() ;
         $tasks = (new Task)->get_all_tasks($tasks, $lang);
 
         return $this->sendResponse($tasks);

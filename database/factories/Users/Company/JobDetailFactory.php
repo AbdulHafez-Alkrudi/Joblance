@@ -32,7 +32,6 @@ class JobDetailFactory extends Factory
             'additional_information' => $this->faker->realText,
             'show_number_of_employees' => $this->faker->boolean,
             'show_about_the_company' => $this->faker->boolean,
-            'show_in_important_jobs' => $this->faker->boolean
         ];
     }
 }
