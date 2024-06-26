@@ -19,7 +19,7 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'user_id' => User::factory()->forFreelancer(),
             'major_id' => $this->faker->numberBetween(1 , 5),
             'task_title'   => $this->faker->name,
             'about_task'   => $this->faker->text(50),
