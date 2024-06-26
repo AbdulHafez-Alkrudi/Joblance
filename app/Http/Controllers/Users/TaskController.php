@@ -17,15 +17,11 @@ class TaskController extends BaseController
     public function index()
     {
         $lang = request('lang');
-        $user_id = request('user_id');
-
-
-        if(!is_null($user_id)){
-            $tasks = Task::query()->where('user_id', $user_id)->get();
-        }
-        else{
-            $tasks = Task::all();
-        }
+        $tasks = Task::query()->filter(request([
+            'user_id',
+            'major_id',
+            'date_posted'
+        ]));
         $tasks = (new Task)->get_all_tasks($tasks, $lang);
 
         return $this->sendResponse($tasks);

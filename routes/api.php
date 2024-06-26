@@ -103,7 +103,6 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Search Skills
     Route::get('skills/search', [SkillController::class, 'search']);
-
     // Custom update routes
     Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
     Route::post('company/{company}', [CompanyController::class, 'update']);

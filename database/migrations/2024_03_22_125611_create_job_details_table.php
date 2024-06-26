@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('about_job');
             $table->text('requirements');
             $table->text('additional_information')->nullable();
-
+            $table->boolean('active')->default(true);
             $table->boolean('show_number_of_employees')->default(false);
             $table->boolean('show_about_the_company')->default(false);
 
