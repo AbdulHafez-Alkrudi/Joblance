@@ -1,8 +1,7 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users\Freelancer;
 
-use App\Models\StudyCase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

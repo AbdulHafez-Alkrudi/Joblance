@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users\UserProjects;
 
-use App\Models\UserProject;
+use App\Models\Users\UserProjects\UserProject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
 

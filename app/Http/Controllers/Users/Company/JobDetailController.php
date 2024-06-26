@@ -18,6 +18,7 @@ class JobDetailController extends BaseController
             return $this->indexByCompanyId($request->company_id);
         }
         $jobs_detail = JobDetail::all();
+        $jobs_detail = (new JobDetail)->get_all_jobs($jobs_detail);
         return $this->sendResponse($jobs_detail);
     }
 
@@ -28,6 +29,7 @@ class JobDetailController extends BaseController
         }
 
         $jobs_detail = JobDetail::query()->where('company_id', $company_id)->get();
+        $jobs_detail = (new JobDetail)->get_all_jobs($jobs_detail);
         return $this->sendResponse($jobs_detail);
     }
 
@@ -50,7 +52,7 @@ class JobDetailController extends BaseController
         if (is_null($job_detail)) {
             return $this->sendError(['message' => 'There is no job_detail with this ID']);
         }
-
+        $job_detail = (new JobDetail)->get_job($job_detail);
         return $this->sendResponse($job_detail);
     }
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users\Company;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\JobDetail>
+ * @extends Factory
  */
-class JobDetailFactory extends Factory
+class RemoteFactory extends Factory
 {
     /**
      * Define the model's default state.

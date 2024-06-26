@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Users\Freelancer;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Remote>
+ * @extends Factory
  */
-class RemoteFactory extends Factory
+class SkillFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class RemoteFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->jobTitle
         ];
     }
 }
