@@ -18,10 +18,16 @@ class OfferController extends BaseController
      */
     public function index(Request $request)
     {
-        if ($request->has('task_id')) {
-            $offers = (new Offer)->get_all_offers($request->task_id, request('lang'));
-            return $this->sendResponse($offers);
+        $validator = Validator::make($request->all(), [
+            'task_id' => ['required', 'exists:tasks,id']
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError($validator->errors());
         }
+
+        $offers = (new Offer)->get_all_offers($request->task_id, request('lang'));
+        return $this->sendResponse($offers);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Models\Review;
 
 use App\Models\User;
+use App\Models\Users\Company\Company;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Review extends Model
 {
     use HasFactory;
+
+    protected $table = "reviews";
 
     protected $guarded = [
         'id'
@@ -24,6 +27,16 @@ class Review extends Model
         'created_at' => 'datetime:Y-m-d',
         'updated_at' => 'datetime:Y-m-d',
     ];
+
+    public function user() : BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function company() : BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
 
     public function get_all_reviews($reviews)
     {

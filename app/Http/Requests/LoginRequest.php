@@ -30,7 +30,6 @@ class LoginRequest extends FormRequest
             'password' => 'required',
             'device_token' => [
                 Rule::requiredIf(function() use ($request){
-                    //return Gate::allows('isAdmin', User::query()->find(1)->toArray());
                      return !$request->input('isAdmin');
                 }),
                 'string',

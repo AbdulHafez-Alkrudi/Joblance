@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Users\UserController;
 use App\Mail\SendCodeEmailVerification;
 use App\Models\Auth\DeviceToken;
 use App\Models\Auth\EmailVerification;
@@ -13,17 +12,21 @@ use App\Models\Report\Report;
 use App\Models\Review\Review;
 use App\Models\Users\Company\Company;
 use App\Models\Users\Evaluation;
+use App\Models\Users\Favoutite\FavouriteFreelancer;
+use App\Models\Users\Favoutite\FavouriteJob;
+use App\Models\Users\Favoutite\FavouriteTask;
 use App\Models\Users\Follower;
 use App\Models\Users\Freelancer\Offer;
+use App\Models\Users\Freelancer\Tag;
 use App\Models\Users\Role;
 use App\Models\Users\Subscription;
 use App\Models\Users\Task;
 use App\Models\Users\UserProjects\UserSkills;
+use App\Models\Users\UserProjects\UserTags;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -97,11 +100,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Follower::class);
     }
 
+    public function followings()
+    {
+        return $this->hasMany(Follower::class, 'follower_id');
+    }
+
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }
-    public function deviceToken() : HasMany
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function evaluations(): HasMany
+    {
+        return $this->hasMany(Evaluation::class);
+    }
+
+    public function deviceToken(): HasMany
     {
         return $this->hasMany(DeviceToken::class);
     }
@@ -121,37 +140,96 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->subscription && $this->subscription->ends_at->isFuture();
     }
 
+    public function hasApplication($job_detail_id)
+    {
+        return $this->userable->job_applications()->where('job_detail_id', $job_detail_id)->exists();
+    }
+
     public function hasOffer($task_id)
     {
         return $this->offers()->where('task_id', $task_id)->first();
     }
 
-    public function hasEvaluated($user)
+    public function hasEvaluated($freelancer_id)
     {
-        $evaluated = false;
-        if ($user->userable_type == Company::class) {
-            if (Review::query()->where('user_id', Auth::id())->where('company_id', $user->userable_id)->exists())
-                $evaluated = true;
+        return $this->evaluations()->where('freelancer_id', $freelancer_id)->exists();
+    }
+
+    public function hasFollow($user)
+    {
+        return $user->followers()->where('follower_id', Auth::id())->exists();
+    }
+
+    public function hasSkill($id)
+    {
+        $userSkill = $this->skills()->where('skill_id', $id)->first();
+        return !is_null($userSkill);
+    }
+
+    public function hasTag($name)
+    {
+        $tag = Tag::query()->where('name', $name)->first();
+        if (is_null($tag)) {
+            return false;
         }
-        else {
-            if (Evaluation::query()->where('user_id', Auth::id())->where('freelancer_id', $user->userable_id)->exists())
-                $evaluated = true;
-        }
-        return $evaluated;
+
+        $userTag = $this->tags()->where('tag_id', $tag->id)->first();
+        return !is_null($userTag);
+    }
+
+    public function hasReview($company_id)
+    {
+        return $this->reviews()->where('company_id', $company_id)->exists();
     }
 
     public function reports() :HasMany
     {
         return $this->hasMany(Report::class);
     }
+
     public function skills(): HasMany
     {
         return $this->hasMany(UserSkills::class);
     }
 
+    public function tags() : HasMany
+    {
+        return $this->hasMany(UserTags::class);
+    }
+
     public function offers() : HasMany
     {
         return $this->hasMany(Offer::class);
+    }
+
+    public function favourite_jobs() : HasMany
+    {
+        return $this->hasMany(FavouriteJob::class, 'user_id', 'id');
+    }
+
+    public function favourite_tasks() : HasMany
+    {
+        return $this->hasMany(FavouriteTask::class, 'user_id', 'id');
+    }
+
+    public function favourite_freelancers() : HasMany
+    {
+        return $this->hasMany(FavouriteFreelancer::class, 'user_id', 'id');
+    }
+
+    public function hasFavouriteTask($task_id)
+    {
+        return $this->favourite_tasks()->where('task_id', $task_id)->exists();
+    }
+
+    public function hasfavouriteJob($job_detail_id)
+    {
+        return $this->favourite_jobs()->where('job_detail_id', $job_detail_id)->exists();
+    }
+
+    public function hasFavouriteFreelancer($freelancer_id)
+    {
+        return $this->favourite_freelancers()->where('freelancer_id', $freelancer_id)->exists();
     }
 
     public function conversations()

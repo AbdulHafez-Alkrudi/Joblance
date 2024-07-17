@@ -7,16 +7,26 @@ use App\Http\Resources\Freelancer\FreelancerCollection;
 use App\Models\Users\Freelancer\Freelancer;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class FreelancerController extends BaseController
 {
     public function index()
     {
-        $lang = \request('lang');
-        $freelancers = (new Freelancer)->get_all_freelancers($lang) ;
-        $freelancers = new FreelancerCollection($freelancers);
+        if (Gate::allows('isAdmin', Auth::user())) {
+            $freelancers = (new Freelancer)->get_all_freelancers(request('lang'));
+        }
+        else {
+            $user = Auth::user();
+            $freelancers = Freelancer::query()
+                                    ->orderByRaw("CASE WHEN freelancers.id IN (SELECT userable_id FROM users WHERE users.id IN (SELECT user_id FROM followers WHERE follower_id = ?)) THEN 0 ELSE 1 END, CASE WHEN freelancers.major_id = ? THEN 0 ELSE 1 END", [$user->id, $user->userable->major_id])
+                                    ->select('id', 'first_name', 'last_name', 'image', 'bio', 'major_id', 'study_case_id', 'location', 'open_to_work', 'counter', 'sum_rate')
+                                    ->paginate();
+        }
 
+        $freelancers = new FreelancerCollection($freelancers);
         return $this->sendResponse($freelancers);
     }
 

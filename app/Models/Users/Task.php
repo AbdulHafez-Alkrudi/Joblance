@@ -2,6 +2,7 @@
 
 namespace App\Models\Users;
 
+use App\Models\Users\Favoutite\FavouriteTask;
 use App\Models\User;
 use App\Models\Users\Company\Company;
 use App\Models\Users\Freelancer\Offer;
@@ -17,11 +18,11 @@ class Task extends Model
     protected $fillable = [
         'user_id',
         'major_id',
-        'task_title' ,
+        'title' ,
         'about_task' ,
         'requirements' ,
         'additional_information' ,
-        'task_duration' ,
+        'duration' ,
         'budget_min' ,
         'budget_max',
         'active'
@@ -45,6 +46,11 @@ class Task extends Model
         return $this->hasMany(Offer::class);
     }
 
+    public function favoutite_tasks() : HasMany
+    {
+        return $this->hasMany(FavouriteTask::class, 'task_id', 'id');
+    }
+
     public function get_all_tasks($tasks, $lang)
     {
         foreach ($tasks as $key => $task) {
@@ -55,11 +61,17 @@ class Task extends Model
 
     public function get_task($task, $lang)
     {
-        $user = User::find($task->user_id)->userable;
-        $task['major_name'] = (new Major)->get_major($task->major_id, $lang, 0);
-        $task['image'] = $user->image != null ? asset('storage/' . $user->image) : "";
-        $task['name']  = $user['name'] ? $user['name'] : $user['first_name'].' '.$user['last_name'];
-
-        return $task;
+        $user = $task->user->userable;
+        return [
+            'id' => $task->id,
+            'user_id' => $task->user_id,
+            'name' => $user['name'] ? $user['name'] : $user['first_name'].' '.$user['last_name'],
+            'task_title' => $task->title,
+            'duration' => $task->duration,
+            'active' => $task->active,
+            'major_name' => (new Major)->get_major($task->major_id, $lang, 0),
+            'description' => $task->about_task,
+            'date' => $task->created_at->format('Y-m-d H:i:s')
+        ];
     }
 }

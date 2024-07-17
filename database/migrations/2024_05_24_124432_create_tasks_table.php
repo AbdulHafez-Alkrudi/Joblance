@@ -16,11 +16,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('major_id')->constrained('majors')->onDelete('cascade');
-            $table->string('task_title');
+            $table->string('title');
             $table->text('about_task');
             $table->text('requirements');
             $table->text('additional_information')->nullable();
-            $table->integer('task_duration');
+            $table->integer('duration');
             $table->integer('budget_min');
             $table->integer('budget_max');
             $table->boolean('active')->default(true);

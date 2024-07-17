@@ -18,11 +18,14 @@ return new class extends Migration
             $table->foreignId('job_type_id')->constrained('job_types')->onDelete('cascade');
             $table->foreignId('experience_level_id')->constrained('experience_levels')->onDelete('cascade');
             $table->foreignId('remote_id')->constrained('remotes')->onDelete('cascade');
-            $table->integer('salary');
-            $table->string('location')->nullable();
-            $table->text('job_description');
+            $table->foreignId('major_id')->constrained('majors')->onDelete('cascade');
+            $table->string('title');
+            $table->string('location');
+            $table->double('salary');
+            $table->text('about_job');
             $table->text('requirements');
-
+            $table->text('additional_information')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();

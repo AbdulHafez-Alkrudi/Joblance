@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Payment\BudgetController;
-use App\Models\Payment\Transaction;
-use App\Models\Payment\TransactionStatus;
-use App\Models\Payment\TransactionTypes;
+use App\Models\Payment\Price;
 use App\Models\User;
 use App\Models\Users\Subscription;
 use Carbon\Carbon;
@@ -21,7 +19,16 @@ class SubscriptionController extends BaseController
      */
     public function index()
     {
-        //
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+        if ($user->hasActiveSubscription()) {
+            $subscription = $user->subscription;
+            $subscription = $subscription->get_info($subscription);
+            return $this->sendResponse($subscription);
+        }
+        else {
+            return $this->sendError('This user does not have active subscription');
+        }
     }
 
     /**
@@ -38,11 +45,10 @@ class SubscriptionController extends BaseController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'transaction_id' => ['required', 'exists:transactions,id']
+            'type' => ['required', 'string', 'in:annual,monthly']
         ]);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
 
@@ -54,15 +60,20 @@ class SubscriptionController extends BaseController
         // Delete all old Subscriptions that user had before
         Subscription::query()->where('user_id', $user->id)->delete();
 
-        $transaction = Transaction::find($request->transaction_id);
-        $transaction_status_name = (new TransactionStatus())->get_transaction_status($transaction->transaction_status_id, 'en', 0);
-        if ($transaction_status_name != 'complete') {
-            return $this->sendError(['message' => 'transaction_status is not complete']);
+        // Price depends on subscription type
+        $price = (new Price)->get_subscription_price($request->type);
+
+        // Payment
+        $payRequest = new Request(['balance' => $price->price]);
+        $response = (new BudgetController)->pay($payRequest);
+        if ($response->getData()->status == 'failure') {
+            return $response;
         }
 
         // Create a new Subscription
         $subscription = Subscription::create([
             'user_id' => $user->id,
+            'price_id' => $price->id,
             'starts_at' => Carbon::now(),
             'ends_at' => Carbon::now()->addYear()
         ]);

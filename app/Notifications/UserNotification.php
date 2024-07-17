@@ -15,14 +15,15 @@ class UserNotification extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
-    public $title, $body;
+    public $title, $body, $data;
     /**
      * Create a new notification instance.
      */
-    public function __construct($title, $body)
+    public function __construct($title, $body, $data)
     {
         $this->title = $title;
         $this->body  = $body;
+        $this->data  = $data;
     }
 
 
@@ -67,7 +68,8 @@ class UserNotification extends Notification implements ShouldBroadcast
                     'analytics_label' => 'joblance',
                 ],
             ],
-        ]);
+        ])
+        ->data($this->data);
     }
 
 
@@ -81,6 +83,7 @@ class UserNotification extends Notification implements ShouldBroadcast
         return [
             'title' => $this->title,
             'body'  => $this->body,
+            'data'  => $this->data
         ];
     }
 }
