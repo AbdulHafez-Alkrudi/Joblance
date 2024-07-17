@@ -25,7 +25,9 @@ class CompanyResource extends JsonResource
             'major'            => (new Major)->get_major($this->major_id , request('lang') , true),
             'location'         => $this->location,
             'num_of_employees' => $this->num_of_employees,
-            'evaluated'        => $this->user->hasEvaluated($this->user)
+            'followers'        => count($this->user->followers),
+            'evaluated'        => $this->user->hasEvaluated($this->user),
+            'followed'         => $this->user->hasFollow($this->user)
         ];
     }
 }

@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('price_id')->constrained('prices')->onDelete('cascade');
             $table->date('starts_at');
             $table->date('ends_at');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

@@ -12,12 +12,16 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\MessageController,
     CV\CVController,
     DocumentAI\DocumentAIController,
+    FavouriteFreelancerController,
+    FavouriteJobController,
+    FavouriteTaskController,
     Notification\NotificationController,
     Users\Freelancer\OfferController,
     Payment\PayPalController,
     Report\ReportController,
     Users\Company\CompanyController,
     Review\ReviewController,
+    TaskStateController,
     Users\SubscriptionController,
     Users\Freelancer\FreelancerController,
     Users\Freelancer\SkillController,
@@ -26,13 +30,22 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Users\UserController,
     Users\UserProjects\UserProjectController,
     Users\UserProjects\UserSkillsController};
+use App\Http\Controllers\MonthlyReport\MonthlyReportController;
 use App\Http\Controllers\Payment\BudgetController;
+use App\Http\Controllers\Payment\PriceController;
 use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Review\EvaluationController;
+use App\Http\Controllers\Users\AcceptedTasksController;
+use App\Http\Controllers\Users\Company\AcceptedJobsController;
+use App\Http\Controllers\Users\Company\ImportantJobsController;
 use App\Http\Controllers\Users\Company\JobDetailController;
+use App\Http\Controllers\Users\Company\JobTypeController;
+use App\Http\Controllers\Users\Company\RemoteController;
 use App\Http\Controllers\Users\FollowerController;
 use App\Http\Controllers\Users\Freelancer\ExperienceLevelController;
 use App\Http\Controllers\Users\Freelancer\JobApplicationController;
+use App\Http\Controllers\Users\Freelancer\TagController;
+use App\Http\Controllers\Users\UserProjects\UserTagsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,33 +94,64 @@ Route::middleware(['auth:api'])->group(function () {
     // Logout route
     Route::post('user/logout', LogoutController::class)->name('logout');
 
+    // Offer
+    Route::prefix('offer')->group(function () {
+        Route::get('', [OfferController::class, 'index']);
+        Route::get('{id}', [OfferController::class, 'show']);
+    });
+
+    // Job Applications
+    Route::prefix('jobApplication')->group(function () {
+        Route::get('', [JobApplicationController::class, 'index']);
+        Route::get('{id}', [JobApplicationController::class, 'show']);
+    });
+
+    // Job Details
+    Route::prefix('jobDetail')->group(function () {
+        Route::get('', [JobDetailController::class, 'index']);
+        Route::get('{id}', [JobDetailController::class, 'show']);
+    });
+
+    // Important Jobs
+    Route::prefix('important_job')->group(function () {
+        Route::get('', [ImportantJobsController::class, 'index']);
+        Route::get('{id}', [ImportantJobsController::class, 'show']);
+    });
+
+    Route::prefix('accepted_jobs')->group(function () {
+        Route::get('', [AcceptedJobsController::class, 'index']);
+        Route::get('{id}', [AcceptedJobsController::class, 'show']);
+    });
+
     // Resource routes
     Route::apiResources([
         'user_skills'     => UserSkillsController::class,
         'userProject'     => UserProjectController::class,
         'review'          => ReviewController::class,
         'evaluation'      => EvaluationController::class,
-        'subscription'    => SubscriptionController::class,
         'user'            => UserController::class,
-        'major'           => MajorController::class,
-        'skill'           => SkillController::class,
         'freelancer'      => FreelancerController::class,
         'company'         => CompanyController::class,
         'task'            => TaskController::class,
-        'offer'           => OfferController::class,
-        'jobApplication'  => JobApplicationController::class,
-        'experienceLevel' => ExperienceLevelController::class,
-        'jobDetail'       => JobDetailController::class,
-        'follower'        => FollowerController::class
+        'follower'        => FollowerController::class,
+        'tag'             => TagController::class,
+        'user_tags'       => UserTagsController::class,
+        'accepted_tasks'  => AcceptedTasksController::class,
+        'favourite_job'   => FavouriteJobController::class,
+        'favourite_task'  => FavouriteTaskController::class,
+        'favourite_freelancer' => FavouriteFreelancerController::class
     ]);
 
     // Search Skills
     Route::get('skills/search', [SkillController::class, 'search']);
-    // Custom update routes
-    Route::post('userProject/{userProject}', [UserProjectController::class, 'update']);
-    Route::post('company/{company}', [CompanyController::class, 'update']);
-    Route::post('freelancer/{freelancer}', [FreelancerController::class, 'update']);
-    Route::post('task/{task}' , [TaskController::class , 'update']);
+    
+    // Subscription
+    Route::prefix('subscription')->group(function () {
+        Route::get('', [SubscriptionController::class, 'index']);
+        Route::post('', [SubscriptionController::class, 'store']);
+        Route::delete('', [SubscriptionController::class, 'destroy']);
+    });
+
     // Change password route
     Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('changePassword');
 
@@ -143,28 +187,54 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     // Budget routes
-    Route::prefix('budget')->group(function () {
-        Route::get('details', [BudgetController::class, 'get_budget']);
-        Route::post('pay', [BudgetController::class, 'pay']);
-    });
+    Route::get('budget', [BudgetController::class, 'get_budget']);
 
     // Document AI route
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
 
-    // Send Report
-    Route::post('reports/send', [ReportController::class, 'store']);
-
     // Middleware-specific routes (empty groups for future expansion)
     Route::middleware(['auth:api', 'can:isCompany', 'subscribed'])->group(function () {
-        // Add company-specific routes here
+        // Job Detail
+        Route::prefix('jobDetail')->group(function () {
+            Route::post('', [JobDetailController::class, 'store']);
+            Route::put('{id}', [JobDetailController::class, 'update']);
+            Route::delete('{id}', [JobDetailController::class, 'destroy']);
+        });
+
+        // Important Job
+        Route::post('important_job', [ImportantJobsController::class, 'store']);
+
+        // Accepted Job
+        Route::post('accepted_jobs', [AcceptedJobsController::class, 'store']);
     });
 
     Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
         // CV route
         Route::post('generate-cv', [CVController::class, 'create']);
+
+        // Search Skills
+        Route::get('skills/search', [SkillController::class, 'search']);
+
+        // Apply for job
+        Route::post('jobApplication', [JobApplicationController::class, 'store']);
+
+        // Offer
+        Route::prefix('offer')->group(function () {
+            Route::post('', [OfferController::class, 'store']);
+            Route::delete('{id}', [OfferController::class, 'destroy']);
+        });
     });
 
     Route::middleware(['auth:api', 'can:isAdmin'])->group(function () {
+        Route::apiResources([
+            'major'           => MajorController::class,
+            'skill'           => SkillController::class,
+            'experienceLevel' => ExperienceLevelController::class,
+            'task_state'      => TaskStateController::class,
+            'job_type'        => JobTypeController::class,
+            'remote'          => RemoteController::class
+        ]);
+
         // Transactions route
         Route::get('users/{userID}/transactions', [TransactionController::class, 'index']);
 
@@ -177,5 +247,14 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('newReports', [ReportController::class, 'newReports']);
             Route::post('reply', [ReportController::class, 'reply']);
         });
+
+        // Add Tag To Skills
+        Route::get('tag/addToSkills/{id}', [TagController::class, 'addToSkills']);
+
+        // Price
+        Route::resource('price', PriceController::class);
+
+        // Monthly Report
+        Route::get('monthly_report', MonthlyReportController::class);
     });
 });

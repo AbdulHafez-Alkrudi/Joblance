@@ -25,12 +25,13 @@ class JobDetailRequest extends FormRequest
             'job_type_id' => ['required', 'exists:job_types,id'],
             'experience_level_id' => ['required', 'exists:experience_levels,id'],
             'remote_id' => ['required', 'exists:remotes,id'],
-            'major_id' => ['required' , 'exists:majors,id'] ,
-            'title' => ['required' , 'string'],
-            'salary' => ['required'],
+            'major_id'  => ['required', 'exists:majors,id'],
+            'title' => ['required', 'string'],
+            'salary' => ['required', 'integer'],
             'location' => ['required', 'string'],
             'about_job' => ['required', 'string'],
-            'requirements' => ['required', 'string']
+            'requirements' => ['required', 'string'],
+            'additional_information' => ['nullable', 'string'],
         ];
     }
 }

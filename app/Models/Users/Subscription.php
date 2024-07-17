@@ -2,15 +2,17 @@
 
 namespace App\Models\Users;
 
+use App\Models\Payment\Price;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Subscription extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'starts_at', 'ends_at'];
+    protected $fillable = ['user_id', 'starts_at', 'ends_at', 'price_id'];
 
     /**
      * The attributes that should be cast.
@@ -37,5 +39,20 @@ class Subscription extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function price() : BelongsTo
+    {
+        return $this->belongsTo(Price::class);
+    }
+
+    public function get_info(Subscription $subscription)
+    {
+        $price = (new Price)->get_price($subscription->price_id, request('lang'), 1);
+        return [
+            'type_of_subscription' => $price->name,
+            'starts_at' => $subscription->starts_at->format('Y-m-d'),
+            'ends_at' => $subscription->ends_at->format('Y-m-d')
+        ];
     }
 }

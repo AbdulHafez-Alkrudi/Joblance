@@ -24,7 +24,6 @@ class ReportController extends BaseController
     public function index()
     {
         $reports = Report::all();
-
         return $this->sendResponse($reports);
     }
 
@@ -93,12 +92,6 @@ class ReportController extends BaseController
     public function newReports()
     {
         $reports = Report::query()->whereNull('read_at')->get();
-
-        if($reports->isEmpty())
-        {
-            return $this->sendResponse([]);
-        }
-
         return $this->sendResponse($reports);
     }
 
@@ -114,7 +107,7 @@ class ReportController extends BaseController
 
         $reply_data = [
             'title' => $request->title,
-            'body'  => $request->body,
+            'body'  => $request->body
         ];
 
         $report = Report::find($request->report_id);

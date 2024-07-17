@@ -19,22 +19,20 @@ class SkillController extends BaseController
         return $this->sendResponse(Skill::all());
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request): JsonResponse
     {
-         $data = $request->all();
-         $validator = Validator::make($data , [
-              'name' => 'required'
-         ]);
-         if($validator->fails()){
-             return $this->sendError($validator->errors());
-         }
-         $skill = Skill::create($data);
-         return $this->sendResponse($skill);
+        $data = $request->all();
+        $validator = Validator::make($data , [
+            'name' => ['required', 'unique:skills,name']
+        ]);
+        if($validator->fails()){
+            return $this->sendError($validator->errors());
+        }
+        $skill = Skill::create($data);
+        return $this->sendResponse($skill);
     }
 
 
@@ -43,7 +41,7 @@ class SkillController extends BaseController
      */
     public function update(Request $request, string $id)
     {
-
+        //
     }
 
     /**
