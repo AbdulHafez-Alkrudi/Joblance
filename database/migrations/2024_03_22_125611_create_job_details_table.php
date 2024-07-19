@@ -22,9 +22,10 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->text('job_description');
             $table->text('requirements');
+            $table->text('additional_information')->nullable();
+            $table->boolean('active')->default(true);
             $table->boolean('show_number_of_employees')->default(false);
             $table->boolean('show_about_the_company')->default(false);
-
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
