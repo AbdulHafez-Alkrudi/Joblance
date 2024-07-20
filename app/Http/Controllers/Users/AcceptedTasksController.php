@@ -61,7 +61,7 @@ class AcceptedTasksController extends BaseController
         $acceptedTask = AcceptedTasks::create($request->all());
 
         // To reduce the duration 1 every day
-        dispatch(new AcceptedTask($acceptedTask))->delay(now()->addDay());
+        dispatch(new AcceptedTask($acceptedTask))->delay(now()->addDay($request->duration));
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
@@ -69,7 +69,7 @@ class AcceptedTasksController extends BaseController
         $task = Task::find($request->task_id);
 
         // send email to user
-        Mail::to($user->email)->send(new AcceptedUser('Acceptance In Task', 'You have been successfully accepted into ' . $task->title . ' task'));
+        Mail::to($user->email)->send(new AcceptedUser('Acceptance In Task', 'You have been successfully accepted into ' . $task->title . ' task and you have ' . $request->duration . ' days to complete it.'));
 
         // To notify the user
         $user->notify(new UserNotification('Acceptance In Task', 'You have been successfully accepted into ' . $task->title . ' task', ['task_id' => $task->id]));
