@@ -26,9 +26,21 @@ class ReviewController extends BaseController
         if ($request->has('user_id')) {
             return $this->indexByUserId($request->user_id);
         }
-        elseif ($request->has('review_id')) {
-            return $this->show($request->project_id);
+    }
+
+    protected function indexByUserId(string $userId)
+    {
+        $user = User::find($userId);
+        if (is_null($user)) {
+            return $this->sendError(['message' => 'There is no user with this ID']);
         }
+
+        if ($user->userable_type != Company::class) {
+            return $this->sendError(['message' => 'Userable type is not Company']);
+        }
+
+        $reviews = (new Review)->get_all_reviews($user->userable->reviews);
+        return $this->sendResponse($reviews);
     }
 
     /**
@@ -54,7 +66,23 @@ class ReviewController extends BaseController
                 return $this->sendError($validator->errors());
             }
 
-            $user = User::find($request->user_id);
+            $user = User::find($request->company_id);
+            if (is_null($user)) {
+                return $this->sendError('There is no company with thid ID');
+            }
+
+            if ($user->userable_type != Company::class) {
+                return $this->sendError('This user is not Company');
+            }
+
+            if (auth()->user()->hasReview($user->userable_id)) {
+                return $this->sendError('This user already reviewed');
+            }
+
+            if (Auth::id() == $request->company_id) {
+                return $this->sendError('you can not review yourself');
+            }
+
             $review_data = [
                 'company_id' => $user->userable_id,
                 'user_id'    => Auth::id(),
@@ -63,6 +91,7 @@ class ReviewController extends BaseController
             ];
 
             $review = Review::create($review_data);
+            $review = $review->get_info($review);
 
             DB::commit();
 
@@ -78,28 +107,7 @@ class ReviewController extends BaseController
      */
     public function show(string $id)
     {
-        $review = Review::find($id);
-
-        if (is_null($review)) {
-            return $this->sendError(['message' => 'There is no review with this ID']);
-        }
-
-        return $this->sendResponse($review);
-    }
-
-    protected function indexByUserId(string $userId)
-    {
-        $user = User::find($userId);
-        if (is_null($user)) {
-            return $this->sendError(['message' => 'There is no user with this ID']);
-        }
-
-        if ($user->userable_type != Company::class) {
-            return $this->sendError(['message' => 'Userable type is not Company']);
-        }
-
-        $reviews = (new Review)->get_all_reviews($user->userable->reviews);
-        return $this->sendResponse($reviews);
+        //
     }
 
     /**
@@ -115,37 +123,26 @@ class ReviewController extends BaseController
      */
     public function update(Request $request, string $id)
     {
-        DB::beginTransaction();
-        try {
-            $updateReviewRequest = new UpdateReviewRequest();
-            $validator = Validator::make($request->all(), $updateReviewRequest->rules());
-
-            if ($validator->fails())
-            {
-                return $this->sendError($validator->errors());
-            }
-
-            $review = Review::find($id);
-            $review->update($request->all());
-
-            DB::commit();
-
-            return $this->sendResponse($review);
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return $this->sendError(['message' => $ex->getMessage()]);
-        }
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $company_id)
     {
-        $review = Review::find($id);
+        $user = User::find($company_id);
+        if (is_null($user)) {
+            return $this->sendError('There is no company with this ID');
+        }
 
+        if ($user->userable_type != Company::class) {
+            return $this->sendError('This user is not company');
+        }
+
+        $review = auth()->user()->reviews()->where('company_id', $user->userable_id)->first();
         if (is_null($review)) {
-            return $this->sendError(['message' => 'There is no review with this ID']);
+            return $this->sendError('This user did not reviewed this company');
         }
 
         $review->delete();

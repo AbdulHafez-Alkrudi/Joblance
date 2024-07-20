@@ -3,6 +3,7 @@
 namespace App\Models\Users\Freelancer;
 
 use App\Http\Resources\Freelancer\FreelancerResource;
+use App\Models\Users\Favoutite\FavouriteFreelancer;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use PhpParser\Node\Expr\Cast\Double;
 
 class Freelancer extends Authenticatable
 {
@@ -65,6 +67,11 @@ class Freelancer extends Authenticatable
         return $this->hasMany(JobApplication::class);
     }
 
+    public function favourite_freelancers() : HasMany
+    {
+        return $this->hasMany(FavouriteFreelancer::class, 'freelancer_id', 'id');
+    }
+
     // TODO: code the logic of the filters
     public function scopeFilter(Request $request , array $filters)
     {
@@ -97,6 +104,6 @@ class Freelancer extends Authenticatable
     public function rate($sum, $counter)
     {
         if($counter == 0) return 0 ;
-        return $sum / $counter;
+        return $sum / ($counter * 1.0);
     }
 }

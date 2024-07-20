@@ -30,7 +30,9 @@ class FreelancerResource extends JsonResource
             'open_to_work' => $this->open_to_work,
             'counter'      => $this->counter,
             'rate'         => (new Freelancer)->rate($this->sum_rate, $this->counter),
-            'evaluated'    => $this->user->hasEvaluated($this->user)
+            'followers'    => count($this->user->followers),
+            'evaluated'    => $this->user->hasEvaluated($this->user),
+            'followed'     => $this->user->hasFollow($this->user)
         ];
     }
 }

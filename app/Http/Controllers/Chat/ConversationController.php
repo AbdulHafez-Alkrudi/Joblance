@@ -20,7 +20,7 @@ class ConversationController extends BaseController
             'lastMessage',
             'participants' => function($builder) use ($user) {
                 $builder->where('id', '<>', $user->id);
-            },])
+            }])
             ->withCount([
                 'recipients as new_messages' => function($builder) use ($user) {
                     $builder->where('recipients.user_id', '=', $user->id)

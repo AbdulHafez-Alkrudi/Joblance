@@ -26,6 +26,12 @@ class JobApplicationController extends BaseController
             return $this->sendError($validator->errors());
         }
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->hasApplication($request->job_detail_id)) {
+            return $this->sendError('This user has already applied for the job');
+        }
+
         $file_path = $this->get_file($request->file('CV'), "CVs");
         $job_application = JobApplication::create([
             'job_detail_id' => $request->job_detail_id,

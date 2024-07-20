@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users\UserProjects;
 use App\Http\Controllers\BaseController;
 use App\Models\Users\UserProjects\UserSkills;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class UserSkillsController extends BaseController
@@ -30,12 +31,17 @@ class UserSkillsController extends BaseController
         $data = $request->all() ;
 
         $validator = Validator::make($data , [
-           'skill_id' => 'required'
+            'skill_id' => 'required'
         ]);
         if($validator->fails()){
             return $this->sendError($validator->errors()) ;
         }
-        $data['user_id'] = auth()->id();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user->hasSkill($request->skill_id)) {
+            return $this->sendError(['User already has skill with this ID']);
+        }
+        $data['user_id'] = $user->id;
         $user_skill = UserSkills::create($data);
         return $this->sendResponse($user_skill) ;
     }

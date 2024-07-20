@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\GetTransactionsRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Models\Payment\Transaction;
+use App\Models\Payment\TransactionTypes;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,11 +21,8 @@ class TransactionController extends BaseController
      */
     public function index($userId, Request $request)
     {
-        $getTransactions = new GetTransactionsRequest();
-        $validator = Validator::make($request->all(), $getTransactions->rules());
-
-        if ($validator->fails())
-        {
+        $validator = Validator::make($request->all(), (new GetTransactionsRequest)->rules());
+        if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
 
@@ -36,7 +34,19 @@ class TransactionController extends BaseController
             $transactions = (new Transaction)->getTransactionsForUserInMonth($request, request('lang'));
         }
 
-        return $this->sendResponse($transactions);
+        $transaction_type = TransactionTypes::query()->where('name_EN', 'recieve Cash')->select('id')->first();
+        $transaction_type2 = TransactionTypes::query()->where('name_EN', 'pay Cash')->select('id')->first();
+        
+        $totalRecieveCash = $transactions->where('transaction_type_id', $transaction_type->id)->pluck('balance')->sum();
+        $totalPayCash    = $transactions->where('transaction_type_id', $transaction_type2->id)->pluck('balance')->sum();
+
+        $data = [
+            'transaction' => $transactions,
+            'total_recieve_cash' => $totalRecieveCash,
+            'total_pay_cash' => $totalPayCash
+        ];
+
+        return $this->sendResponse($data);
     }
 
     /**
@@ -66,7 +76,7 @@ class TransactionController extends BaseController
                 'balance' => $request->balance,
                 'transaction_type_id'  => $request->transaction_type_id,
                 'transaction_status_id' => $request->transaction_status_id,
-                'user_id' => Auth::id(),
+                'user_id' => $request->user_id
             ];
 
             $transaction = Transaction::create($transaction_data);
@@ -85,12 +95,7 @@ class TransactionController extends BaseController
      */
     public function show(string $id)
     {
-        $lang = \request('lang');
-
-        $transaction = Transaction::find($id);
-        $transaction = $transaction->get_info($transaction, $lang);
-
-        return $this->sendResponse($transaction);
+        //
     }
 
     /**
@@ -114,12 +119,6 @@ class TransactionController extends BaseController
      */
     public function destroy(string $id)
     {
-        $transaction = Transaction::find($id);
-        if (is_null($transaction)) {
-            return $this->sendError(['message' => 'There is no transaction with this ID']);
-        }
-
-        $transaction->delete();
-        return $this->sendResponse();
+        //
     }
 }

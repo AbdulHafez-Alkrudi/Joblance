@@ -34,7 +34,7 @@ class EvaluationController extends BaseController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:users,id'],
+            'freelancer_id' => ['required', 'exists:users,id'],
             'level'   => ['required', 'min:0.00', 'max:5.00'],
         ]);
 
@@ -42,13 +42,21 @@ class EvaluationController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $user = User::find($request->user_id);
+        $user = User::find($request->freelancer_id);
         if (is_null($user)) {
-            return $this->sendError(['message' => 'There is not user with this ID']);
+            return $this->sendError(['message' => 'There is not freelancer with this ID']);
         }
 
         if ($user->userable_type != Freelancer::class) {
             return $this->sendError(['message' => 'Userable type is not Freelancer']);
+        }
+
+        if (auth()->user()->hasEvaluated($user->userable_id)) {
+            return $this->sendError('This user already evaluated');
+        }
+
+        if (Auth::id() == $request->freelancer_id) {
+            return $this->sendError('You can not evaluate yourself');
         }
 
         Evaluation::create([
@@ -59,11 +67,11 @@ class EvaluationController extends BaseController
 
         $freelancer = $user->userable;
         $freelancer->update([
-            'sum' => $freelancer->sum + $request->level,
+            'sum_rate' => $freelancer->sum_rate + $request->level,
             'counter' => $freelancer->counter + 1.0,
         ]);
 
-        return $this->sendResponse();
+        return $this->sendResponse($freelancer->rate($freelancer->sum_rate, $freelancer->counter));
     }
 
     /**
@@ -87,37 +95,7 @@ class EvaluationController extends BaseController
      */
     public function update(Request $request, string $id)
     {
-        $validator = Validator::make($request->all(), [
-            'level' => ['required', 'min:0.00', 'max:5.00']
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
-        }
-
-        $user = User::find($id);
-        if (is_null($user)) {
-            return $this->sendError(['message' => 'There is not user with this ID']);
-        }
-
-        if ($user->userable_type != Freelancer::class) {
-            return $this->sendError(['message' => 'Userable type is not Freelancer']);
-        }
-
-        $evaluation = Evaluation::query()->where('user_id', Auth::id())->where('freelancer_id', $user->userable_id)->first();
-        if (is_null($evaluation)) {
-            return $this->sendError(['message' => 'There is not evaluation with this user_id']);
-        }
-
-        $freelancer = $user->userable;
-        $freelancer->update([
-            'sum' => $freelancer->sum - $evaluation->level + $request->level
-        ]);
-        $evaluation->update([
-            'level' => $request->level
-        ]);
-
-        return $this->sendResponse();
+        //
     }
 
     /**
@@ -127,7 +105,7 @@ class EvaluationController extends BaseController
     {
         $user = User::find($id);
         if (is_null($user)) {
-            return $this->sendError(['message' => 'There is not user with this ID']);
+            return $this->sendError(['message' => 'There is no freelancer with this ID']);
         }
 
         if ($user->userable_type != Freelancer::class) {
@@ -136,17 +114,16 @@ class EvaluationController extends BaseController
 
         $evaluation = Evaluation::query()->where('user_id', Auth::id())->where('freelancer_id', $user->userable_id)->first();
         if (is_null($evaluation)) {
-            return $this->sendError(['message' => 'There is not evaluation with this user_id']);
+            return $this->sendError(['message' => 'There is no evaluation with this freelancer_id']);
         }
 
         $freelancer = $user->userable;
         $freelancer->update([
-            'sum' => $freelancer->sum - $evaluation->level,
+            'sum_rate' => $freelancer->sum_rate - $evaluation->level,
             'counter' => $freelancer->counter - 1.0
         ]);
 
         $evaluation->delete();
-
-        return $this->sendResponse();
+        return $this->sendResponse($freelancer->rate($freelancer->sum_rate, $freelancer->counter));
     }
 }

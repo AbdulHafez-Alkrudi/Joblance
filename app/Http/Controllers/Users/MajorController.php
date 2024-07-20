@@ -63,7 +63,7 @@ class MajorController extends BaseController
      */
     public function update(Request $request, $freelancer)
     {
-
+        //
     }
 
     /**

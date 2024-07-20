@@ -27,7 +27,6 @@ class Skill extends Model
             'skill_id'   => $user_skill->skill_id,
             'skill_name' => $user_skill->skill->name,
         ];
-
         return $data;
     }
 }

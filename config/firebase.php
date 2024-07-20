@@ -50,7 +50,9 @@ return [
              *
              */
 
-            'credentials' => env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
+            'credentials' => [
+                'file' => base_path(env('FIREBASE_CREDENTIALS'))
+            ],
 
             /*
              * ------------------------------------------------------------------------
