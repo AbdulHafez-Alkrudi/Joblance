@@ -26,26 +26,48 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PayPalController extends BaseController
 {
-    public function paypal(Request $request)
+    public function pay_using_paypal(Request $request)
     {
-        $validator = validator($request->all(), [
-            'value' => 'required|min:0|max:9999999.99|numeric',
+        DB::beginTransaction();
+        try {
+            PayPalOrder::query()->where('user_id', Auth::id())->delete();
+
+            $response = $this->charge_using_paypal($request);
+            if ($response->getData()->status == 'failure') {
+                DB::rollBack();
+                return $response;
+            }
+
+            DB::commit();
+            return $response;
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return $this->sendError([$ex->getMessage()]);
+        }
+    }
+
+    public function charge_using_paypal(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => ['required', 'numeric', 'min:1']
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+        {
             return $this->sendError($validator->errors());
         }
+
+        $amount = $this->get_after_paypal_fee($request->amount);
 
         $data = [];
         $data['intent'] = 'CAPTURE';
         $data['purchase_units'] = [
             [
-              'reference_id' => 1234,
-              'amount' => [
-                'currency_code' => 'USD',
-                'value' => $request->value,
-              ],
-            ],
+                'amount' => [
+                    'currency_code' => 'USD',
+                    'value' => $amount,
+                ]
+            ]
         ];
 
         $data['application_context'] = [
@@ -57,10 +79,30 @@ class PayPalController extends BaseController
         $provider->getAccessToken();
         $response = $provider->createOrder($data);
 
+        DB::beginTransaction();
         try {
-            return $this->sendResponse(['redirect_link' => $response['links'][1]['href']]);
+            if ($response['status'] === 'CREATED')
+            {
+                PaypalOrder::create([
+                    'order_id' => $response['id'],
+                    'user_id' => Auth::id(),
+                    'amount' => $request->amount
+                ]);
+
+                $res['payment_link'] =  $response['links'][1]['href'];
+                $res['success_link'] = route('paypal.success');
+                $res['cancel_link'] = route('paypal.cancel');
+
+                DB::commit();
+
+                return $this->sendResponse($res);
+            }
+            else {
+                return $this->sendError(['Unknown error']);
+            }
         } catch (Exception $ex) {
-            return $this->sendError(['message' => 'something went wrong']);
+            DB::rollBack();
+            return $this->sendError(['Unknown error']);
         }
     }
 
@@ -80,73 +122,53 @@ class PayPalController extends BaseController
                 $user_id = Auth::id();
 
                 if (!PayPalOrder::where('user_id', $user_id)->where('order_id', $order_id)->exists()) {
-                    return $this->sendError(['message' => 'no such an order id']);
+                    return $this->sendError('No such an order_id');
                 }
 
                 $paypal_order = PaypalOrder::where('user_id', $user_id)->where('order_id', $order_id)->first();
                 if ($user_id !== $paypal_order->user_id) {
-                    return $this->sendError(['errors' => ['Unauthorized' => ['message' => 'You can not use this link']]]);
+                    return $this->sendError([['Unauthorized' => ['message' => 'You can not use this link']]]);
                 }
 
-                $user_budget = Budget::query()->where('user_id', $user_id)->first();
-                Budget::query()->find($user_budget->id)->update([
-                    'balance' => $user_budget->balance + $paypal_order->amount,
+                $charge_transaction = TransactionTypes::where('name_EN', 'charge via PayPal')->first();
+                $complete_status = TransactionStatus::where('name_EN', 'complete')->first();
+                Transaction::create([
+                    'balance' => $paypal_order->amount,
+                    'transaction_type_id' => $charge_transaction->id,
+                    'transaction_status_id' => $complete_status->id,
+                    'user_id' => $user_id,
                 ]);
 
-                PayPalOrder::find($paypal_order->id)->delete();
-                if (!$paypal_order->buy)
-                {
-                    $user_budget->refresh();
-                    $charge_transaction = TransactionTypes::where('name', 'charge via PayPal')->first();
-                    $complete_status = TransactionStatus::where('name', 'complete')->first();
-                    Transaction::create([
-                        'balance' => $paypal_order->amount,
-                        'transactions_type_id' => $charge_transaction->id,
-                        'transaction_status_id' => $complete_status->id,
-                        'user_id' => $user_id,
-                    ]);
-
-                    return $this->sendResponse($user_budget);
-                }
-                else
-                {
-                    $pay_response = (new BudgetController())->try_to_pay($paypal_order->amount);
-                    return $pay_response;
-                }
+                $paypal_order->delete();
+                return $this->sendResponse();
             }
-            else
-            {
-                return $this->sendError(['message' => 'this operation didn\'t completed yet']);
+            else {
+                return $this->sendError('this operation didn\'t completed yet');
             }
         } catch (Exception $ex) {
-            return $this->sendError(['message' => 'Invalid token']);
+            return $this->sendError($ex->getMessage());
         }
     }
 
     public function cancel(Request $request)
     {
         try {
-            $order_id = $request->get('token');
+            $provider = new PayPalClient;
+            $provider->getAccessToken();
+            $response = $provider->capturePaymentOrder($request->get('token'));
+
+            $order_id = $response['id'];
             $user_id  = Auth::id();
 
-            if (!PayPalOrder::where('user_id', $user_id)->where('order_id', $order_id)->exists()) {
-                return $this->sendError(['message' => 'no such an order id']);
-            }
-
             $paypal_order = PaypalOrder::where('user_id', $user_id)->where('order_id', $order_id)->first();
-            PaypalOrder::where('user_id', $user_id)->where('order_id', $order_id)->delete();
+            if (is_null($paypal_order)) {
+                return $this->sendError('No such an order id');
+            }
 
-            if (!$paypal_order->buy)
-            {
-                $user_budget = Budget::query()->where('user_id', $user_id)->first();
-                return $this->sendResponse($user_budget);
-            }
-            else
-            {
-                return $this->sendResponse();
-            }
+            $paypal_order->delete();
+            return $this->sendResponse();
         } catch (Exception $ex) {
-            return $this->sendError(['message' => 'Invalid token']);
+            return $this->sendError($ex->getMessage());
         }
     }
 
@@ -160,7 +182,6 @@ class PayPalController extends BaseController
         }
         return $randomString;
     }
-
 
     public function send(Request $request)
     {
@@ -368,97 +389,21 @@ class PayPalController extends BaseController
 
     public function charge_my_wallet(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'amount' => ['required', 'numeric', 'min:1'],
-        ]);
-
-        if ($validator->fails())
-        {
-            return $this->sendError($validator->errors());
-        }
-
-        PaypalOrder::where('user_id', Auth::id())->delete();
-
-        return $this->charge_using_paypal($request);
-    }
-
-    public function charge_using_paypal(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'amount' => ['required', 'numeric', 'min:1']
-        ]);
-
-        if ($validator->fails())
-        {
-            return $this->sendError($validator->errors());
-        }
-
-        $amount = PayPalController::get_after_paypal_fee($request->amount);
-
-        $data = [];
-        $data['intent'] = 'CAPTURE';
-        $data['purchase_units'] = [
-            [
-                'amount' => [
-                    'currency_code' => 'USD',
-                    'value' => $amount,
-                ],
-            ],
-        ];
-
-        $data['application_context'] = [
-            'cancel_url' => route('paypal.cancel'),
-            'return_url' => route('paypal.success'),
-        ];
-
-        $provider = new PayPalClient;
-        $provider->getAccessToken();
-        $response = $provider->createOrder($data);
-
         DB::beginTransaction();
         try {
-            if ($response['status'] === 'CREATED')
-            {
-                PaypalOrder::create([
-                    'order_id' => $response['id'],
-                    'user_id' => Auth::id(),
-                    'amount' => $request->amount,
-                    'buy' => $request->buy,
-                ]);
-
-                $res['payment_link'] =  $response['links'][1]['href'];
-                $res['success_link'] = route('paypal.success');
-                $res['cancel_link'] = route('paypal.cancel');
-
-                DB::commit();
-
-                return $this->sendResponse($res);
-            }
-            else {
-                return $this->sendError(['message' => 'Unknown error']);
-            }
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return $this->sendError(['message' => 'Unknown error']);
-        }
-    }
-
-    public function pay_using_paypal(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            PayPalOrder::query()->where('user_id', Auth::id())->delete();
+            PaypalOrder::where('user_id', Auth::id())->delete();
 
             $response = $this->charge_using_paypal($request);
-
-
+            if ($response->getData()->status == 'failure') {
+                DB::rollBack();
+                return $response;
+            }
 
             DB::commit();
-
             return $response;
         } catch (Exception $ex) {
             DB::rollBack();
-            return $this->sendError(['message' => $ex->getMessage()]);
+            return $this->sendError($ex->getMessage());
         }
     }
 }
