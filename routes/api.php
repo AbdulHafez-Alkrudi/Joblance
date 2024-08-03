@@ -138,7 +138,9 @@ Route::middleware(['auth:api'])->group(function () {
         'user_tags'       => UserTagsController::class,
         'accepted_tasks'  => AcceptedTasksController::class,
         'favourite_job'   => FavouriteJobController::class,
+        'experienceLevel' => ExperienceLevelController::class,
         'favourite_task'  => FavouriteTaskController::class,
+        'major'           => MajorController::class,
         'favourite_freelancer' => FavouriteFreelancerController::class
     ]);
 
@@ -224,9 +226,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::middleware(['auth:api', 'can:isAdmin'])->group(function () {
         Route::apiResources([
-            'major'           => MajorController::class,
             'skill'           => SkillController::class,
-            'experienceLevel' => ExperienceLevelController::class,
             'task_state'      => TaskStateController::class,
             'job_type'        => JobTypeController::class,
             'remote'          => RemoteController::class
