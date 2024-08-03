@@ -12,7 +12,6 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\MessageController,
     CV\CVController,
     DocumentAI\DocumentAIController,
-    FavouriteFreelancerController,
     FavouriteJobController,
     FavouriteTaskController,
     Notification\NotificationController,
@@ -141,7 +140,9 @@ Route::middleware(['auth:api'])->group(function () {
         'experienceLevel' => ExperienceLevelController::class,
         'favourite_task'  => FavouriteTaskController::class,
         'major'           => MajorController::class,
-        'favourite_freelancer' => FavouriteFreelancerController::class
+        'favourite_freelancer' => FavouriteFreelancerController::class,
+        'job_type'        => JobTypeController::class,
+
     ]);
 
     // Search Skills
@@ -213,10 +214,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
         // CV route
         Route::post('generate-cv', [CVController::class, 'create']);
-
-        // Search Skills
-        Route::get('skills/search', [SkillController::class, 'search']);
-
         // Apply for job
         Route::post('jobApplication', [JobApplicationController::class, 'store']);
 
@@ -231,7 +228,6 @@ Route::middleware(['auth:api'])->group(function () {
         Route::apiResources([
             'skill'           => SkillController::class,
             'task_state'      => TaskStateController::class,
-            'job_type'        => JobTypeController::class,
             'remote'          => RemoteController::class
         ]);
 
@@ -249,7 +245,7 @@ Route::middleware(['auth:api'])->group(function () {
         });
 
         // Add Tag To Skills
-        Route::get('tag/addToSkills/{id}', [TagController::class, 'addToSkills']);
+        Route::post('tag/addToSkills/{id}', [TagController::class, 'addToSkills']);
 
         // Price
         Route::resource('price', PriceController::class);
