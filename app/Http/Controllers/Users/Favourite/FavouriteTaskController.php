@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users\Favourite;
 
 use App\Http\Controllers\BaseController;
-use App\Models\Users\Favoutite\FavouriteTask;
+use App\Models\Users\Favourite\FavouriteTask;
 use App\Models\Users\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +17,7 @@ class FavouriteTaskController extends BaseController
     public function index(Request $request)
     {
         if ($request->has('user_id')) {
-            $favourite_tasks = Auth::user()->favourite_tasks()->with('task');
+            $favourite_tasks = Auth::user()->favourite_tasks()->with('task')->get();
             $favourite_tasks = (new FavouriteTask)->get_all_favourite_tasks($favourite_tasks);
             return $this->sendResponse($favourite_tasks);
         }

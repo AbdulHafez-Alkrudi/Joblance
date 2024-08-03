@@ -12,9 +12,9 @@ use App\Http\Controllers\{Auth\EmailVerificationController,
     Chat\MessageController,
     CV\CVController,
     DocumentAI\DocumentAIController,
-    FavouriteFreelancerController,
-    FavouriteJobController,
-    FavouriteTaskController,
+    Users\Favourite\FavouriteFreelancerController,
+    Users\Favourite\FavouriteJobController,
+    Users\Favourite\FavouriteTaskController,
     Notification\NotificationController,
     Users\Freelancer\OfferController,
     Payment\PayPalController,
@@ -144,7 +144,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Search Skills
     Route::get('skills/search', [SkillController::class, 'search']);
-    
+
     // Subscription
     Route::prefix('subscription')->group(function () {
         Route::get('', [SubscriptionController::class, 'index']);
@@ -212,9 +212,6 @@ Route::middleware(['auth:api'])->group(function () {
         // CV route
         Route::post('generate-cv', [CVController::class, 'create']);
 
-        // Search Skills
-        Route::get('skills/search', [SkillController::class, 'search']);
-
         // Apply for job
         Route::post('jobApplication', [JobApplicationController::class, 'store']);
 
@@ -238,8 +235,12 @@ Route::middleware(['auth:api'])->group(function () {
         // Transactions route
         Route::get('users/{userID}/transactions', [TransactionController::class, 'index']);
 
-        // Budget route
-        Route::post('budget/charge', [BudgetController::class, 'charge']);
+        // Budget routes
+        Route::prefix('budget')->group(function () {
+            Route::get('{id}', [BudgetController::class, 'get_budget']);
+            Route::post('charge', [BudgetController::class, 'charge']);
+            Route::get('search', [BudgetController::class, 'search']);
+        });
 
         // Report route
         Route::prefix('reports')->group(function () {

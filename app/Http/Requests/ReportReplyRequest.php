@@ -24,7 +24,7 @@ class ReportReplyRequest extends FormRequest
         return [
             'title'   => 'required',
             'body'    => 'required',
-            'report_id' => 'required',
+            'report_id' => 'required|exists:reports,id',
         ];
     }
 }

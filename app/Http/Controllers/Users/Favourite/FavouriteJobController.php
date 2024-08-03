@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users\Favourite;
 
 use App\Http\Controllers\BaseController;
-use App\Models\Users\Favoutite\FavouriteJob;
+use App\Models\Users\Favourite\FavouriteJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +16,7 @@ class FavouriteJobController extends BaseController
     public function index(Request $request)
     {
         if ($request->has('user_id')) {
-            $favourite_jobs = Auth::user()->favourite_jobs()->with('job_detail');
+            $favourite_jobs = Auth::user()->favourite_jobs()->with('job_detail')->get();
             $favourite_jobs = (new FavouriteJob)->get_all_favourite_jobs($favourite_jobs);
             return $this->sendResponse($favourite_jobs);
         }
@@ -48,7 +48,7 @@ class FavouriteJobController extends BaseController
         }
 
         $request['user_id'] = Auth::id();
-        $favourite_job = FavouriteJob::creatd($request->all());
+        $favourite_job = FavouriteJob::create($request->all());
 
         return $this->sendResponse($favourite_job);
     }

@@ -76,7 +76,8 @@ class Task extends Model
             'active' => $task->active,
             'major_name' => (new Major)->get_major($task->major_id, $lang, 0),
             'description' => $task->about_task,
-            'date' => $task->created_at->format('Y-m-d H:i:s')
+            'date' => $task->created_at->format('Y-m-d H:i:s'),
+            'favourite' => auth()->user()->hasFavouriteTask($task->id)
         ];
     }
 }

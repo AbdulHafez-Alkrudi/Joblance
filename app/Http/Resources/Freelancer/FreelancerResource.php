@@ -16,11 +16,12 @@ class FreelancerResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $user = auth()->user();
         return [
             'id'           => $this->user->id,
             'first_name'   => $this->first_name,
             'last_name'    => $this->last_name,
-            'image'        => ($this->image != null ? asset('storage/' . $this->image) : ""),
+            'image'        => $this->image != null ? asset('storage/' . $this->image) : "",
             'email'        => $this->user->email,
             "phone_number" => $this->user->phone_number,
             'bio'          => $this->bio,
@@ -31,8 +32,9 @@ class FreelancerResource extends JsonResource
             'counter'      => $this->counter,
             'rate'         => (new Freelancer)->rate($this->sum_rate, $this->counter),
             'followers'    => count($this->user->followers),
-            'evaluated'    => $this->user->hasEvaluated($this->user),
-            'followed'     => $this->user->hasFollow($this->user)
+            'evaluated'    => $user->hasEvaluated($this->id),
+            'followed'     => $user->hasFollow($this->user),
+            'favourited'   => $user->hasFavouriteFreelancer($this->id)
         ];
     }
 }
