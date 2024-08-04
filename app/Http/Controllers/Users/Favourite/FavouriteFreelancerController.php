@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users\Favourite;
 use App\Http\Controllers\BaseController;
 use App\Models\User;
 use App\Models\Users\Favourite\FavouriteFreelancer;
+use App\Models\Users\Freelancer\Freelancer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -93,12 +94,12 @@ class FavouriteFreelancerController extends BaseController
      */
     public function destroy($id)
     {
-        $favourite_freelancer = FavouriteFreelancer::with('freelancer')->find($id);
-        if (is_null($favourite_freelancer)) {
-            return $this->sendError('There is no favourite_freelancer with this ID');
+        $freelancer = Freelancer::find($id);
+        if (is_null($freelancer)) {
+            return $this->sendError('There is no freelancer with this ID');
         }
 
-        $favourite_freelancer->delete();
+        $freelancer->delete();
         return $this->sendResponse();
     }
 }

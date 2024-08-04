@@ -89,12 +89,12 @@ class FavouriteTaskController extends BaseController
      */
     public function destroy($id)
     {
-        $favourite_task = FavouriteTask::with('task')->find($id);
-        if (is_null($favourite_task)) {
-            return $this->sendError('There is no favourite_task with this ID');
+        $task = Task::find($id);
+        if (is_null($task)) {
+            return $this->sendError('There is no task with this ID');
         }
 
-        $favourite_task->delete();
+        $task->delete();
         return $this->sendResponse();
     }
 }

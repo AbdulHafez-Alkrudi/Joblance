@@ -35,7 +35,6 @@ class FavouriteJob extends Model
     public function get_favourite_job($favourite_job)
     {
         return [
-            'id' => $favourite_job->id,
             'job_detail' => (new JobDetail)->get_job_detail($favourite_job->job_detail, request('lang'))
         ];
     }

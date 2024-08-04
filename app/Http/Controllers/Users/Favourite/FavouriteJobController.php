@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users\Favourite;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Users\Company\JobDetail;
 use App\Models\Users\Favourite\FavouriteJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,12 +89,12 @@ class FavouriteJobController extends BaseController
      */
     public function destroy($id)
     {
-        $favourite_job = FavouriteJob::with('job_detail')->find($id);
-        if (is_null($favourite_job)) {
-            return $this->sendError('There is no favourite_job with this ID');
+        $job_detail = JobDetail::find($id);
+        if (is_null($job_detail)) {
+            return $this->sendError('There is no job_detail with this ID');
         }
 
-        $favourite_job->delete();
+        $job_detail->delete();
         return $this->sendResponse();
     }
 }
