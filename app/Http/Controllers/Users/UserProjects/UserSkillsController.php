@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users\UserProjects;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Users\UserProjects\UserSkills;
+use App\Models\Users\UserProjects\UserTags;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -15,12 +16,13 @@ class UserSkillsController extends BaseController
      */
     public function index()
     {
-        $user_id = auth()->id();
-        $user_skills = UserSkills::query()->where('user_id' , $user_id)->get();
+        $user = auth()->user();
+        $user_skills = collect((new UserSkills)->get_skills($user->skills));
+        $userTags = collect((new UserTags)->get_tags($user->tags));
 
-        $user_skills = (new UserSkills)->get_skills($user_skills);
+        $merged = $user_skills->merge($userTags);
 
-        return $this->sendResponse($user_skills);
+        return $this->sendResponse($merged);
     }
 
     /**

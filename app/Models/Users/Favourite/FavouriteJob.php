@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Users\Favoutite;
+namespace App\Models\Users\Favourite;
 
 use App\Models\Users\Company\JobDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

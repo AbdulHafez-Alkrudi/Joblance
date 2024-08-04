@@ -22,11 +22,10 @@ class Skill extends Model
 
     public function get_skill(UserSkills $user_skill)
     {
-        $data = [
+        return [
             'id'         => $user_skill->id,
             'skill_id'   => $user_skill->skill_id,
             'skill_name' => $user_skill->skill->name,
         ];
-        return $data;
     }
 }

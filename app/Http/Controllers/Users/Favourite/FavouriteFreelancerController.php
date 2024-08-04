@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Users\Favourite;
 
 use App\Http\Controllers\BaseController;
-use App\Models\Users\Favoutite\FavouriteFreelancer;
+use App\Models\User;
+use App\Models\Users\Favourite\FavouriteFreelancer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,7 @@ class FavouriteFreelancerController extends BaseController
     public function index(Request $request)
     {
         if ($request->has('user_id')) {
-            $favourite_freelancers = Auth::user()->favourite_freelancers()->with('freelancer');
+            $favourite_freelancers = Auth::user()->favourite_freelancers()->with('freelancer')->get();
             $favourite_freelancers = (new FavouriteFreelancer)->get_favourite_freelancers($favourite_freelancers);
             return $this->sendResponse($favourite_freelancers);
         }
@@ -43,8 +44,8 @@ class FavouriteFreelancerController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $user = User::find($request->freelancer);
-        if (Auth::user()->hasFavouriteFreelancer($user->userable_id))
+        $user = User::find($request->freelancer_id);
+        if (auth()->user()->hasFavouriteFreelancer($user->userable_id))
         {
             return $this->sendError('This freelancer already favourited');
         }

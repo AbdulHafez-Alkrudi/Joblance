@@ -155,14 +155,28 @@ class JobDetail extends Model
         return [
             'id' => $job_detail->id,
             'image' => $company->image != null ? asset('storage/' . $company->image) : "",
-            'name'  => $company->name,
             'company_id' => $company->user->id,
-            'job_title' => $job_detail->title,
-            'date' => $job_detail->created_at->format('Y-m-d H:i:s'),
+            'company_name' => $company->name,
+            'job_type_id' => $job_detail->job_type_id,
+            'job_type_name' => (new JobType)->get_job_type($job_detail->job_type_id, $lang, 0),
+            'experience_level_name' => (new ExperienceLevel)->get_experience_level($job_detail->experience_level_id, $lang, 0),
+            'experience_level_id' => $job_detail->experience_level_id,
             'remote_name' => (new Remote)->get_remote($job_detail->remote_id, $lang, 0),
+            'remote_id' => $job_detail->remote_id,
+            'major_name' => (new Major)->get_major($job_detail->major_id, $lang, 0),
+            'major_id' => $job_detail->major_id,
+            'title' => $job_detail->title,
             'location' => $job_detail->location,
+            'salary' => $job_detail->salary,
+            'about_job' => $job_detail->about_job,
+            'requirements' => $job_detail->requirements,
+            'additional_information' => $job_detail->additional_information,
             'active' => $job_detail->active,
-            'number_of_applicants' => count($job_detail->job_applications)
+            'number_of_applicants' => count($job_detail->job_applications),
+            'show_number_of_employees' => $job_detail->show_number_of_employees,
+            'show_about_the_company' => $job_detail->show_about_the_company,
+            'date' => $job_detail->created_at->format('Y-m-d H:i:s'),
+            'favourite' => auth()->user()->hasfavouriteJob($job_detail->id)
         ];
     }
 }

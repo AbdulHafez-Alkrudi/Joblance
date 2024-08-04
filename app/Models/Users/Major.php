@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Major extends Model
 {
     use HasFactory;
-    protected $fillable = ['name_EN' , 'name_AR'] ;
+    protected $fillable = ['name_EN' , 'name_AR', 'image'] ;
 
     public function companies(): HasMany
     {

@@ -29,4 +29,18 @@ class ExperienceLevel extends Model
             }
         )->get();
     }
+
+    public function get_experience_level($id , string $lang , bool $to_array){
+        $experience_level = ExperienceLevel::query()->when($lang == 'en' ,
+            function($query) use($id){
+                return $query->select('id' , 'name_EN as name')->where('id' , $id)->first();
+            }
+            ,
+            function($query) use($id){
+                return $query->select('id' , 'name_AR as name')->where('id' , $id)->first();
+            }
+        );
+        if($to_array) return $experience_level ;
+        return $experience_level->name;
+    }
 }

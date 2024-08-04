@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Users\Favoutite;
+namespace App\Models\Users\Favourite;
 
 use App\Models\Users\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,7 +35,7 @@ class FavouriteTask extends Model
     public function get_favourite_task($favourite_task)
     {
         return [
-            'id' => $favourite_task,
+            'id' => $favourite_task->id,
             'task' => (new Task)->get_task($favourite_task->task, request('lang'))
         ];
     }

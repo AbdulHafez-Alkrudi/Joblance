@@ -22,9 +22,16 @@ use Illuminate\Support\Facades\Validator;
 
 class BudgetController extends BaseController
 {
-    public function get_budget()
+    public function get_budget($id)
     {
-        return $this->sendResponse(Auth::user()->budget()->select('balance')->first());
+        $user = User::find($id);
+        if (is_null($user)) {
+            return $this->sendError('There is no user with this ID');
+        }
+        $data = (new TransactionController)->index($id, new Request())->getData();
+        dd($data);
+        $data['balance'] = $user->budget->balance;
+        return $this->sendResponse($data);
     }
 
     public function charge(Request $request)
@@ -112,5 +119,23 @@ class BudgetController extends BaseController
             DB::rollBack();
             return $this->sendError(['message' => $ex->getMessage()]);
         }
+    }
+
+    public function search()
+    {
+        $search = request('name');
+        $freelancers  = DB::table('users')
+                    ->join('freelancers', 'users.id', '=', 'freelancers.id')
+                    ->select('users.id', DB::raw("CONCAT(first_name, ' ', last_name) AS name"), 'image')
+                    ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'REGEXP', $search)
+                    ->get();
+
+        $companies  = DB::table('users')
+                    ->join('companies', 'users.id', '=', 'companies.id')
+                    ->select('users.id', 'name', 'image')
+                    ->where('name', 'REGEXP', $search)
+                    ->get();
+
+        return $this->sendResponse($freelancers->merge($companies));
     }
 }

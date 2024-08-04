@@ -30,7 +30,7 @@ class UserSkills extends Model
 
     public function get_skills($user_skills)
     {
-        foreach ($user_skills as $key => $user_skill)
+        foreach ($user_skills as $key => &$user_skill)
         {
             $user_skills[$key] = $user_skill->skill->get_skill($user_skill);
         }
