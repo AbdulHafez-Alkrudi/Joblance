@@ -190,9 +190,6 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
     });
 
-    // Budget routes
-    Route::get('budget', [BudgetController::class, 'get_budget']);
-
     // Document AI route
     Route::get('documentAi', [DocumentAIController::class, 'processDocument']);
 
@@ -212,19 +209,6 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('accepted_jobs', [AcceptedJobsController::class, 'store']);
     });
 
-    Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
-        // CV route
-        Route::post('generate-cv', [CVController::class, 'create']);
-        // Apply for job
-        Route::post('jobApplication', [JobApplicationController::class, 'store']);
-
-        // Offer
-        Route::prefix('offer')->group(function () {
-            Route::post('', [OfferController::class, 'store']);
-            Route::delete('{id}', [OfferController::class, 'destroy']);
-        });
-    });
-
     Route::middleware(['auth:api', 'can:isAdmin'])->group(function () {
         Route::apiResources([
             'skill'           => SkillController::class,
@@ -237,7 +221,6 @@ Route::middleware(['auth:api'])->group(function () {
 
         // Budget routes
         Route::prefix('budget')->group(function () {
-            Route::get('{id}', [BudgetController::class, 'get_budget']);
             Route::post('charge', [BudgetController::class, 'charge']);
             Route::get('search', [BudgetController::class, 'search']);
         });
@@ -257,5 +240,22 @@ Route::middleware(['auth:api'])->group(function () {
 
         // Monthly Report
         Route::get('monthly_report', MonthlyReportController::class);
+    });
+
+    Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
+        // Budget routes
+        Route::get('budget/{id}', [BudgetController::class, 'get_budget']);
+
+        // CV route
+        Route::post('generate-cv', [CVController::class, 'create']);
+
+        // Apply for job
+        Route::post('jobApplication', [JobApplicationController::class, 'store']);
+
+        // Offer
+        Route::prefix('offer')->group(function () {
+            Route::post('', [OfferController::class, 'store']);
+            Route::delete('{id}', [OfferController::class, 'destroy']);
+        });
     });
 });
