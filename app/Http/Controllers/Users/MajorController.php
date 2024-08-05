@@ -37,7 +37,7 @@ class MajorController extends BaseController
             $major = Major::create([
                 'name_EN' => $request->name_EN,
                 'name_AR' => $request->name_AR,
-                'image'   => $this->get_image($request, "images/Majors_Pic")
+                'image'   => $this->get_image($request, "Majors_Pic")
             ]);
 
             DB::commit();

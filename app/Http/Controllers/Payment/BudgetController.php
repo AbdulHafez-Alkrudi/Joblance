@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Payment\Transaction;
 use App\Models\Payment\TransactionStatus;
 use App\Models\Payment\TransactionTypes;
+use App\Models\Users\Freelancer\Freelancer;
 use App\Notifications\UserNotification;
 use Svg\Tag\Rect;
 
@@ -24,14 +25,14 @@ class BudgetController extends BaseController
 {
     public function get_budget($id)
     {
-    //     $user = User::find($id);
-    //     if (is_null($user)) {
-    //         return $this->sendError('There is no user with this ID');
-    //     }
-    //     $data = (new TransactionController)->index($id, new Request())->getData()->data;
-    //   //  dd($data);
-    //     $data['balance'] = $user->budget->balance;
-    //     return $this->sendResponse($data);
+        $user = User::find($id);
+        if (is_null($user)) {
+            return $this->sendError('There is no user with this ID');
+        }
+        // $data = (new TransactionController)->index($id, new Request())->getData()->data;
+      //  dd($data);
+        $data['balance'] = $user->budget->balance;
+        return $this->sendResponse($data);
     }
 
     public function charge(Request $request)

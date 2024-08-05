@@ -27,16 +27,8 @@ class FavouriteFreelancer extends Model
     {
         foreach ($favourite_freelancers as $key => $favourite_freelancer)
         {
-            $favourite_freelancers[$key] = $this->get_favourite_freelancer($favourite_freelancer);
+            $favourite_freelancers[$key] = (new Freelancer)->get_info($favourite_freelancer->job_detail, request('lang'));;
         }
         return $favourite_freelancers;
-    }
-
-    public function get_favourite_freelancer($favourite_freelancer)
-    {
-        return [
-            'id' => $favourite_freelancer->id,
-            'freelancer' => (new Freelancer)->get_info($favourite_freelancer->freelancer, request('lang'))
-        ];
     }
 }

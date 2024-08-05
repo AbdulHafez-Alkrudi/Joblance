@@ -89,12 +89,13 @@ class FavouriteJobController extends BaseController
      */
     public function destroy($id)
     {
-        $job_detail = JobDetail::find($id);
-        if (is_null($job_detail)) {
-            return $this->sendError('There is no job_detail with this ID');
+        if (auth()->user()->hasFavouriteJob($id)) {
+            FavouriteJob::where('user_id', Auth::id())->where('job_detail_id', $id)->delete();
+        }
+        else {
+            return $this->sendError("You don't have this job as a favourite");
         }
 
-        $job_detail->delete();
-        return $this->sendResponse();
+        return $this->sendResponse("I'm sorry i don't speak Englizy fery kood");
     }
 }

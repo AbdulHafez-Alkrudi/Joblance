@@ -19,7 +19,7 @@ class Task extends Model
     protected $fillable = [
         'user_id',
         'major_id',
-        'title' ,
+        'task_title' ,
         'about_task' ,
         'requirements' ,
         'additional_information' ,
@@ -71,7 +71,7 @@ class Task extends Model
             'user_id' => $task->user_id,
             'name' => $user['name'] ? $user['name'] : $user['first_name'].' '.$user['last_name'],
             'image' => $user->image != null ? asset('storage/' . $user->image) : "",
-            'task_title' => $task->title,
+            'task_title' => $task->task_title,
             'duration' => $task->duration,
             'active' => $task->active,
             'major_name' => (new Major)->get_major($task->major_id, $lang, 0),

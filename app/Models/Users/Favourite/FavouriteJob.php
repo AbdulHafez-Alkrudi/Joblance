@@ -27,15 +27,9 @@ class FavouriteJob extends Model
     {
         foreach ($favourite_jobs as $key => $favourite_job)
         {
-            $favourite_jobs[$key] = $this->get_favourite_job($favourite_job);
+            $favourite_jobs[$key] = (new JobDetail)->get_job_detail($favourite_job->job_detail, request('lang'));
         }
         return $favourite_jobs;
     }
 
-    public function get_favourite_job($favourite_job)
-    {
-        return [
-            'job_detail' => (new JobDetail)->get_job_detail($favourite_job->job_detail, request('lang'))
-        ];
-    }
 }
