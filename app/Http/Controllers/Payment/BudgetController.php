@@ -127,13 +127,13 @@ class BudgetController extends BaseController
         $search = request('name');
         $freelancers  = DB::table('users')
                     ->join('freelancers', 'users.id', '=', 'freelancers.id')
-                    ->select('users.id', DB::raw("CONCAT(first_name, ' ', last_name) AS name"), 'image')
+                    ->select('users.id', DB::raw("CONCAT(first_name, ' ', last_name) AS name"), 'image','email')
                     ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'REGEXP', $search)
                     ->get();
 
         $companies  = DB::table('users')
                     ->join('companies', 'users.id', '=', 'companies.id')
-                    ->select('users.id', 'name', 'image')
+                    ->select('users.id', 'name', 'image','email')
                     ->where('name', 'REGEXP', $search)
                     ->get();
 

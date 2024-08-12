@@ -46,6 +46,7 @@ use App\Http\Controllers\Users\Freelancer\ExperienceLevelController;
 use App\Http\Controllers\Users\Freelancer\JobApplicationController;
 use App\Http\Controllers\Users\Freelancer\TagController;
 use App\Http\Controllers\Users\UserProjects\UserTagsController;
+use App\Http\Controllers\Users\Freelancer\StudyCaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -143,6 +144,7 @@ Route::middleware(['auth:api'])->group(function () {
         'major'           => MajorController::class,
         'favourite_freelancer' => FavouriteFreelancerController::class,
         'job_type'        => JobTypeController::class,
+        'study_case'      =>StudyCaseController::class,
 
     ]);
 

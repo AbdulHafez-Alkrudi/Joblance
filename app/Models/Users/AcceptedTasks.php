@@ -46,6 +46,7 @@ class AcceptedTasks extends Model
             'name' => $accepted_task->user->userable->first_name . ' ' . $accepted_task->user->userable->last_name,
             'image' => $accepted_task->user->userable->image,
             'duration' => $accepted_task->duration,
+            'task_state_id' => $accepted_task->task_state_id,
             'task_state_name' => (new TaskState)->get_task_state($accepted_task->task_state_id, request('lang'), 0)
         ];
     }

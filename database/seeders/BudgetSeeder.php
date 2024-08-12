@@ -13,9 +13,9 @@ class BudgetSeeder extends Seeder
      */
     public function run(): void
     {
-        Budget::create([
-            'user_id' => 1,
-            'balance'  => 0,
-        ]);
+        // Budget::create([
+        //     'user_id' => 1,
+        //     'balance'  => 0,
+        // ]);
     }
 }
