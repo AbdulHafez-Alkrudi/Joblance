@@ -94,12 +94,13 @@ class FavouriteFreelancerController extends BaseController
      */
     public function destroy($id)
     {
-        $freelancer = Freelancer::find($id);
-        if (is_null($freelancer)) {
-            return $this->sendError('There is no freelancer with this ID');
+        if (auth()->user()->hasFavouriteFreelancer($id)) {
+            FavouriteFreelancer::where('user_id', Auth::id())->where('freelancer_id', $id)->delete();
+        }
+        else {
+            return $this->sendError("You don't have this freelancer as a favourite");
         }
 
-        $freelancer->delete();
-        return $this->sendResponse();
+        return $this->sendResponse("I'm sorry i don't speak Englizy fery kood");
     }
 }

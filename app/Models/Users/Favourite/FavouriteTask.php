@@ -27,16 +27,8 @@ class FavouriteTask extends Model
     {
         foreach ($favourite_tasks as $key => $favourite_task)
         {
-            $favourite_tasks[$key] = $this->get_favourite_task($favourite_task);
+            $favourite_tasks[$key] = (new Task)->get_task($favourite_task->task, request('lang'));;
         }
         return $favourite_tasks;
-    }
-
-    public function get_favourite_task($favourite_task)
-    {
-        return [
-            'id' => $favourite_task->id,
-            'task' => (new Task)->get_task($favourite_task->task, request('lang'))
-        ];
     }
 }

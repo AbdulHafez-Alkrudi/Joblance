@@ -35,6 +35,7 @@ class RegisterController extends BaseController
             $input['role_id']  = Role::ROLE_USER;
 
             /*
+             *
              * Here we have two types of data:
              * The user data
              * the company data

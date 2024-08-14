@@ -46,6 +46,7 @@ use App\Http\Controllers\Users\Freelancer\ExperienceLevelController;
 use App\Http\Controllers\Users\Freelancer\JobApplicationController;
 use App\Http\Controllers\Users\Freelancer\TagController;
 use App\Http\Controllers\Users\UserProjects\UserTagsController;
+use App\Http\Controllers\Users\Freelancer\StudyCaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -141,7 +142,10 @@ Route::middleware(['auth:api'])->group(function () {
         'experienceLevel' => ExperienceLevelController::class,
         'favourite_task'  => FavouriteTaskController::class,
         'major'           => MajorController::class,
-        'favourite_freelancer' => FavouriteFreelancerController::class
+        'favourite_freelancer' => FavouriteFreelancerController::class,
+        'job_type'        => JobTypeController::class,
+        'study_case'      =>StudyCaseController::class,
+
     ]);
 
     // Search Skills
@@ -211,7 +215,6 @@ Route::middleware(['auth:api'])->group(function () {
         Route::apiResources([
             'skill'           => SkillController::class,
             'task_state'      => TaskStateController::class,
-            'job_type'        => JobTypeController::class,
             'remote'          => RemoteController::class
         ]);
 
@@ -232,7 +235,7 @@ Route::middleware(['auth:api'])->group(function () {
         });
 
         // Add Tag To Skills
-        Route::get('tag/addToSkills/{id}', [TagController::class, 'addToSkills']);
+        Route::post('tag/addToSkills/{id}', [TagController::class, 'addToSkills']);
 
         // Price
         Route::resource('price', PriceController::class);

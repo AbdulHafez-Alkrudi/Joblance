@@ -22,7 +22,7 @@ class TaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required',
+            'task_title' => 'required',
             'about_task' => 'required',
             'requirements'=> 'required',
             'duration' => 'required',

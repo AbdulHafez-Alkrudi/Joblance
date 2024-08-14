@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('job_type_id')->constrained('job_types')->onDelete('cascade');
             $table->foreignId('experience_level_id')->constrained('experience_levels')->onDelete('cascade');
             $table->foreignId('remote_id')->constrained('remotes')->onDelete('cascade');
+            $table->foreignId('major_id')->constrained('majors')->onDelete('cascade');
+
             $table->string('title');
             $table->integer('salary');
             $table->string('location')->nullable();

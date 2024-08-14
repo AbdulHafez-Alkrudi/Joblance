@@ -20,7 +20,7 @@ class Task extends Model
     protected $fillable = [
         'user_id',
         'major_id',
-        'title' ,
+        'task_title' ,
         'about_task' ,
         'requirements' ,
         'additional_information' ,
@@ -79,7 +79,11 @@ class Task extends Model
             'active' => $task->active,
             'major_name' => (new Major)->get_major($task->major_id, $lang, 0),
             'description' => $task->about_task,
+            'budget_min'=>$task->budget_min,
+            'budget_max'=>$task->budget_max,
+            'requirements'=>$task->requirements,
             'date' => $task->created_at->format('Y-m-d H:i:s'),
+            'major_id' => $task->major_id,
             'favourite' => auth()->user()->hasFavouriteTask($task->id)
         ];
     }

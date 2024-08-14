@@ -48,7 +48,8 @@ class JobDetailController extends BaseController
                         ->where('company_id', $user->userable_id)
                         ->orderByDesc('created_at')
                         ->get();
-        $jobs_detail = (new JobDetail)->get_all_jobs_detail($jobs_detail, request('lang'));        return $this->sendResponse($jobs_detail);
+        $jobs_detail = (new JobDetail)->get_all_jobs_detail($jobs_detail, request('lang'));   
+        return $this->sendResponse($jobs_detail);
     }
 
     public function store(Request $request)

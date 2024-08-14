@@ -56,7 +56,7 @@ class Review extends Model
             'user_id' => $review->user_id,
             'first_name' => $user->userable->first_name,
             'last_name' => $user->userable->last_name,
-            'image' => $user->userable->image,
+            'image' =>  $user->userable->image != null ? asset('storage/' . $user->userable->image) : "",
             'created_at' => $review->created_at->format('Y-m-d'),
         ];
     }

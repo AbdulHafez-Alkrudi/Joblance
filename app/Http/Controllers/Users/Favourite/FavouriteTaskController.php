@@ -89,12 +89,13 @@ class FavouriteTaskController extends BaseController
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
-        if (is_null($task)) {
-            return $this->sendError('There is no task with this ID');
+        if (auth()->user()->hasFavouriteTask($id)) {
+            FavouriteTask::where('user_id', Auth::id())->where('task_id', $id)->delete();
+        }
+        else {
+            return $this->sendError("You don't have this task as a favourite");
         }
 
-        $task->delete();
-        return $this->sendResponse();
+        return $this->sendResponse("I'm sorry i don't speak Englizy fery kood");
     }
 }
