@@ -21,9 +21,9 @@ class Tag extends Model
     public function get_tag(UserTags $user_tag)
     {
         return [
-            'id'       => $user_tag->id,
-            'tag_id'   => $user_tag->tag_id,
-            'tag_name' => $user_tag->tag->name
+            'id'         => $user_tag->id,
+            'skill_id'   => $user_tag->tag_id,
+            'skill_name' => $user_tag->tag->name
         ];
     }
 }

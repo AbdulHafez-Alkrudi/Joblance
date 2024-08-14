@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AcceptedTasksController extends BaseController
 {
@@ -22,17 +23,24 @@ class AcceptedTasksController extends BaseController
      */
     public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'task_id' => ['required', 'exists:tasks,id']
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError($validator->errors());
+        if(!$request->has('task_id')) {
+            return $this->indexByUser();
         }
+        else if ($request->has('task_id')) {
+            $accepted_tasks = AcceptedTasks::with('user.userable')->where('task_id', $request->task_id)->get();
+            $accepted_tasks = (new AcceptedTasks)->get_all_accepted_tasks($accepted_tasks);
+            return $this->sendResponse($accepted_tasks);
+        }
+    }
 
-        $accepted_tasks = AcceptedTasks::with('user.userable')->where('task_id', $request->task_id)->get();
-        $accepted_tasks = (new AcceptedTasks)->get_all_accepted_tasks($accepted_tasks);
-        return $this->sendResponse($accepted_tasks);
+    /**
+     * Display a listing of the resource.
+     */
+    public function indexByUser()
+    {
+        $tasks = AcceptedTasks::with('task')->where('user_id', Auth::id())->get();
+        $tasks = (new AcceptedTasks)->get_all_accepted_tasks_in($tasks);
+        return $this->sendResponse($tasks);
     }
 
     /**
@@ -59,6 +67,11 @@ class AcceptedTasksController extends BaseController
 
         $request['task_state_id'] = TaskState::query()->where('name_EN', 'Pending')->first()->id;
         $acceptedTask = AcceptedTasks::create($request->all());
+
+        // change task's active
+        Task::find($request->task_id)->update([
+            'active' => false
+        ]);
 
         // To reduce the duration 1 every day
         dispatch(new AcceptedTask($acceptedTask))->delay(now()->addDay($request->duration));

@@ -2,6 +2,7 @@
 
 namespace App\Models\Users;
 
+use App\Http\Controllers\Users\UserController;
 use App\Models\Users\Favoutite\FavouriteTask;
 use App\Models\User;
 use App\Models\Users\Company\Company;
@@ -71,6 +72,8 @@ class Task extends Model
             'user_id' => $task->user_id,
             'name' => $user['name'] ? $user['name'] : $user['first_name'].' '.$user['last_name'],
             'image' => $user->image != null ? asset('storage/' . $user->image) : "",
+            'role_id' => $task->user->role_id,
+            'type' => (new UserController())->get_type($task->user),
             'task_title' => $task->title,
             'duration' => $task->duration,
             'active' => $task->active,

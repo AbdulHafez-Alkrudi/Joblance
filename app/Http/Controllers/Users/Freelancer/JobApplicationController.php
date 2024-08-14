@@ -35,7 +35,7 @@ class JobApplicationController extends BaseController
         $file_path = $this->get_file($request->file('CV'), "CVs");
         $job_application = JobApplication::create([
             'job_detail_id' => $request->job_detail_id,
-            'freelancer_id' => Auth::id(),
+            'freelancer_id' => $user->userable_id,
             'first_name'    => $request->first_name,
             'last_name'     => $request->last_name,
             'email'         => $request->email,

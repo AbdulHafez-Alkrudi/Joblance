@@ -49,4 +49,22 @@ class AcceptedTasks extends Model
             'task_state_name' => (new TaskState)->get_task_state($accepted_task->task_state_id, request('lang'), 0)
         ];
     }
+
+    public function get_all_accepted_tasks_in($accepted_tasks)
+    {
+        foreach ($accepted_tasks as $key => $accepted_task)
+        {
+            $accepted_tasks[$key] = $this->get_accepted_task($accepted_task);
+        }
+        return $accepted_tasks;
+    }
+
+    public function get_accepted_task($accepted_task)
+    {
+        return [
+            'duration' => $accepted_task->duration,
+            'task_state_name' => (new TaskState)->get_task_state($accepted_task->task_state_id, request('lang'), 0),
+            'task' => (new Task())->get_task($accepted_task->task, request('lang'))
+        ];
+    }
 }

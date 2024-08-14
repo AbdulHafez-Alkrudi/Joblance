@@ -70,12 +70,15 @@ class SubscriptionController extends BaseController
             return $response;
         }
 
+        $startsAt = Carbon::now();
+        $endsAt = $request->type == 'annual' ? $startsAt->copy()->addYear() : $startsAt->copy()->addMonth();
+
         // Create a new Subscription
         $subscription = Subscription::create([
             'user_id' => $user->id,
             'price_id' => $price->id,
-            'starts_at' => Carbon::now(),
-            'ends_at' => Carbon::now()->addYear()
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt
         ]);
 
         return $this->sendResponse($subscription);
