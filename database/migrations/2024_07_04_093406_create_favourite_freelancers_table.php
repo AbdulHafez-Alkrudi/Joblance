@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('favourite_freelancers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id')->constrained('freelancers')->onDelete('cascade');
+            $table->foreignId('freelancer_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

@@ -24,12 +24,14 @@ class JobDetailController extends BaseController
         if (Gate::allows('isAdmin', Auth::user())) {
             $jobs_detail = JobDetail::with(['company.user', 'job_applications'])
                                     ->orderByDesc('created_at')
+                                     ->filter(\request(['job_type_id' , 'experience_level_id' , 'major_id' , 'date_posted']))
                                     ->get();
         }
         else {
             $user = auth()->user()->userable;
             $jobs_detail = JobDetail::with(['company.user', 'job_applications'])
                                     ->orderByRaw("CASE WHEN job_details.company_id IN (SELECT user_id FROM followers WHERE followers.follower_id = ?) THEN 0 ELSE 1 END, CASE WHEN major_id = ? THEN 0 ELSE 1 END, CASE WHEN location = ? THEN 0 ELSE 1 END, job_details.created_at DESC", [Auth::id(), $user->major_id, $user->location])
+                                     ->filter(\request(['job_type_id' , 'experience_level_id' , 'major_id' , 'date_posted']))
                                     ->get();
             $jobs_detail = (new JobDetail)->get_all_jobs_detail($jobs_detail, request('lang'));
         }
@@ -47,8 +49,9 @@ class JobDetailController extends BaseController
         $jobs_detail = JobDetail::with(['company.user', 'job_applications'])
                         ->where('company_id', $user->userable_id)
                         ->orderByDesc('created_at')
+                        ->filter(\request(['job_type_id' , 'experience_level_id' , 'major_id' , 'date_posted']))
                         ->get();
-        $jobs_detail = (new JobDetail)->get_all_jobs_detail($jobs_detail, request('lang'));   
+        $jobs_detail = (new JobDetail)->get_all_jobs_detail($jobs_detail, request('lang'));
         return $this->sendResponse($jobs_detail);
     }
 

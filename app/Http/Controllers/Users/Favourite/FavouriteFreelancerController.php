@@ -45,16 +45,17 @@ class FavouriteFreelancerController extends BaseController
             return $this->sendError($validator->errors());
         }
 
-        $user = User::find($request->freelancer_id);
-        if (auth()->user()->hasFavouriteFreelancer($user->userable_id))
+        //$user = User::find($request->freelancer_id);
+        if (auth()->user()->hasFavouriteFreelancer($request->freelancer_id))
         {
             return $this->sendError('This freelancer already favourited');
         }
-
+        $user = User::find($request->freelancer_id);
         $favourite_freelancer = FavouriteFreelancer::create([
-            'freelancer_id' => $user->userable_id,
+            'freelancer_id' => $user->id,
             'user_id' => Auth::id()
         ]);
+
 
         return $this->sendResponse($favourite_freelancer);
     }

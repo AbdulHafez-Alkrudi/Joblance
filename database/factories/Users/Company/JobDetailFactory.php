@@ -30,6 +30,7 @@ class JobDetailFactory extends Factory
             'about_job' => $this->faker->realText,
             'requirements' => $this->faker->realText,
             'additional_information' => $this->faker->realText,
+            'active' => $this->faker->boolean,
             'show_number_of_employees' => $this->faker->boolean,
             'show_about_the_company' => $this->faker->boolean,
         ];

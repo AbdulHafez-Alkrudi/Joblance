@@ -129,6 +129,7 @@ class BudgetController extends BaseController
                     ->join('freelancers', 'users.id', '=', 'freelancers.id')
                     ->select('users.id', DB::raw("CONCAT(first_name, ' ', last_name) AS name"), 'image','email')
                     ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'REGEXP', $search)
+                    ->where("user.id" , "!=" , 1)
                     ->get();
         foreach($freelancers as $freelancer){
             $freelancer->image = $freelancer->image != null ? asset('storage/' . $freelancer->image) : "";

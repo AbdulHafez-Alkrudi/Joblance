@@ -108,10 +108,10 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     // Job Details
-    Route::prefix('jobDetail')->group(function () {
+    /*Route::prefix('jobDetail')->group(function () {
         Route::get('', [JobDetailController::class, 'index']);
         Route::get('{id}', [JobDetailController::class, 'show']);
-    });
+    });*/
 
     // Important Jobs
     Route::prefix('important_job')->group(function () {
@@ -145,7 +145,6 @@ Route::middleware(['auth:api'])->group(function () {
         'favourite_freelancer' => FavouriteFreelancerController::class,
         'job_type'        => JobTypeController::class,
         'study_case'      =>StudyCaseController::class,
-
     ]);
     // Search Skills
     Route::get('skills/search', [SkillController::class, 'search']);
@@ -199,7 +198,7 @@ Route::middleware(['auth:api'])->group(function () {
         // Job Detail
         Route::prefix('jobDetail')->group(function () {
             Route::post('', [JobDetailController::class, 'store']);
-            Route::put('{id}', [JobDetailController::class, 'update']);
+            Route::post('{id}', [JobDetailController::class, 'update']);
             Route::delete('{id}', [JobDetailController::class, 'destroy']);
         });
 

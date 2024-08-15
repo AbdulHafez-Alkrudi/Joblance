@@ -63,7 +63,32 @@ class Task extends Model
         }
         return $tasks;
     }
+    public function scopeFilter($query , array $filters)
+    {
+        // searching according to a specific user:
+        $query->when($filters['user_id'] ?? false , fn($query , $user_id) =>
+                 $query->where('user_id' , $user_id)
+        );
 
+        // searching according to a specific major:
+        $query->when($filters['major_id'] ?? false , fn($query , $major_id) =>
+                     $query->where('major_id' , $major_id)
+            );
+        // searching according to posted date of the job:
+
+        $last_week_date = Carbon::now()->subWeek();
+        $last_month_date= Carbon::now()->subMonth();
+        $query->when($filters['date_posted'] ?? false , fn($query , $date_posted)=>
+            $query->when($date_posted == 'last week' ,
+                // return the jobs that were posted last week
+                fn($query) =>
+                $query->where('created_at' , '>=' , $last_week_date),
+                // else return the jobs that were posted last month
+                fn($query)=>
+                $query->where('created_at' , '>=' , $last_month_date)
+            )
+        );
+    }
     public function get_task($task, $lang)
     {
         $user = $task->user->userable;
