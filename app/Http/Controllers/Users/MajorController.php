@@ -10,12 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use phpseclib3\Math\PrimeField\Integer;
+use function PHPUnit\Framework\isNull;
 
 class MajorController extends BaseController
 {
     public function index()
     {
         $majors = (new Major)->get_all_majors(request('lang'));
+        foreach($majors as $major){
+           $major->image = $major->image != null ? asset('storage/' . $major->image) : "";
+        }
         return $this->sendResponse($majors);
     }
 
