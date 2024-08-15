@@ -130,13 +130,17 @@ class BudgetController extends BaseController
                     ->select('users.id', DB::raw("CONCAT(first_name, ' ', last_name) AS name"), 'image','email')
                     ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'REGEXP', $search)
                     ->get();
-
+        foreach($freelancers as $freelancer){
+            $freelancer->image = $freelancer->image != null ? asset('storage/' . $freelancer->image) : "";
+        }
         $companies  = DB::table('users')
                     ->join('companies', 'users.id', '=', 'companies.id')
                     ->select('users.id', 'name', 'image','email')
                     ->where('name', 'REGEXP', $search)
                     ->get();
-
+        foreach($companies as $company){
+            $company->image = $company->image != null ? asset('storage/' . $company->image) : "";
+        }
         return $this->sendResponse($freelancers->merge($companies));
     }
 }
