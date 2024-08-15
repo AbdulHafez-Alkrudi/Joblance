@@ -238,7 +238,7 @@ Route::middleware(['auth:api'])->group(function () {
 
         // Price
         Route::resource('price', PriceController::class);
-
+        Route::post('price/{price}' , [PriceController::class , 'update']);
         // Monthly Report
         Route::get('monthly_report', MonthlyReportController::class);
     });

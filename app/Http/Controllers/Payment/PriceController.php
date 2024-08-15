@@ -60,13 +60,13 @@ class PriceController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $price)
     {
-        $price = Price::find($id);
+        $price = Price::find($price);
         if (is_null($price)) {
             return $this->sendError(['message' => 'There is no price with this ID']);
         }
-
+        //return $request->input();
         $price->update($request->all());
         return $this->sendResponse($price);
     }
