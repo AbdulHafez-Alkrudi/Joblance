@@ -48,13 +48,14 @@ class FreelancerController extends BaseController
      */
     public function update(Request $request,$freelancer)
     {
-        $freelancer = User::find($freelancer);
+        $freelancer = User::find($freelancer)->userable;
         if(is_null($freelancer)){
             return $this->sendError('there is no user with this ID');
         }
         // the user may change something like the phone number which is not in the freelancer table, so I must retrieve
         // the user information from the User table that represents that freelancer
         $data = $request->all() ;
+
         if(array_key_exists('phone_number', $data))
             User::where('userable_id' , $freelancer->id)->
                   where('userable_type' , Freelancer::class)->

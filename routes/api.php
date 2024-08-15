@@ -147,7 +147,6 @@ Route::middleware(['auth:api'])->group(function () {
         'study_case'      =>StudyCaseController::class,
 
     ]);
-
     // Search Skills
     Route::get('skills/search', [SkillController::class, 'search']);
 
@@ -247,7 +246,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['auth:api', 'can:isFreelancer'])->group(function () {
         // Budget routes
         Route::get('budget/{id}', [BudgetController::class, 'get_budget']);
-
+        Route::post('freelancer/{freelancer}', [FreelancerController::class, 'update']);
         // CV route
         Route::post('generate-cv', [CVController::class, 'create']);
 
