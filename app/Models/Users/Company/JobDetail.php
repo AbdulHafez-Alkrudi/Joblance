@@ -102,23 +102,38 @@ class JobDetail extends Model
                 $query->where("location" , "REGEXP", $location)
         );
         // searching according to a specific job type:
-        $query->when($filters['job_type_id'] ?? false , fn($query , $job_type_id) =>
-                $query->where('job_type_id' , $job_type_id)
+        $query->when($filters['job_type'] ?? false , fn($query , $job_type) =>
+                $query->whereHas('job_type' , fn($query) =>
+                        $query->where('name_EN' , "REGEXP" ,  $job_type)
+                              ->orWhere('name_AR' , 'REGEXP' , $job_type)
+                        )
         );
 
+
+
+
         // searching according to a specific experience level:
-        $query->when($filters['experience_level_id'] ?? false , fn($query , $experience_level_id) =>
-                $query->where('experience_level_id' , $experience_level_id)
+        $query->when($filters['experience_level'] ?? false , fn($query , $experience_level) =>
+                $query->whereHas('experience_level' , fn($query) =>
+                        $query->where('name_EN' , "REGEXP" , $experience_level)
+                            ->orWhere('name_AR' , 'REGEXP' , $experience_level)
+                )
         );
 
         // searching according to the remote type:
         $query->when($filters['remote_type'] ?? false , fn($query , $remote_type) =>
-                $query->where('remote_type' , $remote_type)
+                $query->whereHas('remote' , fn($query) =>
+                    $query->where('name_EN' , "REGEXP" , $remote_type)
+                        ->orWhere('name_AR' , 'REGEXP' , $remote_type)
+                    )
         );
 
         // searching according to a specific major:
-        $query->when($filters['major_id'] ?? false , fn($query , $major_id) =>
-                 $query->where('major_id' , $major_id)
+        $query->when($filters['major'] ?? false , fn($query , $major) =>
+                $query->whereHas('major' , fn($query) =>
+                        $query->where('name_EN' , "REGEXP" ,  $major)
+                            ->orWhere('name_AR' , 'REGEXP' , $major)
+                        )
         );
 
         // searching according to posted date of the job:

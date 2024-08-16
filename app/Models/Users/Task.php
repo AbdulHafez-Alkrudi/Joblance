@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class Task extends Model
 {
@@ -77,15 +78,17 @@ class Task extends Model
         );
 
         // searching according to a specific major:
-        $query->when($filters['major_id'] ?? false , fn($query , $major_id) =>
-                     $query->where('major_id' , $major_id)
+
+        $query->when($filters['major'] ?? false , fn($query , $major) =>
+                $query->whereHas('major' , fn($query) =>
+                    $query->where('name_EN' , "REGEXP" ,  $major)
+                        ->orWhere('name_AR' , 'REGEXP' , $major)
+                    )
         );
-
-
         // searching about a task with a maximum duration:
 
         $query->when($filters['duration'] ?? false , fn($query , $duration) =>
-                $query->where('durat ion' , '<=' , $duration)
+                $query->where('duration' , '<=' , $duration)
         );
 
 

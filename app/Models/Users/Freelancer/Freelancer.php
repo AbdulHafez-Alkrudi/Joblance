@@ -5,6 +5,7 @@ namespace App\Models\Users\Freelancer;
 use App\Http\Resources\Freelancer\FreelancerResource;
 use App\Models\Users\Favourite\FavouriteFreelancer;
 use App\Models\User;
+use App\Models\Users\Major;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -72,7 +73,10 @@ class Freelancer extends Authenticatable
     {
         return $this->hasMany(FavouriteFreelancer::class, 'freelancer_id', 'id');
     }
-
+    public function major(): BelongsTo
+    {
+        return $this->belongsTo(Major::class);
+    }
     public function scopeFilter($query , array $filters)
     {
         // searching according the name of the freelancer
@@ -83,11 +87,17 @@ class Freelancer extends Authenticatable
 
         // searching according to a specific study-case:
         $query->when($filters['study_case'] ?? false , fn($query , $study_case) =>
-                $query->where('study_case_id' , $study_case)
+                $query->whereHas('study_case' , fn($query) =>
+                        $query->where('name_EN' , 'REGEXP' , $study_case)
+                            ->orWhere('name_AR' , 'REGEXP' , $study_case)
+                )
         );
         // searching according to a specific major:
         $query->when($filters['major'] ?? false , fn($query , $major) =>
-                $query->where('major_id' , $major)
+                $query->whereHas('major' , fn($query) =>
+                        $query->where('name_EN' , 'REGEXP' , $major)
+                            ->orWhere('name_AR' , 'REGEXP' , $major)
+                )
         );
 
     }
