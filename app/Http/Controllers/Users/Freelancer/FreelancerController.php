@@ -28,8 +28,19 @@ class FreelancerController extends BaseController
                                     ->paginate();
         }
 
+
         $freelancers = new FreelancerCollection($freelancers);
-        return $this->sendResponse($freelancers);
+        $response = [
+            'status' => 'success',
+            'data' => $freelancers->items(),
+            'meta' => [
+                'current_page' => $freelancers->currentPage(),
+                'last_page'    => $freelancers->lastPage(),
+                'per_page'     => $freelancers->perPage(),
+                'total'        => $freelancers->total(),
+            ]
+        ];
+        return response()->json($response, 200);
     }
 
 
