@@ -8,6 +8,7 @@ use App\Mail\AcceptedUser;
 use App\Models\User;
 use App\Models\Users\Company\AcceptedJobs;
 use App\Models\Users\Company\JobDetail;
+use App\Models\Users\Freelancer\Freelancer;
 use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +45,7 @@ class AcceptedJobsController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'job_detail_id' => ['required', 'exists:job_details,id'],
-            'user_id' => ['required', 'exists:users,id']
+            'user_id' => ['required', 'exists:freelancers,id']
         ]);
 
         if ($validator->fails()) {
@@ -58,7 +59,9 @@ class AcceptedJobsController extends BaseController
         $acceptedJob = AcceptedJobs::create($request->all());
 
         /** @var \App\Models\User $user */
-        $user = Auth::user();
+        //$user = Auth::user();
+
+        $user = Freelancer::find($request->user_id)->user;
 
         $job_detail = JobDetail::find($request->job_detail_id);
 
