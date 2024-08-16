@@ -35,7 +35,7 @@ class JobApplicationController extends BaseController
         $file_path = $this->get_file($request->file('CV'), "CVs");
         $job_application = JobApplication::create([
             'job_detail_id' => $request->job_detail_id,
-            'freelancer_id' => $user->userable_id,
+            'freelancer_id' => $user->userable->id,
             'first_name'    => $request->first_name,
             'last_name'     => $request->last_name,
             'email'         => $request->email,
@@ -43,6 +43,7 @@ class JobApplicationController extends BaseController
             'cover_letter'  => $request->cover_letter,
             'CV'            => $file_path
         ]);
+
         $job_application['CV'] = asset('storage/' . $job_application['CV']);
 
         return $this->sendResponse($job_application);
@@ -55,7 +56,6 @@ class JobApplicationController extends BaseController
         if (is_null($job_application)) {
             return $this->sendError(['message' => 'There is no job_application with this ID']);
         }
-
         $job_application = $job_application->get_job_application($job_application, $lang);
         return $this->sendResponse($job_application);
     }
