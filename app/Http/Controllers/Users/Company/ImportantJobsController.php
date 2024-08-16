@@ -37,14 +37,6 @@ class ImportantJobsController extends BaseController
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -58,6 +50,12 @@ class ImportantJobsController extends BaseController
 
         if (auth()->user()->userable_id != $job_detail->company_id) {
             return $this->sendError(['message' => 'You do not own this job']);
+        }
+
+
+        $check = ImportantJobs::query()->where('job_detail_id' , $request->job_detail_id);
+        if($check != null){
+            return $this->sendResponse(['message' => 'this job is already existed in the important jobs']);
         }
 
         $price = Price::where('name_EN', 'Important Job')->first();
