@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Users\Company\AcceptedJobs;
 use App\Models\Users\Company\JobDetail;
 use App\Models\Users\Freelancer\Freelancer;
+use App\Models\Users\Freelancer\JobApplication;
 use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +56,10 @@ class AcceptedJobsController extends BaseController
         if (AcceptedJobs::query()->where('job_detail_id', $request->job_detail_id)->where('user_id', $request->user_id)->exists()) {
             return $this->sendError('This user already accepted in this job');
         }
-
+        $jobApplication = JobApplication::query()
+                    ->where('job_detail_id' , $request->job_detail_id)
+                    ->where('freelancer_id' , $request->user_id)
+                    ->first();
         $acceptedJob = AcceptedJobs::create($request->all());
 
         /** @var \App\Models\User $user */
@@ -66,7 +70,7 @@ class AcceptedJobsController extends BaseController
         $job_detail = JobDetail::find($request->job_detail_id);
 
         // send email to user
-        Mail::to($user->email)->send(new AcceptedUser('Acceptance In Job', 'You have been successfully accepted into ' . $job_detail->title . ' job'));
+        Mail::to($jobApplication->email)->send(new AcceptedUser('Acceptance In Job', 'You have been successfully accepted into ' . $job_detail->title . ' job'));
 
         // To notify the user
         $user->notify(new UserNotification('Acceptance In Job', 'You have been successfully accepted into ' . $job_detail->title . ' task', ['job_detail_id' => $job_detail->id]));
