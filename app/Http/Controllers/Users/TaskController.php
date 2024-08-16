@@ -34,7 +34,7 @@ class TaskController extends BaseController
             $user = auth()->user()->userable;
             $tasks = Task::with('user.userable')
                         ->orderByRaw("CASE WHEN tasks.user_id IN (SELECT user_id FROM followers WHERE followers.follower_id = ?) THEN 0 ELSE 1 END, CASE WHEN major_id = ? THEN 0 ELSE 1 END, tasks.created_at DESC", [Auth::id(), $user->major_id])
-                        ->filter(\request(['user_id' , 'major_id' , 'date_posted']))
+                        ->filter(\request(['task_title' , 'user_id' , 'major' , 'duration' , 'date_posted']))
                         ->get();
         }
         $tasks = (new Task)->get_all_tasks($tasks, request('lang'));
@@ -51,7 +51,7 @@ class TaskController extends BaseController
         $tasks = Task::with('user.userable')
                         ->where('user_id', $user_id)
                         ->orderByDesc('created_at')
-                        ->filter(\request(['user_id' , 'major_id' , 'date_posted']))
+                        ->filter(\request(['task_title' , 'user_id' , 'major' , 'duration' , 'date_posted']))
                         ->get();
 
         $tasks = (new Task)->get_all_tasks($tasks, request('lang'));
