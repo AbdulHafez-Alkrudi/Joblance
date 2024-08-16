@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Payment\Transaction;
 use App\Models\Payment\TransactionStatus;
 use App\Models\Payment\TransactionTypes;
+use App\Models\Users\Company\Company;
 use App\Models\Users\Freelancer\Freelancer;
 use App\Notifications\UserNotification;
 use Svg\Tag\Rect;
@@ -125,23 +126,31 @@ class BudgetController extends BaseController
     public function search()
     {
         $search = request('name');
-        $freelancers  = DB::table('users')
-                    ->join('freelancers', 'users.id', '=', 'freelancers.id')
-                    ->select('users.id', DB::raw("CONCAT(first_name, ' ', last_name) AS name"), 'image','email')
-                    ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'REGEXP', $search)
-                    ->where("user.id" , "!=" , 1)
+
+        $freelancers = Freelancer::query()
+                    ->select('id', DB::raw("CONCAT(first_name, ' ', last_name) AS name") , 'image')
+                    ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), "REGEXP" , $search)
                     ->get();
+
         foreach($freelancers as $freelancer){
             $freelancer->image = $freelancer->image != null ? asset('storage/' . $freelancer->image) : "";
+            $freelancer->email = $freelancer->user->email;
+            $freelancer->id = $freelancer->user->id ;
+            unset($freelancer->user);
         }
-        $companies  = DB::table('users')
-                    ->join('companies', 'users.id', '=', 'companies.id')
-                    ->select('users.id', 'name', 'image','email')
-                    ->where('name', 'REGEXP', $search)
-                    ->get();
+        $companies = Company::query()
+                //->with('user')
+                ->select('id' , 'name' , 'image')
+                ->where('name' , 'REGEXP' , $search)
+                ->get();
         foreach($companies as $company){
+
             $company->image = $company->image != null ? asset('storage/' . $company->image) : "";
+            $company->email = $company->user->email;
+            $company->id = $company->user->id ;
+            unset($company->user);
         }
+
         return $this->sendResponse($freelancers->merge($companies));
     }
 }

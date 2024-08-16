@@ -40,7 +40,7 @@ class JobApplication extends Model
         $job_application['major_name'] = (new Major)->get_major($user->major_id, $lang, 0);
         $job_application['image'] = $user->image != null ? asset('storage/' . $user->image) : "";
         $job_application['name']  = $user['first_name'].' '.$user['last_name'];
-
+        $job_application['CV']    = asset('storage/' . $job_application['CV']);
         return $job_application;
     }
 }
