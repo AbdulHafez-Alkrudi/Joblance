@@ -15,14 +15,16 @@ class FreelancerController extends BaseController
 {
     public function index()
     {
+        $filters = \request(['name' , 'study_case' , 'major']);
         if (Gate::allows('isAdmin', Auth::user())) {
-            $freelancers = (new Freelancer)->get_all_freelancers(request('lang'));
+            $freelancers = (new Freelancer)->get_all_freelancers(request('lang') , $filters);
         }
         else {
             $user = Auth::user();
             $freelancers = Freelancer::query()
                                     ->orderByRaw("CASE WHEN freelancers.id IN (SELECT userable_id FROM users WHERE users.id IN (SELECT user_id FROM followers WHERE follower_id = ?)) THEN 0 ELSE 1 END, CASE WHEN freelancers.major_id = ? THEN 0 ELSE 1 END", [$user->id, $user->userable->major_id])
                                     ->select('id', 'first_name', 'last_name', 'image', 'bio', 'major_id', 'study_case_id', 'location', 'open_to_work', 'counter', 'sum_rate')
+                                    ->filter($filters)
                                     ->paginate();
         }
 

@@ -24,7 +24,7 @@ class JobDetailController extends BaseController
         if (Gate::allows('isAdmin', Auth::user())) {
             $jobs_detail = JobDetail::with(['company.user', 'job_applications'])
                                     ->orderByDesc('created_at')
-                                     ->filter(\request(['job_type_id' , 'experience_level_id' , 'major_id' , 'date_posted']))
+                                     ->filter(\request(['title' , 'job_type_id' , 'experience_level_id' , 'major_id' , 'date_posted']))
                                     ->get();
         }
         else {

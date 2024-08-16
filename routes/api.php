@@ -108,10 +108,10 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     // Job Details
-    /*Route::prefix('jobDetail')->group(function () {
+    Route::prefix('jobDetail')->group(function () {
         Route::get('', [JobDetailController::class, 'index']);
         Route::get('{id}', [JobDetailController::class, 'show']);
-    });*/
+    });
 
     // Important Jobs
     Route::prefix('important_job')->group(function () {

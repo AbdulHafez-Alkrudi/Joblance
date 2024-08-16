@@ -65,6 +65,12 @@ class Task extends Model
     }
     public function scopeFilter($query , array $filters)
     {
+
+        // searching according to a specific title:
+        $query->when($filters['task_title'] ?? false , fn($query , $task_title) =>
+                 $query->where('task_title' , 'REGEXP' , $task_title)
+        );
+
         // searching according to a specific user:
         $query->when($filters['user_id'] ?? false , fn($query , $user_id) =>
                  $query->where('user_id' , $user_id)
@@ -73,7 +79,16 @@ class Task extends Model
         // searching according to a specific major:
         $query->when($filters['major_id'] ?? false , fn($query , $major_id) =>
                      $query->where('major_id' , $major_id)
-            );
+        );
+
+
+        // searching about a task with a maximum duration:
+
+        $query->when($filters['duration'] ?? false , fn($query , $duration) =>
+                $query->where('durat ion' , '<=' , $duration)
+        );
+
+
         // searching according to posted date of the job:
 
         $last_week_date = Carbon::now()->subWeek();

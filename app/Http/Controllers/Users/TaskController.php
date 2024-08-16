@@ -27,7 +27,7 @@ class TaskController extends BaseController
         if (Gate::allows('isAdmin', Auth::user())) {
             $tasks = Task::with('user.userable')
                         ->orderByDesc('created_at')
-                        ->filter(\request(['user_id' , 'major_id' , 'date_posted']))
+                        ->filter(\request(['task_title' , 'user_id' , 'major_id' , 'duration' , 'date_posted']))
                         ->get();
         }
         else {

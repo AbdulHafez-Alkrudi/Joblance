@@ -94,6 +94,13 @@ class JobDetail extends Model
 
     public function scopeFilter($query , array $filters)
     {
+        // searching according to a specific title:
+        $query->when($filters['title'] ?? false , fn($query , $title) =>
+                $query->where("title" , "REGEXP", $title)
+        );
+        $query->when($filters['location'] ?? false , fn($query , $location) =>
+                $query->where("location" , "REGEXP", $location)
+        );
         // searching according to a specific job type:
         $query->when($filters['job_type_id'] ?? false , fn($query , $job_type_id) =>
                 $query->where('job_type_id' , $job_type_id)
