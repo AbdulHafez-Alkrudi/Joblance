@@ -28,17 +28,27 @@ class TaskController extends BaseController
             $tasks = Task::with('user.userable')
                         ->orderByDesc('created_at')
                         ->filter(\request(['task_title' , 'user_id' , 'major' , 'duration' , 'date_posted']))
-                        ->get();
+                        ->paginate(5);
         }
         else {
             $user = auth()->user()->userable;
             $tasks = Task::with('user.userable')
                         ->orderByRaw("CASE WHEN tasks.user_id IN (SELECT user_id FROM followers WHERE followers.follower_id = ?) THEN 0 ELSE 1 END, CASE WHEN major_id = ? THEN 0 ELSE 1 END, tasks.created_at DESC", [Auth::id(), $user->major_id])
                         ->filter(\request(['task_title' , 'user_id' , 'major' , 'duration' , 'date_posted']))
-                        ->get();
+                        ->paginate(5);
         }
         $tasks = (new Task)->get_all_tasks($tasks, request('lang'));
-        return $this->sendResponse($tasks);
+        $response = [
+            'status' => 'success',
+            'data' => $tasks->items(),
+            'meta' => [
+                'current_page' => $tasks->currentPage(),
+                'last_page' => $tasks->lastPage(),
+                'per_page' => $tasks->perPage(),
+                'total' => $tasks->total(),
+            ]
+        ];
+        return response()->json($response, 200);
     }
 
     public function indexByUserId($user_id)
