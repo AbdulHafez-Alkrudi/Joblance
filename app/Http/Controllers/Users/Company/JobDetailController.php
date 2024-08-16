@@ -36,18 +36,7 @@ class JobDetailController extends BaseController
         }
         $jobs_detail = (new JobDetail)->get_all_jobs_detail($jobs_detail, request('lang'));
 
-        $response = [
-            'status' => 'success',
-            'data' => $jobs_detail->items(),
-            'meta' => [
-                'current_page' => $jobs_detail->currentPage(),
-                'last_page' => $jobs_detail->lastPage(),
-                'per_page' => $jobs_detail->perPage(),
-                'total' => $jobs_detail->total(),
-            ]
-        ];
-        return response()->json($response, 200);
-
+        return $this->send_response($jobs_detail);
     }
 
     public function indexByCompanyId($company_id)
@@ -63,9 +52,23 @@ class JobDetailController extends BaseController
                         ->filter(\request(['title' , 'location' , 'remote_type', 'job_type' , 'experience_level' , 'major' , 'date_posted']))
                         ->paginate(5);
         $jobs_detail = (new JobDetail)->get_all_jobs_detail($jobs_detail, request('lang'));
-        return $this->sendResponse($jobs_detail);
+        return $this->send_response($jobs_detail);
     }
 
+    public function send_response($jobs_detail): \Illuminate\Http\JsonResponse
+    {
+        $response = [
+            'status' => 'success',
+            'data' => $jobs_detail->items(),
+            'meta' => [
+                'current_page' => $jobs_detail->currentPage(),
+                'last_page' => $jobs_detail->lastPage(),
+                'per_page' => $jobs_detail->perPage(),
+                'total' => $jobs_detail->total(),
+            ]
+        ];
+        return response()->json($response, 200);
+    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), (new JobDetailRequest)->rules());
