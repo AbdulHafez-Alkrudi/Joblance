@@ -18,20 +18,13 @@ class FavouriteFreelancerController extends BaseController
     public function index(Request $request)
     {
         if ($request->has('user_id')) {
-            $favourite_freelancers = Auth::user()->favourite_freelancers()->with('freelancer')->get();
+            $favourite_freelancers = Auth::user()->favourite_freelancers()->get();
             $favourite_freelancers = (new FavouriteFreelancer)->get_favourite_freelancers($favourite_freelancers);
             return $this->sendResponse($favourite_freelancers);
+        }else{
+            return $this->sendError(['message' => 'you must specify a user_id']);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -44,15 +37,17 @@ class FavouriteFreelancerController extends BaseController
         if ($validator->fails()) {
             return $this->sendError($validator->errors());
         }
-
-        //$user = User::find($request->freelancer_id);
+        $user = User::find($request->freelancer_id);
+        if($user->userable_type != "App\Models\Users\Freelancer\Freelancer"){
+            return $this->sendError(['message' => 'the user must be a freelancer']);
+        }
         if (auth()->user()->hasFavouriteFreelancer($request->freelancer_id))
         {
             return $this->sendError('This freelancer already favourited');
         }
-        $user = User::find($request->freelancer_id);
+
         $favourite_freelancer = FavouriteFreelancer::create([
-            'freelancer_id' => $user->id,
+            'freelancer_id' => $request->freelancer_id,
             'user_id' => Auth::id()
         ]);
 

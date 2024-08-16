@@ -2,6 +2,7 @@
 
 namespace App\Models\Users\Favourite;
 
+use App\Models\User;
 use App\Models\Users\Freelancer\Freelancer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,7 +28,8 @@ class FavouriteFreelancer extends Model
     {
         foreach ($favourite_freelancers as $key => $favourite_freelancer)
         {
-            $favourite_freelancers[$key] = (new Freelancer)->get_info($favourite_freelancer->job_detail, request('lang'));;
+            $freelancer = User::find($favourite_freelancer->freelancer_id)->userable;
+            $favourite_freelancers[$key] = (new Freelancer)->get_info($freelancer, request('lang'));;
         }
         return $favourite_freelancers;
     }
